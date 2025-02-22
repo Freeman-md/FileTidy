@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FileTidy.Services;
 
 public class FileSorter
@@ -13,6 +14,8 @@ public class FileSorter
 
     public void Sort()
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
         IEnumerable<string> allFiles = Directory.EnumerateFiles(_directoryToSort, "*", SearchOption.AllDirectories);
 
         int totalFiles = allFiles.Count();
@@ -84,11 +87,15 @@ public class FileSorter
             ConsoleProgress.DisplayProgressBar(processedFiles, totalFiles);
         }
 
+        stopwatch.Stop();
+
         Console.WriteLine("\n✅ Sorting Complete!\n");
 
         Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
         Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
         Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
+        Console.WriteLine($"⏳ Total Duration: {stopwatch.ElapsedMilliseconds} ms ({stopwatch.Elapsed.TotalSeconds:F2} sec)\n");
+
 
         foreach (var entry in sortedSummary)
         {
