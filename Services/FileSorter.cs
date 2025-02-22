@@ -15,6 +15,15 @@ public class FileSorter
     {
         IEnumerable<string> allFiles = Directory.EnumerateFiles(_directoryToSort, "*", SearchOption.AllDirectories);
 
+        int totalFiles = allFiles.Count();
+        int processedFiles = 0;
+
+        if (totalFiles == 0)
+        {
+            Console.WriteLine("No files found to sort.");
+            return;
+        }
+
         Dictionary<string, string> fileDestinations = new Dictionary<string, string>();
         foreach (var file in allFiles)
         {
@@ -27,8 +36,9 @@ public class FileSorter
         HashSet<string> createdDirectories = new HashSet<string>();
 
         Dictionary<string, int> sortedSummary = new Dictionary<string, int>();
-        int totalFilesMoved = 0;
-        int totalErrors = 0;
+        int totalFilesMoved = 0, totalErrors = 0;
+
+        Console.WriteLine("\n🔄 Sorting in Progress...\n");
 
         foreach (var fileDestination in fileDestinations)
         {
@@ -69,12 +79,17 @@ public class FileSorter
                 Console.WriteLine($"❌ Error moving file: {sourceFilePath} → {destinationFolder}");
                 Console.WriteLine($"{ex.Message}");
             }
+
+            processedFiles++;
+            ConsoleProgress.DisplayProgressBar(processedFiles, totalFiles);
         }
 
-        Console.WriteLine("\n📌 Sorting Summary:");
-        Console.WriteLine($"🔹 Total Files Processed: {allFiles.Count()}");
+        Console.WriteLine("\n✅ Sorting Complete!\n");
+
+        Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
         Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
         Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
+
         foreach (var entry in sortedSummary)
         {
             Console.WriteLine($"📂 {entry.Key}: {entry.Value} files moved.");
