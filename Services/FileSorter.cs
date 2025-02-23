@@ -17,9 +17,7 @@ public class FileSorter
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         IEnumerable<string> allFiles = Directory.EnumerateFiles(_directoryToSort, "*", SearchOption.AllDirectories);
-
         int totalFiles = allFiles.Count();
-        int processedFiles = 0;
 
         if (totalFiles == 0)
         {
@@ -27,7 +25,8 @@ public class FileSorter
             return;
         }
 
-        Dictionary<string, string> fileDestinations = new Dictionary<string, string>();
+        // Store file destinations
+        Dictionary<string, string> fileDestinations = new();
         foreach (var file in allFiles)
         {
             string extension = Path.GetExtension(file).ToLower();
@@ -36,10 +35,19 @@ public class FileSorter
             fileDestinations[file] = destinationFolder;
         }
 
-        HashSet<string> createdDirectories = new HashSet<string>();
+        // Ensure directories exist first
+        HashSet<string> createdDirectories = new();
+        foreach (var destination in fileDestinations.Values.Distinct())
+        {
+            if (!createdDirectories.Contains(destination))
+            {
+                Directory.CreateDirectory(destination);
+                createdDirectories.Add(destination);
+            }
+        }
 
-        Dictionary<string, int> sortedSummary = new Dictionary<string, int>();
-        int totalFilesMoved = 0, totalErrors = 0;
+        int totalFilesMoved = 0, processedFiles = 0, totalErrors = 0;
+        Dictionary<string, int> sortedSummary = new();
 
         Console.WriteLine("\n🔄 Sorting in Progress...\n");
 
@@ -48,12 +56,6 @@ public class FileSorter
             string sourceFilePath = fileDestination.Key;
             string destinationFolder = fileDestination.Value;
             string destinationFilePath = Path.Combine(destinationFolder, Path.GetFileName(sourceFilePath));
-
-            if (!createdDirectories.Contains(destinationFolder))
-            {
-                Directory.CreateDirectory(destinationFolder);
-                createdDirectories.Add(destinationFolder);
-            }
 
             try
             {
@@ -95,7 +97,6 @@ public class FileSorter
         Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
         Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
         Console.WriteLine($"⏳ Total Duration: {stopwatch.ElapsedMilliseconds} ms ({stopwatch.Elapsed.TotalSeconds:F2} sec)\n");
-
 
         foreach (var entry in sortedSummary)
         {
