@@ -25,44 +25,35 @@ public class FileSorter
             return;
         }
 
-        // Store file destinations
-        Dictionary<string, string> fileDestinations = new();
+        HashSet<string> createdDirectories = new();
+        Dictionary<string, int> sortedSummary = new();
+        int totalFilesMoved = 0, totalErrors = 0, processedFiles = 0;
+
+        Console.WriteLine("\n🔄 Sorting in Progress (Preserving Folder Structure)...\n");
+
         foreach (var file in allFiles)
         {
-            string extension = Path.GetExtension(file).ToLower();
-            string category = _mapper.GetCategory(extension);
-            string destinationFolder = Path.Combine(_directoryToSort, category);
-            fileDestinations[file] = destinationFolder;
-        }
-
-        // Ensure directories exist first
-        HashSet<string> createdDirectories = new();
-        foreach (var destination in fileDestinations.Values.Distinct())
-        {
-            if (!createdDirectories.Contains(destination))
-            {
-                Directory.CreateDirectory(destination);
-                createdDirectories.Add(destination);
-            }
-        }
-
-        int totalFilesMoved = 0, processedFiles = 0, totalErrors = 0;
-        Dictionary<string, int> sortedSummary = new();
-
-        Console.WriteLine("\n🔄 Sorting in Progress...\n");
-
-        foreach (var fileDestination in fileDestinations)
-        {
-            string sourceFilePath = fileDestination.Key;
-            string destinationFolder = fileDestination.Value;
-            string destinationFilePath = Path.Combine(destinationFolder, Path.GetFileName(sourceFilePath));
-
             try
             {
-                string uniqueDestinationPath = GetUniqueFilePath(destinationFilePath);
-                File.Move(sourceFilePath, uniqueDestinationPath);
+                string extension = Path.GetExtension(file).ToLower();
+                string category = _mapper.GetCategory(extension);
+                
+                // Get the relative path inside _directoryToSort
+                string relativePath = Path.GetRelativePath(_directoryToSort, Path.GetDirectoryName(file)!);
+                
+                // Construct destination folder while preserving structure
+                string destinationFolder = Path.Combine(_directoryToSort, category, relativePath);
+                string destinationFilePath = Path.Combine(destinationFolder, Path.GetFileName(file));
 
-                string category = new DirectoryInfo(destinationFolder).Name;
+                if (!createdDirectories.Contains(destinationFolder))
+                {
+                    Directory.CreateDirectory(destinationFolder);
+                    createdDirectories.Add(destinationFolder);
+                }
+
+                string uniqueDestinationPath = GetUniqueFilePath(destinationFilePath);
+                File.Move(file, uniqueDestinationPath);
+
                 if (sortedSummary.ContainsKey(category))
                     sortedSummary[category]++;
                 else
@@ -73,7 +64,7 @@ public class FileSorter
             catch (Exception ex)
             {
                 totalErrors++;
-                Console.WriteLine($"❌ Error moving file: {sourceFilePath} → {destinationFolder}");
+                Console.WriteLine($"❌ Error moving file: {file}");
                 Console.WriteLine($"{ex.Message}");
             }
 
@@ -83,7 +74,7 @@ public class FileSorter
 
         stopwatch.Stop();
 
-        Console.WriteLine("\n✅ Sorting Complete!\n");
+        Console.WriteLine("\n✅ Sorting Complete (With Folder Structure Preserved)!\n");
 
         Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
         Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
