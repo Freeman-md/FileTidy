@@ -37,10 +37,10 @@ public class FileSorter
             {
                 string extension = Path.GetExtension(file).ToLower();
                 string category = _mapper.GetCategory(extension);
-                
+
                 // Get the relative path inside _directoryToSort
                 string relativePath = Path.GetRelativePath(_directoryToSort, Path.GetDirectoryName(file)!);
-                
+
                 // Construct destination folder while preserving structure
                 string destinationFolder = Path.Combine(_directoryToSort, category, relativePath);
                 string destinationFilePath = Path.Combine(destinationFolder, Path.GetFileName(file));
@@ -71,6 +71,8 @@ public class FileSorter
             processedFiles++;
             ConsoleProgress.DisplayProgressBar(processedFiles, totalFiles);
         }
+
+        RemoveEmptyDirectories(_directoryToSort);
 
         stopwatch.Stop();
 
@@ -108,4 +110,30 @@ public class FileSorter
 
         return newFilePath;
     }
+
+    /// <summary>
+    /// Recursively removes empty directories inside the sorted directory.
+    /// </summary>
+    private void RemoveEmptyDirectories(string directory)
+    {
+        foreach (var subDirectory in Directory.GetDirectories(directory))
+        {
+            RemoveEmptyDirectories(subDirectory); // Recursively check subdirectories
+
+            // Delete only if the directory is truly empty
+            if (!Directory.EnumerateFileSystemEntries(subDirectory).Any())
+            {
+                try
+                {
+                    Directory.Delete(subDirectory);
+                    Console.WriteLine($"🗑️ Removed empty folder: {subDirectory}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Failed to delete {subDirectory}: {ex.Message}");
+                }
+            }
+        }
+    }
+
 }
