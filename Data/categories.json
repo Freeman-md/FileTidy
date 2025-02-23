@@ -1,0 +1,14 @@
+[
+    { "id": 1, "name": "Programming" },
+    { "id": 2, "name": "Documents" },
+    { "id": 3, "name": "Spreadsheets" },
+    { "id": 4, "name": "Presentations" },
+    { "id": 5, "name": "Videos" },
+    { "id": 6, "name": "Images" },
+    { "id": 7, "name": "Audio" },
+    { "id": 8, "name": "Compressed Files" },
+    { "id": 9, "name": "Executables" },
+    { "id": 10, "name": "Database" },
+    { "id": 11, "name": "Configuration Files" },
+    { "id": 12, "name": "Web Files" }
+]
