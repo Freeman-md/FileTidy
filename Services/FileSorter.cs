@@ -59,16 +59,8 @@ public class FileSorter
 
             try
             {
-                if (File.Exists(destinationFilePath))
-                {
-                    string newFilePath = Path.Combine(destinationFolder,
-                        $"{Path.GetFileNameWithoutExtension(sourceFilePath)}_copy{Path.GetExtension(sourceFilePath)}");
-                    File.Move(sourceFilePath, newFilePath);
-                }
-                else
-                {
-                    File.Move(sourceFilePath, destinationFilePath);
-                }
+                string uniqueDestinationPath = GetUniqueFilePath(destinationFilePath);
+                File.Move(sourceFilePath, uniqueDestinationPath);
 
                 string category = new DirectoryInfo(destinationFolder).Name;
                 if (sortedSummary.ContainsKey(category))
@@ -102,5 +94,27 @@ public class FileSorter
         {
             Console.WriteLine($"📂 {entry.Key}: {entry.Value} files moved.");
         }
+    }
+
+    /// <summary>
+    /// Generates a unique filename if a duplicate exists.
+    /// Example: report.pdf → report_1.pdf → report_2.pdf
+    /// </summary>
+    private string GetUniqueFilePath(string filePath)
+    {
+        string directory = Path.GetDirectoryName(filePath)!;
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+        string extension = Path.GetExtension(filePath);
+        int count = 1;
+
+        string newFilePath = filePath;
+
+        while (File.Exists(newFilePath))
+        {
+            newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension}_{count}{extension}");
+            count++;
+        }
+
+        return newFilePath;
     }
 }

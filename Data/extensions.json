@@ -43,6 +43,7 @@
   { "extension": ".svg", "category_id": 6 },
   { "extension": ".bmp", "category_id": 6 },
   { "extension": ".tiff", "category_id": 6 },
+  { "extension": ".heic", "category_id": 6 },
 
   { "extension": ".mp3", "category_id": 7 },
   { "extension": ".wav", "category_id": 7 },
