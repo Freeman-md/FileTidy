@@ -11,14 +11,23 @@ public static class SortingHandler
         {
             var reporter = new ConsoleSortReporter();
 
-            IEnumerable<string> allFiles = Directory.EnumerateFiles(directoryToSort, "*", SearchOption.AllDirectories);
-            reporter.SetTotalFiles(allFiles.Count());
+            var allFiles = Directory.EnumerateFiles(directoryToSort, "*", SearchOption.AllDirectories).ToList();
 
-            string dataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+            var mapper = new FileCategoryMapper(Path.Combine(AppContext.BaseDirectory, "Data"));
+            var categoryFolders = mapper.GetAllCategoryNames()
+                .Select(c => Path.Combine(directoryToSort, c) + Path.DirectorySeparatorChar)
+                .ToList();
 
-            var mapper = new FileCategoryMapper(dataDirectory);
-            FileSorter sorter = new FileSorter(directoryToSort, mapper, reporter);
+            var filesToSort = allFiles
+                .Where(file => !categoryFolders.Any(folder =>
+                    Path.GetFullPath(file).StartsWith(folder, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            reporter.SetTotalFiles(filesToSort.Count);
+
+            var sorter = new FileSorter(directoryToSort, mapper, reporter);
             sorter.Sort();
+
         }
     }
 }
