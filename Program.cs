@@ -1,4 +1,6 @@
-﻿using FileTidy.Services;
+﻿using FileTidy.CLI.Reporting;
+using FileTidy.Core.Services;
+using FileTidy.Services;
 
 List<string> directoriesToSort = new List<string>();
 
@@ -27,7 +29,12 @@ while (true)
 
     foreach (var directoryToSort in directoriesToSort)
     {
-        FileSorter sorter = new FileSorter(directoryToSort);
+        var reporter = new ConsoleSortReporter();
+
+        IEnumerable<string> allFiles = Directory.EnumerateFiles(directoryToSort, "*", SearchOption.AllDirectories);
+        reporter.SetTotalFiles(allFiles.Count());
+
+        FileSorter sorter = new FileSorter(directoryToSort, reporter);
         sorter.Sort();
     }
 
