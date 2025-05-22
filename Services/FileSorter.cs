@@ -21,7 +21,7 @@ public class FileSorter
 
         if (totalFiles == 0)
         {
-            Console.WriteLine("No files found to sort.");
+            // Console.WriteLine("No files found to sort.");
             return;
         }
 
@@ -29,7 +29,7 @@ public class FileSorter
         Dictionary<string, int> sortedSummary = new();
         int totalFilesMoved = 0, totalErrors = 0, processedFiles = 0;
 
-        Console.WriteLine("\n🔄 Sorting in Progress (Preserving Folder Structure)...\n");
+        // Console.WriteLine("\n🔄 Sorting in Progress (Preserving Folder Structure)...\n");
 
         foreach (var file in allFiles)
         {
@@ -64,29 +64,28 @@ public class FileSorter
             catch (Exception ex)
             {
                 totalErrors++;
-                Console.WriteLine($"❌ Error moving file: {file}");
-                Console.WriteLine($"{ex.Message}");
+                // Console.WriteLine($"❌ Error moving file: {file}");
+                // Console.WriteLine($"{ex.Message}");
             }
 
             processedFiles++;
-            ConsoleProgress.DisplayProgressBar(processedFiles, totalFiles);
         }
 
-        Console.Write("\n");
+        // Console.Write("\n");
         RemoveEmptyDirectories(_directoryToSort);
 
         stopwatch.Stop();
 
-        Console.WriteLine("\n✅ Sorting Complete (With Folder Structure Preserved)!\n");
+        // Console.WriteLine("\n✅ Sorting Complete (With Folder Structure Preserved)!\n");
 
-        Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
-        Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
-        Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
-        Console.WriteLine($"⏳ Total Duration: {stopwatch.ElapsedMilliseconds} ms ({stopwatch.Elapsed.TotalSeconds:F2} sec)\n");
+        // Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
+        // Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
+        // Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
+        // Console.WriteLine($"⏳ Total Duration: {stopwatch.ElapsedMilliseconds} ms ({stopwatch.Elapsed.TotalSeconds:F2} sec)\n");
 
         foreach (var entry in sortedSummary)
         {
-            Console.WriteLine($"📂 {entry.Key}: {entry.Value} files moved.");
+            // Console.WriteLine($"📂 {entry.Key}: {entry.Value} files moved.");
         }
     }
 
@@ -127,11 +126,11 @@ public class FileSorter
                 try
                 {
                     Directory.Delete(subDirectory);
-                    Console.WriteLine($"🗑️ Removed empty folder: {subDirectory}");
+                    // Console.WriteLine($"🗑️ Removed empty folder: {subDirectory}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"⚠️ Failed to delete {subDirectory}: {ex.Message}");
+                    // Console.WriteLine($"⚠️ Failed to delete {subDirectory}: {ex.Message}");
                 }
             }
         }
