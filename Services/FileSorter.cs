@@ -38,7 +38,7 @@ public class FileSorter
                 string extension = Path.GetExtension(file).ToLower();
                 string category = _mapper.GetCategory(extension);
 
-                // Get the relative path inside _directoryToSort
+                // Get the subdirectory path (relative to _directoryToSort) where the current file is located
                 string relativePath = Path.GetRelativePath(_directoryToSort, Path.GetDirectoryName(file)!);
 
                 // Construct destination folder while preserving structure
@@ -72,6 +72,7 @@ public class FileSorter
             ConsoleProgress.DisplayProgressBar(processedFiles, totalFiles);
         }
 
+        Console.Write("\n");
         RemoveEmptyDirectories(_directoryToSort);
 
         stopwatch.Stop();
@@ -118,7 +119,7 @@ public class FileSorter
     {
         foreach (var subDirectory in Directory.GetDirectories(directory))
         {
-            RemoveEmptyDirectories(subDirectory); // Recursively check subdirectories
+            RemoveEmptyDirectories(subDirectory); // Recursively check and remove empty subdirectories
 
             // Delete only if the directory is truly empty
             if (!Directory.EnumerateFileSystemEntries(subDirectory).Any())
