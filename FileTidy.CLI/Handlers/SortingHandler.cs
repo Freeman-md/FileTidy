@@ -11,23 +11,28 @@ public static class SortingHandler
         {
             var reporter = new ConsoleSortReporter();
 
+            // Build known category folders
+            string dataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+            var mapper = new FileCategoryMapper(dataDirectory);
+
             var allFiles = Directory.EnumerateFiles(directoryToSort, "*", SearchOption.AllDirectories).ToList();
 
-            var mapper = new FileCategoryMapper(Path.Combine(AppContext.BaseDirectory, "Data"));
+            // Filter out files already inside a category folder
             var categoryFolders = mapper.GetAllCategoryNames()
-                .Select(c => Path.Combine(directoryToSort, c) + Path.DirectorySeparatorChar)
+                .Select(c => Path.Combine(directoryToSort, c))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var filesToProcess = allFiles
+                .Where(file =>
+                    !categoryFolders.Any(folder =>
+                        file.StartsWith(folder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
 
-            var filesToSort = allFiles
-                .Where(file => !categoryFolders.Any(folder =>
-                    Path.GetFullPath(file).StartsWith(folder, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-            reporter.SetTotalFiles(filesToSort.Count);
+            reporter.SetTotalFiles(filesToProcess.Count);
 
             var sorter = new FileSorter(directoryToSort, mapper, reporter);
             sorter.Sort();
-
         }
     }
+
 }
