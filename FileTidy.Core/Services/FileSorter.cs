@@ -1,15 +1,24 @@
 using System.Diagnostics;
 using FileTidy.Core.Interfaces;
-using FileTidy.Core.Services;
 
 namespace FileTidy.Core.Services;
 
+/// <summary>
+/// Handles the sorting of files in a given directory by file extension categories,
+/// preserving the original folder structure and reporting progress through an optional reporter.
+/// </summary>
 public class FileSorter
 {
     private readonly string _directoryToSort;
     private readonly FileCategoryMapper _mapper;
     private readonly ISortReporter? _reporter;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileSorter"/> class.
+    /// </summary>
+    /// <param name="directoryToSort">The root directory to scan and sort files in.</param>
+    /// <param name="mapper">The category mapper for determining file categories.</param>
+    /// <param name="reporter">An optional progress reporter for UI or logging.</param>
     public FileSorter(string directoryToSort, FileCategoryMapper mapper, ISortReporter? reporter = null)
     {
         _directoryToSort = directoryToSort;
@@ -17,6 +26,10 @@ public class FileSorter
         _reporter = reporter;
     }
 
+    /// <summary>
+    /// Sorts all files in the directory (and subdirectories) into category folders,
+    /// preserving their relative paths and skipping already sorted files.
+    /// </summary>
     public void Sort()
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
@@ -33,19 +46,16 @@ public class FileSorter
 
         foreach (var file in allFiles)
         {
-
             try
             {
                 string extension = Path.GetExtension(file).ToLower();
                 string category = _mapper.GetCategory(extension);
 
+                // Skip if file is already inside its category folder
                 if (Path.GetFullPath(file).Contains(Path.Combine(_directoryToSort, category) + Path.DirectorySeparatorChar))
                     continue;
 
-                // Get the subdirectory path (relative to _directoryToSort) where the current file is located
                 string relativePath = Path.GetRelativePath(_directoryToSort, Path.GetDirectoryName(file)!);
-
-                // Construct destination folder while preserving structure
                 string destinationFolder = Path.Combine(_directoryToSort, category, relativePath);
                 string destinationFilePath = Path.Combine(destinationFolder, Path.GetFileName(file));
 
@@ -64,7 +74,6 @@ public class FileSorter
                     sortedSummary[category] = 1;
 
                 totalFilesMoved++;
-
                 _reporter?.OnFileProcessed(file, category);
             }
             catch (Exception ex)
@@ -77,7 +86,6 @@ public class FileSorter
         }
 
         RemoveEmptyDirectories(_directoryToSort);
-
         stopwatch.Stop();
 
         _reporter?.OnSummary(
@@ -89,9 +97,11 @@ public class FileSorter
     }
 
     /// <summary>
-    /// Generates a unique filename if a duplicate exists.
-    /// Example: report.pdf → report_1.pdf → report_2.pdf
+    /// Ensures a unique destination path if a file with the same name already exists.
+    /// Appends an incrementing counter to the filename.
     /// </summary>
+    /// <param name="filePath">The desired destination path.</param>
+    /// <returns>A unique file path that avoids collisions.</returns>
     private string GetUniqueFilePath(string filePath)
     {
         string directory = Path.GetDirectoryName(filePath)!;
@@ -111,15 +121,16 @@ public class FileSorter
     }
 
     /// <summary>
-    /// Recursively removes empty directories inside the sorted directory.
+    /// Recursively removes all empty directories from the given directory,
+    /// including nested empty subfolders.
     /// </summary>
+    /// <param name="directory">The root directory to clean up.</param>
     private void RemoveEmptyDirectories(string directory)
     {
         foreach (var subDirectory in Directory.GetDirectories(directory))
         {
-            RemoveEmptyDirectories(subDirectory); // Recursively check and remove empty subdirectories
+            RemoveEmptyDirectories(subDirectory);
 
-            // Delete only if the directory is truly empty
             if (!Directory.EnumerateFileSystemEntries(subDirectory).Any())
             {
                 try
@@ -134,5 +145,4 @@ public class FileSorter
             }
         }
     }
-
 }
