@@ -6,4 +6,5 @@ public interface ISortReporter
     void OnError(string filePath, Exception ex);
     void OnDirectoryEmptied(string directoryPath);
     void OnSummary(int totalFiles, int totalMoved, int totalErrors, Dictionary<string, int> perCategoryCounts);
+    void SetTotalFiles(int total);
 }
