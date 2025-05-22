@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace FileTidy.Models
+namespace FileTidy.Core.Models
 {
     public class Category
     {

@@ -1,7 +1,7 @@
 using System.Text.Json;
-using FileTidy.Models;
+using FileTidy.Core.Models;
 
-namespace FileTidy.Services;
+namespace FileTidy.Core.Services;
 
 public class FileCategoryMapper
 {

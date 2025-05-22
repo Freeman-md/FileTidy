@@ -1,15 +1,20 @@
 using System.Diagnostics;
-using FileTidy.Services;
+using FileTidy.Core.Interfaces;
+using FileTidy.Core.Services;
+
+namespace FileTidy.Core.Services;
 
 public class FileSorter
 {
     private readonly string _directoryToSort;
     private readonly FileCategoryMapper _mapper;
+    private readonly ISortReporter? _reporter;
 
-    public FileSorter(string directoryToSort)
+    public FileSorter(string directoryToSort, ISortReporter? reporter = null)
     {
         _directoryToSort = directoryToSort;
         _mapper = new FileCategoryMapper();
+        _reporter = reporter;
     }
 
     public void Sort()
@@ -20,16 +25,11 @@ public class FileSorter
         int totalFiles = allFiles.Count();
 
         if (totalFiles == 0)
-        {
-            // Console.WriteLine("No files found to sort.");
             return;
-        }
 
         HashSet<string> createdDirectories = new();
         Dictionary<string, int> sortedSummary = new();
         int totalFilesMoved = 0, totalErrors = 0, processedFiles = 0;
-
-        // Console.WriteLine("\n🔄 Sorting in Progress (Preserving Folder Structure)...\n");
 
         foreach (var file in allFiles)
         {
@@ -60,33 +60,28 @@ public class FileSorter
                     sortedSummary[category] = 1;
 
                 totalFilesMoved++;
+
+                _reporter?.OnFileProcessed(file, category);
             }
             catch (Exception ex)
             {
                 totalErrors++;
-                // Console.WriteLine($"❌ Error moving file: {file}");
-                // Console.WriteLine($"{ex.Message}");
+                _reporter?.OnError(file, ex);
             }
 
             processedFiles++;
         }
 
-        // Console.Write("\n");
         RemoveEmptyDirectories(_directoryToSort);
 
         stopwatch.Stop();
 
-        // Console.WriteLine("\n✅ Sorting Complete (With Folder Structure Preserved)!\n");
-
-        // Console.WriteLine($"🔹 Total Files Processed: {totalFiles}");
-        // Console.WriteLine($"✅ Total Files Moved: {totalFilesMoved}");
-        // Console.WriteLine($"❌ Total Errors: {totalErrors}\n");
-        // Console.WriteLine($"⏳ Total Duration: {stopwatch.ElapsedMilliseconds} ms ({stopwatch.Elapsed.TotalSeconds:F2} sec)\n");
-
-        foreach (var entry in sortedSummary)
-        {
-            // Console.WriteLine($"📂 {entry.Key}: {entry.Value} files moved.");
-        }
+        _reporter?.OnSummary(
+            totalFiles,
+            totalFilesMoved,
+            totalErrors,
+            sortedSummary
+        );
     }
 
     /// <summary>
@@ -126,11 +121,11 @@ public class FileSorter
                 try
                 {
                     Directory.Delete(subDirectory);
-                    // Console.WriteLine($"🗑️ Removed empty folder: {subDirectory}");
+                    _reporter?.OnDirectoryEmptied(subDirectory);
                 }
                 catch (Exception ex)
                 {
-                    // Console.WriteLine($"⚠️ Failed to delete {subDirectory}: {ex.Message}");
+                    _reporter?.OnError(subDirectory, ex);
                 }
             }
         }
