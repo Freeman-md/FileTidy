@@ -17,8 +17,8 @@ public class FileCategoryMapper
 
     private void LoadCategories()
     {
-        string extensionsFilePath = Path.Combine(_dataDirectory, "Data", "extensions.json");
-        string categoriesFilePath = Path.Combine(_dataDirectory, "Data", "categories.json");
+        string extensionsFilePath = Path.Combine(_dataDirectory, "extensions.json");
+        string categoriesFilePath = Path.Combine(_dataDirectory, "categories.json");
 
         if (!File.Exists(extensionsFilePath)) throw new FileNotFoundException($"extensions.json file not found at {extensionsFilePath}");
         if (!File.Exists(categoriesFilePath)) throw new FileNotFoundException($"categories.json file not found at {categoriesFilePath}");
