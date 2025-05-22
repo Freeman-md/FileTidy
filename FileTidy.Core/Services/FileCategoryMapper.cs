@@ -6,18 +6,19 @@ namespace FileTidy.Core.Services;
 public class FileCategoryMapper
 {
     private readonly Dictionary<string, string> _fileCategories = new();
+    private readonly string _dataDirectory;
 
-    public FileCategoryMapper()
+    public FileCategoryMapper(string dataDirectory)
     {
+        _dataDirectory = dataDirectory;
+
         LoadCategories();
     }
 
     private void LoadCategories()
     {
-        string rootDirectory = Directory.GetCurrentDirectory();
-
-        string extensionsFilePath = Path.Combine(rootDirectory, "Data", "extensions.json");
-        string categoriesFilePath = Path.Combine(rootDirectory, "Data", "categories.json");
+        string extensionsFilePath = Path.Combine(_dataDirectory, "Data", "extensions.json");
+        string categoriesFilePath = Path.Combine(_dataDirectory, "Data", "categories.json");
 
         if (!File.Exists(extensionsFilePath)) throw new FileNotFoundException($"extensions.json file not found at {extensionsFilePath}");
         if (!File.Exists(categoriesFilePath)) throw new FileNotFoundException($"categories.json file not found at {categoriesFilePath}");

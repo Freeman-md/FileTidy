@@ -10,10 +10,10 @@ public class FileSorter
     private readonly FileCategoryMapper _mapper;
     private readonly ISortReporter? _reporter;
 
-    public FileSorter(string directoryToSort, ISortReporter? reporter = null)
+    public FileSorter(string directoryToSort, FileCategoryMapper mapper, ISortReporter? reporter = null)
     {
         _directoryToSort = directoryToSort;
-        _mapper = new FileCategoryMapper();
+        _mapper = mapper;
         _reporter = reporter;
     }
 
