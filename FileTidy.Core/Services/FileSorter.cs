@@ -33,10 +33,14 @@ public class FileSorter
 
         foreach (var file in allFiles)
         {
+
             try
             {
                 string extension = Path.GetExtension(file).ToLower();
                 string category = _mapper.GetCategory(extension);
+
+                if (Path.GetFullPath(file).Contains(Path.Combine(_directoryToSort, category) + Path.DirectorySeparatorChar))
+                    continue;
 
                 // Get the subdirectory path (relative to _directoryToSort) where the current file is located
                 string relativePath = Path.GetRelativePath(_directoryToSort, Path.GetDirectoryName(file)!);

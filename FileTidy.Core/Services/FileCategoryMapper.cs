@@ -55,4 +55,6 @@ public class FileCategoryMapper
     {
         return _fileCategories.TryGetValue(extension.ToLower(), out string? category) ? category : "Others";
     }
+
+    public IEnumerable<string> GetAllCategoryNames() => _fileCategories.Values.Distinct();
 }
