@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy", "FileTidy.csproj", "{49772E66-0159-28FB-DF2D-C7A134D249AB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.Core", "FileTidy.Core\FileTidy.Core.csproj", "{3EEAE613-02F1-4A3C-9C8A-DBF0E1A57548}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.CLI", "FileTidy.CLI\FileTidy.CLI.csproj", "{B0492035-60BC-4BB3-9F27-CD9984114640}"
@@ -19,18 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|x64.Build.0 = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Debug|x86.Build.0 = Debug|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|x64.ActiveCfg = Release|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|x64.Build.0 = Release|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|x86.ActiveCfg = Release|Any CPU
-		{49772E66-0159-28FB-DF2D-C7A134D249AB}.Release|x86.Build.0 = Release|Any CPU
 		{3EEAE613-02F1-4A3C-9C8A-DBF0E1A57548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3EEAE613-02F1-4A3C-9C8A-DBF0E1A57548}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EEAE613-02F1-4A3C-9C8A-DBF0E1A57548}.Debug|x64.ActiveCfg = Debug|Any CPU
