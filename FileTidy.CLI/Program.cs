@@ -1,6 +1,5 @@
-﻿using FileTidy.CLI.Reporting;
+﻿using FileTidy.CLI.Handlers;
 using FileTidy.CLI.Utils;
-using FileTidy.Core.Services;
 using FileTidy.Core.Utils;
 
 List<string> directoriesToSort = new();
@@ -14,8 +13,7 @@ while (true)
     if (input.Trim().ToLower() == "exit") break;
 
     var paths = input.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                     .Select(p => p.Trim())
-                     .ToList();
+                     .Select(p => p.Trim());
 
     foreach (var path in paths)
     {
@@ -27,20 +25,9 @@ while (true)
         }
     }
 
-    foreach (var directoryToSort in directoriesToSort)
+    if (directoriesToSort.Any())
     {
-        var reporter = new ConsoleSortReporter();
-        IEnumerable<string> allFiles = DirectoryHelper.GetAllFiles(directoryToSort);
-        reporter.SetTotalFiles(allFiles.Count());
-
-        string baseDirectory = AppContext.BaseDirectory;
-        string projectRoot = Directory.GetParent(baseDirectory)!.Parent!.Parent!.FullName;
-        string dataDirectory = Path.Combine(projectRoot, "FileTidy.CLI");
-
-        var mapper = new FileCategoryMapper(dataDirectory);
-        var sorter = new FileSorter(directoryToSort, mapper, reporter);
-        sorter.Sort();
+        SortingHandler.SortDirectories(directoriesToSort);
+        directoriesToSort.Clear();
     }
-
-    directoriesToSort.Clear();
 }
