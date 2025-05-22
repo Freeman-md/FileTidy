@@ -14,9 +14,7 @@ public static class SortingHandler
             IEnumerable<string> allFiles = Directory.EnumerateFiles(directoryToSort, "*", SearchOption.AllDirectories);
             reporter.SetTotalFiles(allFiles.Count());
 
-            string baseDirectory = AppContext.BaseDirectory;
-            string projectRoot = Directory.GetParent(baseDirectory)!.Parent!.Parent!.FullName;
-            string dataDirectory = Path.Combine(projectRoot, "FileTidy.CLI");
+            string dataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
 
             var mapper = new FileCategoryMapper(dataDirectory);
             FileSorter sorter = new FileSorter(directoryToSort, mapper, reporter);
