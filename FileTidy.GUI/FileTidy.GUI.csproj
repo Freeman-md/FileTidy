@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.2.7"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.7" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.7"/>
+        <PackageReference Include="Avalonia.Svg.Skia" Version="11.2.7.1" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.7"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.7"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.2.7">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\Images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Images\logo.png" />
+      <AvaloniaResource Include="Assets\Images\logo.png" />
+      <None Remove="Assets\Images\logo.svg" />
+      <AvaloniaResource Include="Assets\Images\logo.svg" />
+      <None Remove="Assets\Fonts\Roboto\Black.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Black.ttf" />
+      <None Remove="Assets\Fonts\Roboto\Bold.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Bold.ttf" />
+      <None Remove="Assets\Fonts\Roboto\ExtraBold.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\ExtraBold.ttf" />
+      <None Remove="Assets\Fonts\Roboto\ExtraLight.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\ExtraLight.ttf" />
+      <None Remove="Assets\Fonts\Roboto\Light.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Light.ttf" />
+      <None Remove="Assets\Fonts\Roboto\Medium.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Medium.ttf" />
+      <None Remove="Assets\Fonts\Roboto\Regular.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Regular.ttf" />
+      <None Remove="Assets\Fonts\Roboto\SemiBold.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\SemiBold.ttf" />
+      <None Remove="Assets\Fonts\Roboto\Thin.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Roboto\Thin.ttf" />
+      <None Remove="Assets\Icons\settings.svg" />
+      <AvaloniaResource Include="Assets\Icons\settings.svg" />
+      <None Remove="Assets\Fonts\Phosphor\Fill.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor\Fill.ttf" />
+      <None Remove="Assets\Fonts\Phosphor\Light.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor\Light.ttf" />
+      <None Remove="Assets\Fonts\Phosphor\Regular.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor\Regular.ttf" />
+      <None Remove="Assets\Fonts\Phosphor\Thin.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Phosphor\Thin.ttf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\MainView.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+</Project>

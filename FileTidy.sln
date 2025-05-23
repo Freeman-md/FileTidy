@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.Core", "FileTidy.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.CLI", "FileTidy.CLI\FileTidy.CLI.csproj", "{B0492035-60BC-4BB3-9F27-CD9984114640}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.GUI", "FileTidy.GUI\FileTidy.GUI.csproj", "{7BD216E8-171D-4EDD-8962-E7AE5FB40429}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{B0492035-60BC-4BB3-9F27-CD9984114640}.Release|x64.Build.0 = Release|Any CPU
 		{B0492035-60BC-4BB3-9F27-CD9984114640}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0492035-60BC-4BB3-9F27-CD9984114640}.Release|x86.Build.0 = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|x64.Build.0 = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Debug|x86.Build.0 = Debug|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x64.ActiveCfg = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x64.Build.0 = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x86.ActiveCfg = Release|Any CPU
+		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

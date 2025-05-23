@@ -1,0 +1,41 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="DataGrid">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="RowHeight" Value="35" />
+        <Setter Property="FontSize" Value="13" />
+        <!-- <Setter Property="FontFamily" Value="{StaticResource Roboto}" /> -->
+        <Setter Property="GridLinesVisibility" Value="All" />
+    </Style>
+    
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource Gray200}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="10 5" />
+    </Style>
+    
+    <Style Selector="DataGridRow:pointerover">
+        <Setter Property="Background" Value="#f9fafb" /> <!-- very light gray -->
+    </Style>
+    
+    <Style Selector="DataGridRow:selected">
+        <Setter Property="Background" Value="#f3f4f6" /> <!-- subtle gray highlight -->
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    </Style>
+    
+    
+
+
+
+
+</Styles>
