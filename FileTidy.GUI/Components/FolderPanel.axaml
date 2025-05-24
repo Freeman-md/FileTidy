@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
-             xmlns:models="clr-namespace:FileTidy.GUI.Models"
              xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
              xmlns:components="clr-namespace:FileTidy.GUI.Components"
-             xmlns:models1="clr-namespace:FileTidy.GUI.Models"
+             xmlns:models="clr-namespace:FileTidy.GUI.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.FolderPanel"
              x:DataType="viewModels:MainViewModel">
+    
+    <Design.DataContext><vm:MainViewModel></vm:MainViewModel></Design.DataContext>
     
     <Border Grid.Row="1" Margin="0 5" Padding="10">
             <Grid RowDefinitions="30, *" HorizontalAlignment="Stretch">
@@ -70,7 +71,7 @@
 
                             <TreeView ItemsSource="{Binding FolderTree}">
                                 <TreeView.ItemTemplate>
-                                    <TreeDataTemplate DataType="models1:FolderItem" ItemsSource="{Binding SubFolders}">
+                                    <TreeDataTemplate DataType="models:FolderItem" ItemsSource="{Binding SubFolders}">
                                         <StackPanel Spacing="5" Orientation="Horizontal">
                                             <Label Content="&#xe25a;" FontFamily="{StaticResource Phosphor}"
                                                    FontSize="15" Padding="0">
