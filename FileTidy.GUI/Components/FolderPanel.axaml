@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
              xmlns:models="clr-namespace:FileTidy.GUI.Models"
              xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
+             xmlns:components="clr-namespace:FileTidy.GUI.Components"
              xmlns:models1="clr-namespace:FileTidy.GUI.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.FolderPanel"
@@ -127,7 +128,15 @@
                                     <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100"/>
                                     <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100"/>
                                     <DataGridTextColumn Header="Modified" Binding="{Binding Modified}" Width="150"/>
-                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
+                                    <DataGridTemplateColumn Header="Status" Width="120">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <components:StatusBadge Status="{Binding Status}"></components:StatusBadge>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 
