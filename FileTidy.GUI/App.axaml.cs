@@ -1,28 +1,28 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
-using FileTidy.GUI.ViewModels;
-using MainViewModel = FileTidy.GUI.ViewModels.MainViewModel;
+    using Avalonia;
+    using Avalonia.Controls.ApplicationLifetimes;
+    using Avalonia.Markup.Xaml;
+    using FileTidy.GUI.ViewModels;
+    using MainViewModel = FileTidy.GUI.ViewModels.MainViewModel;
 
-namespace FileTidy.GUI;
+    namespace FileTidy.GUI;
 
-public partial class App : Application
-{
-    public override void Initialize()
+    public partial class App : Application
     {
-        AvaloniaXamlLoader.Load(this);
-    }
-
-    public override void OnFrameworkInitializationCompleted()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        public override void Initialize()
         {
-            desktop.MainWindow = new Views.MainView
-            {
-                DataContext = new MainViewModel()
-            };
+            AvaloniaXamlLoader.Load(this);
         }
 
-        base.OnFrameworkInitializationCompleted();
+        public override void OnFrameworkInitializationCompleted()
+        {
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = new Views.MainView
+                {
+                    DataContext = new MainViewModel()
+                };
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
     }
-}

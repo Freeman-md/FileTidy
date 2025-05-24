@@ -4,28 +4,6 @@
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
 
-            <StackPanel Spacing="10">
-                <Button Classes="btn btn-outline">
-                    <StackPanel Orientation="Horizontal" Spacing="2">
-                        <Label Classes="btn-icon" FontFamily="{StaticResource PhosphorFill}" Content="&#xe272;"></Label>
-                        <Label>Settings</Label>
-                    </StackPanel>
-                </Button>
-
-                <Button Classes="btn btn-primary">
-                    <StackPanel Orientation="Horizontal" Spacing="2">
-                        <Label Classes="btn-icon" FontFamily="{StaticResource PhosphorFill}" Content="&#xe272;"></Label>
-                        <Label>Settings</Label>
-                    </StackPanel>
-                </Button>
-
-                <ComboBox Width="200" SelectedIndex="0">
-                    <ComboBoxItem Content="Desktop" />
-                    <ComboBoxItem Content="Documents" />
-                    <ComboBoxItem Content="Downloads" />
-                </ComboBox>
-            </StackPanel>
-
         </Border>
     </Design.PreviewWith>
 
@@ -43,15 +21,7 @@
     <Style Selector="Label">
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
     </Style>
-
-
-    <Style Selector="Button.btn">
-        <Setter Property="FontWeight" Value="Light" />
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="Padding" Value="6 3" />
-    </Style>
-
-
+    
     <Style Selector="Button /template/ ContentPresenter">
         <Setter Property="Transitions">
             <Transitions>
@@ -59,95 +29,12 @@
             </Transitions>
         </Setter>
     </Style>
-
-    <Style Selector="Button.btn.btn-outline">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-    </Style>
-
-    <Style Selector="Button.btn.btn-primary Label">
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-    </Style>
-
-    <Style Selector="Button.btn.btn-primary TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-    </Style>
-
-
-    <Style Selector="Button.btn.btn-outline:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource BorderBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-    </Style>
-
-    <Style Selector="Button.btn.btn-primary">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrushDark}" />
-    </Style>
-
-    <Style Selector="Button.btn.btn-primary Label">
-        <Setter Property="Foreground" Value="White" />
-    </Style>
-
-    <Style Selector="Button.btn.btn-primary TextBlock">
-        <Setter Property="Foreground" Value="White" />
-    </Style>
-
-
-    <Style Selector="Button.btn.btn-primary:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBrushDark}" />
-    </Style>
-
-
-    <Style Selector="Button.btn Label.btn-icon">
-        <Setter Property="Margin" Value="0 1 0 0"></Setter>
-    </Style>
-
-    <Style Selector="ComboBox">
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        <Setter Property="PlaceholderForeground" Value="{DynamicResource TextBrush}"></Setter>
-        <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="Padding" Value="6 4" />
-
-        <Setter Property="Transitions">
-            <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.1"></BrushTransition>
-                <BrushTransition Property="Foreground" Duration="0:0:0.1"></BrushTransition>
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.1"></BrushTransition>
-            </Transitions>
-        </Setter>
-    </Style>
-
-    <Style Selector="ComboBox:pointerover">
-        <Setter Property="Background" Value="Transparent"></Setter>
-        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"></Setter>
-    </Style>
-
-    <Style Selector="TreeViewItem">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="Black" />
-
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="#f0f0f0" />
-        </Style>
-
-        <Style Selector="^:selected">
-            <Setter Property="Background" Value="{DynamicResource PanelBrush}" />
-            <Setter Property="Foreground" Value="#2c3e50" />
-        </Style>
-    </Style>
     
-    <Style Selector="CheckBox:pointerover /template/ Border#NormalRectangle">
-        <Setter Property="Background" Value="{DynamicResource PanelBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource TextBrush}" />
-    </Style>
-
-    <Style Selector="CheckBox:pointerover /template/ Path#CheckGlyph">
-        <Setter Property="Fill" Value="{DynamicResource TextBrush}" />
-    </Style>
+    <StyleInclude Source="/Styles/Controls/Buttons.axaml" ></StyleInclude>
+    <StyleInclude Source="/Styles/Controls/CheckBox.axaml" ></StyleInclude>
+    <StyleInclude Source="/Styles/Controls/DataGrid.axaml" ></StyleInclude>
+    <StyleInclude Source="/Styles/Controls/TreeView.axaml" ></StyleInclude>
+    <StyleInclude Source="/Styles/Controls/ComboBox.axaml" ></StyleInclude>
 
 
 

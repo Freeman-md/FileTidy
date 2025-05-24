@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Add Resources Here -->
+    <FontFamily x:Key="Roboto">/Assets/Fonts/Roboto/Regular.ttf#Roboto</FontFamily>
+    <FontFamily x:Key="RobotoBold">/Assets/Fonts/Roboto/Bold.ttf#Roboto-Bold</FontFamily>
+         
+    <FontFamily x:Key="Phosphor">/Assets/Fonts/Phosphor/Regular.ttf#Phosphor</FontFamily>
+    <FontFamily x:Key="PhosphorLight">/Assets/Fonts/Phosphor/Light.ttf#Phosphor-Light</FontFamily>
+    <FontFamily x:Key="PhosphorFill">/Assets/Fonts/Phosphor/Fill.ttf#Phosphor-Fill</FontFamily>
+</ResourceDictionary>
