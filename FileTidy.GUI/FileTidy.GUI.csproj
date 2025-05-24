@@ -68,4 +68,8 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FileTidy.Core\FileTidy.Core.csproj" />
+    </ItemGroup>
 </Project>
