@@ -69,7 +69,7 @@
                                 </StackPanel>
                             </Border>
 
-                            <TreeView ItemsSource="{Binding FolderTree}">
+                            <TreeView ItemsSource="{Binding FolderTree}" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
                                 <TreeView.ItemTemplate>
                                     <TreeDataTemplate DataType="models:FolderItem" ItemsSource="{Binding SubFolders}">
                                         <StackPanel Spacing="5" Orientation="Horizontal">

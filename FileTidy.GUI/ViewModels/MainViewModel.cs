@@ -7,6 +7,8 @@ namespace FileTidy.GUI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    [ObservableProperty]
+    private FolderItem? _selectedFolder;
     public ObservableCollection<FolderItem> FolderTree { get; set; } = new()
     {
         new FolderItem
