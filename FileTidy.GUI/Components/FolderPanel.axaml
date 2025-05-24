@@ -36,14 +36,14 @@
                             <InlineUIContainer>
                                 <TextBlock Text="&#xe2c2;" FontFamily="{StaticResource PhosphorFill}" Margin="0 1 0 0"/>
                             </InlineUIContainer>
-                            <Run Text=" / Desktop / Projects" />
+                            <Run Foreground="{DynamicResource TextBrush}" Text="{Binding SelectedFolderPath}" />
                         </TextBlock>
                         
                         <TextBlock VerticalAlignment="Center">
                             <InlineUIContainer>
                                 <TextBlock Text="&#xe390;" FontFamily="{StaticResource PhosphorFill}" Margin="0 1 0 0"/>
                             </InlineUIContainer>
-                            <Run Text=" 2.7GB" />
+                            <Run Text="{Binding MockFolderSize}" />
                         </TextBlock>
 
                     </StackPanel>
