@@ -24,7 +24,7 @@
                         <ComboBoxItem Content="Documents" />
                         <ComboBoxItem Content="Downloads" />
                     </ComboBox>
-                    <Button Classes="btn btn-primary">
+                    <Button Classes="btn btn-primary" Command="{Binding StartTidyingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe6F0;" Classes="btn-icon" />
                             <Label>Start Tidying</Label>

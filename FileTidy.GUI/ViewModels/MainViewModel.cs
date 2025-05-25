@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FileTidy.GUI.Models;
 
 namespace FileTidy.GUI.ViewModels;
@@ -11,10 +13,13 @@ public partial class MainViewModel : ViewModelBase
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
+    [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
     private FolderItem? _selectedFolder;
 
     [ObservableProperty]
     private bool isAllSelected;
+    
+    public bool CanStartTidying => SelectedFolder != null;
 
     public string SelectedFolderPath => SelectedFolder != null ? BuildPath(SelectedFolder) : string.Empty;
     public string MockFolderSize => "2.7GB";
@@ -117,5 +122,11 @@ public partial class MainViewModel : ViewModelBase
         {
             file.IsSelected = newValue;
         }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanStartTidying))]
+    private void StartTidying()
+    {
+        Console.WriteLine("Start tidying triggered");
     }
 }
