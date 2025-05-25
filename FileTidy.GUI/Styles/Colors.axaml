@@ -46,4 +46,5 @@
          <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{StaticResource Gray700}" />
          <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="{StaticResource Gray700}" />
          <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="{StaticResource Gray700}" />
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked"  Color="{DynamicResource Gray700}"></SolidColorBrush>
 </ResourceDictionary>
