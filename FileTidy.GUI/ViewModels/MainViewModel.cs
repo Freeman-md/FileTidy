@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileTidy.GUI.Models;
 
@@ -19,39 +21,44 @@ public partial class MainViewModel : ViewModelBase
     public ObservableCollection<FolderItem> FolderTree { get; set; }
     
     [ObservableProperty] 
-    private ObservableCollection<FileItem> _currentFiles = new()
-    {
-        new FileItem
-        {
-            Name = "Project_Proposal.pdf", Type = "PDF", Size = "1.2 MB", Modified = "May 12, 2025", Status = "Moved"
-        },
-        new FileItem
-        {
-            Name = "Screenshot_2025-05-01.png", Type = "PNG", Size = "345 KB", Modified = "May 1, 2025",
-            Status = "Pending"
-        },
-        new FileItem
-            { Name = "Budget_2025.xlsx", Type = "Excel", Size = "520 KB", Modified = "May 5, 2025", Status = "Moved" },
-        new FileItem
-        {
-            Name = "Meeting_Notes.docx", Type = "Word", Size = "128 KB", Modified = "May 15, 2025",
-            Status = "Unprocessed"
-        }
-    };
+    private ObservableCollection<FileItem> _currentFiles;
 
     public MainViewModel()
     {
         FolderTree = BuildTreeWithParents();
+        CurrentFiles = LoadFiles();
     }
 
-    partial void OnIsAllSelectedChanged(bool value)
+    private ObservableCollection<FileItem> LoadFiles()
     {
-        foreach (var file in CurrentFiles)
+        var files = new ObservableCollection<FileItem>
         {
-            file.IsSelected = value;
-        }
+            new FileItem
+            {
+                Name = "Project_Proposal.pdf", Type = "PDF", Size = "1.2 MB", Modified = "May 12, 2025",
+                Status = "Moved"
+            },
+            new FileItem
+            {
+                Name = "Screenshot_2025-05-01.png", Type = "PNG", Size = "345 KB", Modified = "May 1, 2025",
+                Status = "Pending"
+            },
+            new FileItem
+            {
+                Name = "Budget_2025.xlsx", Type = "Excel", Size = "520 KB", Modified = "May 5, 2025", Status = "Moved"
+            },
+            new FileItem
+            {
+                Name = "Meeting_Notes.docx", Type = "Word", Size = "128 KB", Modified = "May 15, 2025",
+                Status = "Unprocessed"
+            }
+        };
+
+        foreach (var file in files)
+            file.PropertyChanged += OnFileItemPropertyChanged;
+
+        return files;
     }
-    
     
     private ObservableCollection<FolderItem> BuildTreeWithParents()
     {
@@ -88,5 +95,27 @@ public partial class MainViewModel : ViewModelBase
         }
         
         return " / " + string.Join(" / ", parts);
+    }
+
+    private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(FileItem.IsSelected))
+        {
+            IsAllSelected = CurrentFiles.All(item => item.IsSelected);
+        }
+    }
+    
+    partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
+    {
+        bool userUncheckingManually = !newValue;
+        bool notAllFilesSelected = CurrentFiles.Any(file => !file.IsSelected);
+
+        if (userUncheckingManually && notAllFilesSelected)
+            return;
+        
+        foreach (var file in CurrentFiles)
+        {
+            file.IsSelected = newValue;
+        }
     }
 }
