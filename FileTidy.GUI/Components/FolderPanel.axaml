@@ -97,7 +97,7 @@
                             <StackPanel>
                                 <Border BorderThickness="1" Padding="5">
                                     <Grid ColumnDefinitions="*, Auto">
-                                        <CheckBox Content="Select All" VerticalAlignment="Center"
+                                        <CheckBox IsChecked="{Binding IsAllSelected, Mode=TwoWay}" Content="Select All" VerticalAlignment="Center"
                                                   Foreground="{DynamicResource TextBrush}" />
 
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">

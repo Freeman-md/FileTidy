@@ -11,6 +11,9 @@ public partial class MainViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
     private FolderItem? _selectedFolder;
 
+    [ObservableProperty]
+    private bool isAllSelected;
+
     public string SelectedFolderPath => SelectedFolder != null ? BuildPath(SelectedFolder) : string.Empty;
     public string MockFolderSize => "2.7GB";
     public ObservableCollection<FolderItem> FolderTree { get; set; }
@@ -39,6 +42,14 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         FolderTree = BuildTreeWithParents();
+    }
+
+    partial void OnIsAllSelectedChanged(bool value)
+    {
+        foreach (var file in CurrentFiles)
+        {
+            file.IsSelected = value;
+        }
     }
     
     
