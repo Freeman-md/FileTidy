@@ -48,13 +48,14 @@ public class FolderService : IFolderService
                 list.Add(new FolderItem
                 {
                     Name = Path.GetFileName(directory),
-                    FullPath = directory
+                    FullPath = directory,
+                    SubFolders = GetSubFolders(directory)
                 });
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine($"Access denied or error accessing: {rootFolderPath} — {ex.Message}");
         }
 
         return list;
