@@ -35,12 +35,7 @@
                 <StackPanel Grid.Column="1" Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center">
 
-                    <TextBlock VerticalAlignment="Center">
-                        <InlineUIContainer>
-                            <TextBlock Text="&#xe2c2;" FontFamily="{StaticResource PhosphorFill}" Margin="0 1 0 0" />
-                        </InlineUIContainer>
-                        <Run Foreground="{DynamicResource TextBrush}" Text="{Binding SelectedFolderPath}" />
-                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center"  Foreground="{DynamicResource TextBrush}" Text="{Binding SelectedFolderPath}"/>
 
                     <TextBlock VerticalAlignment="Center">
                         <InlineUIContainer>
