@@ -53,40 +53,44 @@
                     Margin="0 10 0 0">
                 <Grid ColumnDefinitions="2*, 1, 5*">
 
-                    <StackPanel Spacing="10">
-                        <Border CornerRadius="5 0 0 5" BorderThickness="1" VerticalAlignment="Stretch">
-
-                            <StackPanel VerticalAlignment="Center">
-                                <Border BorderThickness="1" Padding="5">
-                                    <Grid ColumnDefinitions="*, Auto">
-                                        <TextBlock Text="Folders" VerticalAlignment="Center"></TextBlock>
-                                        <Label Grid.Column="1" FontFamily="{StaticResource PhosphorFill}"
-                                               Content="&#xe530;" Classes="btn-icon" VerticalAlignment="Center" />
-                                    </Grid>
-                                </Border>
-                            </StackPanel>
+                    <!-- ✅ Left: Sidebar (TreeView) -->
+                    <Grid Grid.Column="0" RowDefinitions="Auto,*" Margin="0 0 5 0">
+    
+                        <!-- Folders Header -->
+                        <Border CornerRadius="5 0 0 0" BorderThickness="1" Padding="5">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Folders" VerticalAlignment="Center"/>
+                                <Label Grid.Column="1" FontFamily="{StaticResource PhosphorFill}"
+                                       Content="&#xe530;" Classes="btn-icon" VerticalAlignment="Center"/>
+                            </Grid>
                         </Border>
 
-                        <TreeView ItemsSource="{Binding FolderTree}"
-                                  SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
-                            <TreeView.ItemTemplate> 
-                                <TreeDataTemplate DataType="models:FolderItem" ItemsSource="{Binding SubFolders}">
-                                    <StackPanel Spacing="5" Orientation="Horizontal">
-                                        <Label Content="&#xe25a;" FontFamily="{StaticResource Phosphor}"
-                                               FontSize="15" Padding="0">
-                                        </Label>
-                                        <TextBlock Text="{ Binding Name }"></TextBlock>
-                                    </StackPanel>
-                                </TreeDataTemplate>
-                            </TreeView.ItemTemplate>
-                        </TreeView> 
-                    </StackPanel>
-
+                        <!-- TreeView with Scroll -->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <TreeView ItemsSource="{Binding FolderTree}"
+                                      SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"
+                                      AutoScrollToSelectedItem="True"
+                                      Margin="0 5">
+                                <TreeView.ItemTemplate>
+                                    <TreeDataTemplate DataType="models:FolderItem" ItemsSource="{Binding SubFolders}">
+                                        <StackPanel Spacing="5" Orientation="Horizontal">
+                                            <Label Content="&#xe25a;" FontFamily="{StaticResource Phosphor}"
+                                                   FontSize="15" Padding="0"/>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </StackPanel>
+                                    </TreeDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </ScrollViewer>
+                    </Grid>
+                    
+                    <!-- 🔲 Middle: Divider -->
                     <Rectangle Grid.Column="1"
                                Width="1"
                                Fill="{DynamicResource BorderBrush}"
                                HorizontalAlignment="Stretch" />
 
+                    <!-- ✅ Right: File Panel -->
                     <Grid RowDefinitions="Auto, *" Grid.Column="2">
                         <Border CornerRadius="0 5 5 0" BorderThickness="1">
                             <StackPanel>

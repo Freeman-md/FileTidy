@@ -37,6 +37,11 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] 
     private ObservableCollection<FileItem> _currentFiles;
 
+    public MainViewModel()
+    {
+        
+    }
+
     public MainViewModel(IFolderService folderService)
     {
         _folderService = folderService;
