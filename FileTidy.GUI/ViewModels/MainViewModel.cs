@@ -11,6 +11,14 @@ namespace FileTidy.GUI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    public string MockFolderSize => "2.7GB";
+    [ObservableProperty]
+    private int _sortProgress = 75;
+    [ObservableProperty]
+    private int sortedFiles = 527;
+    [ObservableProperty]
+    private string _elapsedTime = "2m 34s";
+    
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
     [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
@@ -18,12 +26,11 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool isAllSelected;
+    public ObservableCollection<FolderItem> FolderTree { get; set; }
     
-    public bool CanStartTidying => SelectedFolder != null;
+    private bool CanStartTidying => SelectedFolder != null;
 
     public string SelectedFolderPath => SelectedFolder != null ? BuildPath(SelectedFolder) : string.Empty;
-    public string MockFolderSize => "2.7GB";
-    public ObservableCollection<FolderItem> FolderTree { get; set; }
     
     [ObservableProperty] 
     private ObservableCollection<FileItem> _currentFiles;
@@ -129,4 +136,11 @@ public partial class MainViewModel : ViewModelBase
     {
         Console.WriteLine("Start tidying triggered");
     }
+    
+    [RelayCommand]
+    private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
+    [RelayCommand]
+    private void StopSorting() => Console.WriteLine("Stop sorting triggered");
+    [RelayCommand]
+    private void RevertSorting() => Console.WriteLine("Revert clicked");
 }

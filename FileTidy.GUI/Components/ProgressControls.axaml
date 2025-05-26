@@ -2,43 +2,58 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileTidy.GUI.Components.ProgressControls">
+             x:Class="FileTidy.GUI.Components.ProgressControls"
+             x:DataType="vm:MainViewModel"
+             >
+    
+    <Design.DataContext><vm:MainViewModel></vm:MainViewModel></Design.DataContext>
+    
     <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Padding="10" Margin="10 5"
-                CornerRadius="5">
+            CornerRadius="5">
             <Grid ColumnDefinitions="1*, 1*, Auto">
                 <StackPanel Spacing="4">
                     <TextBlock FontSize="10">
                         <Run FontWeight="Bold">Progress:</Run>
-                        <Run>527 files sorted</Run>
+                        <Run Text="{Binding SortedFiles}"></Run>
+                        <Run> files sorted</Run>
                     </TextBlock>
 
                     <ProgressBar Minimum="0"
                                  Maximum="100"
-                                 Value="75"
+                                 Value="{Binding SortProgress}"
                                  Height="6"
                                  HorizontalAlignment="Stretch"
                                  Foreground="{DynamicResource TextBrush}"
                                  Background="{DynamicResource BorderBrush}" />
 
                     <DockPanel>
-                        <TextBlock FontSize="10" Text="75% Complete" DockPanel.Dock="Right" />
-                        <TextBlock FontSize="10" Text="Elapsed: 2m 34s" />
+                        <TextBlock FontSize="10" Text="{Binding SortProgress, StringFormat='{}{0}% Complete'}" DockPanel.Dock="Right" />
+                        <TextBlock FontSize="10" Text="Elapsed: " />
+                        <TextBlock FontSize="10" Text="{Binding ElapsedTime}"></TextBlock>
                     </DockPanel>
 
                 </StackPanel>
 
                 <GridSplitter Grid.Column="1" Width="10" Background="Transparent" />
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     <Button Classes="btn btn-outline">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe444;" Classes="btn-icon" />
                             <Label>Sort Current Folder</Label>
                         </StackPanel>
                     </Button>
+                    
+                    <Button Classes="btn btn-outline" Command="{Binding StopSortingCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe46C;" Classes="btn-icon" />
+                            <Label>Stop</Label>
+                        </StackPanel>
+                    </Button>
 
-                    <Button Classes="btn btn-primary">
+                    <Button Classes="btn btn-primary" Command="{Binding PauseSortingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe39e;" Classes="btn-icon" />
                             <Label>Pause</Label>
