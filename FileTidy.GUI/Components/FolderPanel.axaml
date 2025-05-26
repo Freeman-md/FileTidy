@@ -74,7 +74,7 @@
 
                         <TreeView ItemsSource="{Binding FolderTree}"
                                   SelectedItem="{Binding SelectedFolder, Mode=TwoWay}">
-                            <TreeView.ItemTemplate>
+                            <TreeView.ItemTemplate> 
                                 <TreeDataTemplate DataType="models:FolderItem" ItemsSource="{Binding SubFolders}">
                                     <StackPanel Spacing="5" Orientation="Horizontal">
                                         <Label Content="&#xe25a;" FontFamily="{StaticResource Phosphor}"
@@ -84,7 +84,7 @@
                                     </StackPanel>
                                 </TreeDataTemplate>
                             </TreeView.ItemTemplate>
-                        </TreeView>
+                        </TreeView> 
                     </StackPanel>
 
                     <Rectangle Grid.Column="1"

@@ -1,50 +1,50 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- Grayscale Core -->
-         <Color x:Key="Gray100">#F9FAFB</Color> <!-- Background -->
-         <Color x:Key="Gray200">#F2F2F2</Color> <!-- Panel background -->
-         <Color x:Key="Gray300">#E5E7EB</Color> <!-- Border / Divider -->
-         <Color x:Key="Gray700">#374151</Color> <!-- Dark text -->
-         <Color x:Key="Gray900">#111827</Color> <!-- Headings (optional) -->
+    <Color x:Key="Gray100">#F9FAFB</Color> <!-- Background -->
+    <Color x:Key="Gray200">#F2F2F2</Color> <!-- Panel background -->
+    <Color x:Key="Gray300">#E5E7EB</Color> <!-- Border / Divider -->
+    <Color x:Key="Gray700">#374151</Color> <!-- Dark text -->
+    <Color x:Key="Gray900">#111827</Color> <!-- Headings (optional) -->
 
-         <!-- Primary Accent (Dark Gray) -->
-         <Color x:Key="PrimaryColor">#1F2937</Color>         <!-- Matches text/icons -->
-         <Color x:Key="PrimaryColorLight">#E5E7EB</Color>    <!-- For outline hover -->
-         <Color x:Key="PrimaryColorDark">#111827</Color>     <!-- Pressed state or emphasis -->
-         <!-- Override default selection / accent colors -->
-         <Color x:Key="SystemAccentColor">#E5E7EB</Color> <!-- Light gray for selection -->
-         <Color x:Key="SystemAccentColorDark">#D1D5DB</Color>
-         <Color x:Key="SystemAccentColorLight">#F3F4F6</Color>
+    <!-- Primary Accent (Dark Gray) -->
+    <Color x:Key="PrimaryColor">#1F2937</Color>         <!-- Matches text/icons -->
+    <Color x:Key="PrimaryColorLight">#E5E7EB</Color>    <!-- For outline hover -->
+    <Color x:Key="PrimaryColorDark">#111827</Color>     <!-- Pressed state or emphasis -->
+    <!-- Override default selection / accent colors -->
+    <Color x:Key="SystemAccentColor">#E5E7EB</Color> <!-- Light gray for selection -->
+    <Color x:Key="SystemAccentColorDark">#D1D5DB</Color>
+    <Color x:Key="SystemAccentColorLight">#F3F4F6</Color>
 
-         <!-- Primary Brushes -->
-         <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
-         <SolidColorBrush x:Key="PrimaryBrushLight" Color="{StaticResource PrimaryColorLight}" />
-         <SolidColorBrush x:Key="PrimaryBrushDark" Color="{StaticResource PrimaryColorDark}" />
-         
-         <SolidColorBrush x:Key="SystemAccentBrush" Color="{StaticResource SystemAccentColor}" />
-         <SolidColorBrush x:Key="SystemAccentBrushDark" Color="{StaticResource SystemAccentColorDark}" />
-         <SolidColorBrush x:Key="SystemAccentBrushLight" Color="{StaticResource SystemAccentColorLight}" />
+    <!-- Primary Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryBrushLight" Color="{StaticResource PrimaryColorLight}" />
+    <SolidColorBrush x:Key="PrimaryBrushDark" Color="{StaticResource PrimaryColorDark}" />
+
+    <SolidColorBrush x:Key="SystemAccentBrush" Color="{StaticResource SystemAccentColor}" />
+    <SolidColorBrush x:Key="SystemAccentBrushDark" Color="{StaticResource SystemAccentColorDark}" />
+    <SolidColorBrush x:Key="SystemAccentBrushLight" Color="{StaticResource SystemAccentColorLight}" />
 
 
+    <!-- Status Colors -->
+    <Color x:Key="SuccessColor">#10B981</Color>     <!-- e.g., “Organized” -->
+    <Color x:Key="WarningColor">#F59E0B</Color>     <!-- e.g., “Pending” -->
+    <Color x:Key="ErrorColor">#EF4444</Color>       <!-- e.g., Delete -->
+    <Color x:Key="InfoColor">#6366F1</Color>        <!-- e.g., Info badge -->
 
-         <!-- Status Colors -->
-         <Color x:Key="SuccessColor">#10B981</Color>     <!-- e.g., “Organized” -->
-         <Color x:Key="WarningColor">#F59E0B</Color>     <!-- e.g., “Pending” -->
-         <Color x:Key="ErrorColor">#EF4444</Color>       <!-- e.g., Delete -->
-         <Color x:Key="InfoColor">#6366F1</Color>        <!-- e.g., Info badge -->
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Gray100}" />
+    <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource Gray200}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Gray300}" />
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource Gray700}" />
 
-         <!-- Brushes -->
-         <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Gray100}" />
-         <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource Gray200}" />
-         <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Gray300}" />
-         <SolidColorBrush x:Key="TextBrush" Color="{StaticResource Gray700}" />
-         
-         <!-- Custom overrides for CheckBox visuals -->
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{StaticResource Gray700}" />
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUnchecked" Color="{StaticResource Gray700}" />
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" Color="{StaticResource Gray700}" />
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{StaticResource Gray700}" />
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="{StaticResource Gray700}" />
-         <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="{StaticResource Gray700}" />
-        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked"  Color="{DynamicResource Gray700}"></SolidColorBrush>
+    <!-- Custom overrides for CheckBox visuals -->
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUnchecked" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="{DynamicResource Gray700}"></SolidColorBrush>
+    <SolidColorBrush x:Key="CheckBoxForegroundUncheckedPointerOver" Color="{DynamicResource Gray900}"></SolidColorBrush>
 </ResourceDictionary>
