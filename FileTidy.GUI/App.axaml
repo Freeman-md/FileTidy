@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
              x:Class="FileTidy.GUI.App"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
@@ -15,7 +16,10 @@
              <ResourceDictionary.MergedDictionaries>
                  <ResourceInclude Source="Styles/Colors.axaml" ></ResourceInclude>
                  <ResourceInclude Source="Styles/Fonts.axaml" ></ResourceInclude>
+                 
              </ResourceDictionary.MergedDictionaries>
          </ResourceDictionary>
+         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
      </Application.Resources>
 </Application>

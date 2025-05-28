@@ -19,7 +19,5 @@ public partial class StatusBadge : UserControl
     public StatusBadge()
     {
         InitializeComponent();
-
-        DataContext = this;
     }
 }

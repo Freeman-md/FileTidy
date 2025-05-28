@@ -2,11 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
-        xmlns:models="clr-namespace:FileTidy.GUI.Models"
         xmlns:components="clr-namespace:FileTidy.GUI.Components"
         xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
-        xmlns:components1="clr-namespace:FileTidy.GUI.Components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileTidy.GUI.Views.MainView"
         x:DataType="viewModels:MainViewModel"
@@ -21,13 +18,13 @@
 
     <Grid RowDefinitions="Auto, *, Auto, Auto">
 
-        <components1:Navbar></components1:Navbar>
+        <components:Navbar></components:Navbar>
 
-        <components1:FolderPanel Grid.Row="1"></components1:FolderPanel>
+        <components:FolderPanel Grid.Row="1"></components:FolderPanel>
 
-        <components1:ProgressControls Grid.Row="2"></components1:ProgressControls>
+        <components:ProgressControls Grid.Row="2"></components:ProgressControls>
 
-        <components1:Footer Grid.Row="3"></components1:Footer>
+        <components:Footer Grid.Row="3"></components:Footer>
 
     </Grid>
 

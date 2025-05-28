@@ -3,10 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:components="clr-namespace:FileTidy.GUI.Components"
+             xmlns:models="clr-namespace:FileTidy.GUI.Models"
              xmlns:gui="clr-namespace:FileTidy.GUI"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.StatusBadge"
-             x:DataType="components:StatusBadge">
+             x:DataType="models:FileItem">
 
     
     <Border

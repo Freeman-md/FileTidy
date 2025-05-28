@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
 
 namespace FileTidy.GUI.ViewModels;
@@ -17,25 +20,33 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _sortProgress = 75;
     [ObservableProperty]
-    private int sortedFiles = 527;
+    private int _sortedFiles = 527;
     [ObservableProperty]
     private string _elapsedTime = "2m 34s";
+
+    [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowFileTable))]
+    [ObservableProperty] private bool _isLoadingFiles;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
     [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowFileTable))]
     private FolderItem? _selectedFolder;
 
     [ObservableProperty]
-    private bool isAllSelected;
+    private bool _isAllSelected;
+    
+    [ObservableProperty] private ObservableCollection<FileItem> _currentFiles = new();
     public ObservableCollection<FolderItem> FolderTree { get; set; }
     
     private bool CanStartTidying => SelectedFolder != null;
 
     public string SelectedFolderPath => SelectedFolder != null ? BuildPath(SelectedFolder) : string.Empty;
-    
-    [ObservableProperty] 
-    private ObservableCollection<FileItem> _currentFiles;
+    public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder == null;
+    public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder != null;
+
 
     public MainViewModel()
     {
@@ -47,38 +58,45 @@ public partial class MainViewModel : ViewModelBase
         _folderService = folderService;
         
         FolderTree = _folderService.GetSystemRootFolders();
-        CurrentFiles = LoadFiles();
     }
 
-    private ObservableCollection<FileItem> LoadFiles()
+    private async Task LoadFilesForSelectedFolder()
     {
-        var files = new ObservableCollection<FileItem>
+        if (SelectedFolder is null || string.IsNullOrWhiteSpace(SelectedFolder.FullPath))
         {
-            new FileItem
+            CurrentFiles = new();
+            return;
+        }
+
+        IsLoadingFiles = true;
+
+        try
+        {
+            var filePaths = Directory.GetFiles(SelectedFolder.FullPath);
+            var files = filePaths.Select(path => new FileItem
             {
-                Name = "Project_Proposal.pdf", Type = "PDF", Size = "1.2 MB", Modified = "May 12, 2025",
-                Status = "Moved"
-            },
-            new FileItem
-            {
-                Name = "Screenshot_2025-05-01.png", Type = "PNG", Size = "345 KB", Modified = "May 1, 2025",
-                Status = "Pending"
-            },
-            new FileItem
-            {
-                Name = "Budget_2025.xlsx", Type = "Excel", Size = "520 KB", Modified = "May 5, 2025", Status = "Moved"
-            },
-            new FileItem
-            {
-                Name = "Meeting_Notes.docx", Type = "Word", Size = "128 KB", Modified = "May 15, 2025",
+                Name = Path.GetFileName(path),
+                Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
+                Size = new FileInfo(path).Length.BytesToReadableSize(),
+                Modified = File.GetLastWriteTime(path).ToString("MMM dd, yyyy"),
                 Status = "Unprocessed"
-            }
-        };
-
-        foreach (var file in files)
-            file.PropertyChanged += OnFileItemPropertyChanged;
-
-        return files;
+            });
+        
+            var fileItems = new ObservableCollection<FileItem>(files);
+            foreach (var fileItem in fileItems)
+                fileItem.PropertyChanged += OnFileItemPropertyChanged;
+            
+            CurrentFiles = fileItems;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            CurrentFiles = new();
+        }
+        finally
+        {
+            IsLoadingFiles = false;
+        }
     }
     
     private string BuildPath(FolderItem folder)
@@ -92,6 +110,11 @@ public partial class MainViewModel : ViewModelBase
         {
             IsAllSelected = CurrentFiles.All(item => item.IsSelected);
         }
+    }
+
+    partial void OnSelectedFolderChanged(FolderItem? value)
+    {
+        _ = LoadFilesForSelectedFolder();
     }
     
     partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)

@@ -121,8 +121,23 @@
                                 </Border>
                             </StackPanel>
                         </Border>
+                        
+                        <Grid Grid.Row="1">
+                            
+                            <TextBlock Text="Loading files..." 
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding IsLoadingFiles}" />
 
-                        <DataGrid Grid.Row="1" ItemsSource="{Binding CurrentFiles}" AutoGenerateColumns="False"
+                        <TextBlock Text="Select a folder to preview files" 
+                                   FontStyle="Italic"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{Binding ShouldShowEmptyState}"
+                        />
+
+                        <DataGrid  IsVisible="{Binding ShouldShowFileTable}" ItemsSource="{Binding CurrentFiles}" AutoGenerateColumns="False"
                                   GridLinesVisibility="All"
                                   BorderThickness="0" Margin="10 5" CanUserResizeColumns="True"
                                   CanUserSortColumns="False"
@@ -138,7 +153,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto" IsReadOnly="True" />
                                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100"
                                                     IsReadOnly="True" />
                                 <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100"
@@ -156,6 +171,8 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
+                        
+                        </Grid>
 
                     </Grid>
 
