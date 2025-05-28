@@ -16,18 +16,19 @@ namespace FileTidy.GUI.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
-    public string MockFolderSize => "2.7GB";
-    [ObservableProperty]
-    private int _sortProgress = 75;
-    [ObservableProperty]
-    private int _sortedFiles = 527;
-    [ObservableProperty]
-    private string _elapsedTime = "2m 34s";
 
+#if DEBUG
+    public string MockFolderSize => "2.7GB";
+    [ObservableProperty] private int _sortProgress = 75;
+    [ObservableProperty] private int _sortedFiles = 527;
+    [ObservableProperty] private string _elapsedTime = "2m 34s";
+#endif
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
     [NotifyPropertyChangedFor(nameof(ShouldShowFileTable))]
-    [ObservableProperty] private bool _isLoadingFiles;
-    
+    private bool _isLoadingFiles;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
     [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
@@ -37,32 +38,39 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isAllSelected;
-    
-    [ObservableProperty] private ObservableCollection<FileItem> _currentFiles = new();
-    public ObservableCollection<FolderItem> FolderTree { get; set; }
-    
-    private bool CanStartTidying => SelectedFolder != null;
 
-    public string SelectedFolderPath => SelectedFolder != null ? BuildPath(SelectedFolder) : string.Empty;
-    public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder == null;
-    public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder != null;
+    [ObservableProperty]
+    private ObservableCollection<FileItem> _currentFiles = new();
 
+    public ObservableCollection<FolderItem> FolderTree { get; private set; } = new();
 
-    public MainViewModel()
-    {
-        
-    }
+    private bool CanStartTidying => SelectedFolder is not null;
+
+    public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
+    public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
+    public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
+
+    public MainViewModel() { }
 
     public MainViewModel(IFolderService folderService)
     {
         _folderService = folderService;
-        
-        FolderTree = _folderService.GetSystemRootFolders();
+        _ = InitializeFolderTreeAsync();
+    }
+
+    private async Task InitializeFolderTreeAsync()
+    {
+        var rootFolders = await _folderService.GetSystemRootFolders().ConfigureAwait(false);
+        await RunOnUIThreadAsync(() =>
+        {
+            FolderTree = new ObservableCollection<FolderItem>(rootFolders);
+            OnPropertyChanged(nameof(FolderTree));
+        });
     }
 
     private async Task LoadFilesForSelectedFolder()
     {
-        if (SelectedFolder is null || string.IsNullOrWhiteSpace(SelectedFolder.FullPath))
+        if (SelectedFolder is null)
         {
             CurrentFiles = new();
             return;
@@ -72,25 +80,12 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
-            var filePaths = Directory.GetFiles(SelectedFolder.FullPath);
-            var files = filePaths.Select(path => new FileItem
-            {
-                Name = Path.GetFileName(path),
-                Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
-                Size = new FileInfo(path).Length.BytesToReadableSize(),
-                Modified = File.GetLastWriteTime(path).ToString("MMM dd, yyyy"),
-                Status = "Unprocessed"
-            });
-        
-            var fileItems = new ObservableCollection<FileItem>(files);
-            foreach (var fileItem in fileItems)
-                fileItem.PropertyChanged += OnFileItemPropertyChanged;
-            
-            CurrentFiles = fileItems;
+            var files = await _folderService.LoadFilesAsync(SelectedFolder.FullPath).ConfigureAwait(false);
+            await SetFileItemsAsync(files);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
+            Console.WriteLine($"Error loading files: {ex.Message}");
             CurrentFiles = new();
         }
         finally
@@ -98,10 +93,19 @@ public partial class MainViewModel : ViewModelBase
             IsLoadingFiles = false;
         }
     }
-    
-    private string BuildPath(FolderItem folder)
+
+    private async Task SetFileItemsAsync(List<FileItem> files)
     {
-        return folder.FullPath;
+        var observableFiles = new ObservableCollection<FileItem>(files);
+        foreach (var file in observableFiles)
+            file.PropertyChanged += OnFileItemPropertyChanged;
+
+        await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
+    }
+
+    private async Task RunOnUIThreadAsync(Action action)
+    {
+        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action);
     }
 
     private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -116,7 +120,7 @@ public partial class MainViewModel : ViewModelBase
     {
         _ = LoadFilesForSelectedFolder();
     }
-    
+
     partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
     {
         bool userUncheckingManually = !newValue;
@@ -124,7 +128,7 @@ public partial class MainViewModel : ViewModelBase
 
         if (userUncheckingManually && notAllFilesSelected)
             return;
-        
+
         foreach (var file in CurrentFiles)
         {
             file.IsSelected = newValue;
@@ -132,15 +136,9 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTidying))]
-    private void StartTidying()
-    {
-        Console.WriteLine("Start tidying triggered");
-    }
-    
-    [RelayCommand]
-    private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
-    [RelayCommand]
-    private void StopSorting() => Console.WriteLine("Stop sorting triggered");
-    [RelayCommand]
-    private void RevertSorting() => Console.WriteLine("Revert clicked");
+    private void StartTidying() => Console.WriteLine("Start tidying triggered");
+
+    [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
+    [RelayCommand] private void StopSorting() => Console.WriteLine("Stop sorting triggered");
+    [RelayCommand] private void RevertSorting() => Console.WriteLine("Revert clicked");
 }
