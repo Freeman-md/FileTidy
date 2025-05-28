@@ -38,6 +38,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isAllSelected;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ReadableFolderSize))]
+    private long _folderSize;
 
     [ObservableProperty]
     private ObservableCollection<FileItem> _currentFiles = new();
@@ -49,6 +52,7 @@ public partial class MainViewModel : ViewModelBase
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
     public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
+    public string ReadableFolderSize => FolderSize.BytesToReadableSize();
 
     public MainViewModel() { }
 
@@ -99,6 +103,12 @@ public partial class MainViewModel : ViewModelBase
         var observableFiles = new ObservableCollection<FileItem>(files);
         foreach (var file in observableFiles)
             file.PropertyChanged += OnFileItemPropertyChanged;
+
+        FolderSize = files.Sum(f =>
+        {
+            var path = Path.Combine(SelectedFolder!.FullPath, f.Name);
+            return File.Exists(path) ? new FileInfo(path).Length : 0;
+        });
 
         await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
     }

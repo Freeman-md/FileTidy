@@ -41,8 +41,9 @@
                         <InlineUIContainer>
                             <TextBlock Text="&#xe390;" FontFamily="{StaticResource PhosphorFill}" Margin="0 1 0 0" />
                         </InlineUIContainer>
-                        <Run Text="{Binding MockFolderSize}" />
+                        <Run Text="{Binding ReadableFolderSize}"/>
                     </TextBlock>
+
 
                 </StackPanel>
 

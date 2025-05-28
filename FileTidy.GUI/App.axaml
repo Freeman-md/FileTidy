@@ -21,5 +21,6 @@
          </ResourceDictionary>
          <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
          <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
      </Application.Resources>
 </Application>
