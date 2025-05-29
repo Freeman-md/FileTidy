@@ -1,6 +1,7 @@
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
+    using FileTidy.Core.Services;
     using FileTidy.GUI.Contracts;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
@@ -21,6 +22,8 @@
             var services = new ServiceCollection();
 
             services.AddSingleton<IFolderService, FolderService>();
+            services.AddSingleton<FileCategoryMapper>();
+            
             services.AddSingleton<MainViewModel>();
 
             var serviceProvider = services.BuildServiceProvider();

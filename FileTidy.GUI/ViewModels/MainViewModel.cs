@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.Core.Services;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
@@ -16,6 +17,7 @@ namespace FileTidy.GUI.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
+    private readonly FileCategoryMapper _mapper;
 
 #if DEBUG
     public string MockFolderSize => "2.7GB";
@@ -56,9 +58,10 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel() { }
 
-    public MainViewModel(IFolderService folderService)
+    public MainViewModel(IFolderService folderService, FileCategoryMapper mapper)
     {
         _folderService = folderService;
+        _mapper = mapper;
         _ = InitializeFolderTreeAsync();
     }
 
@@ -146,7 +149,23 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTidying))]
-    private void StartTidying() => Console.WriteLine("Start tidying triggered");
+    private async Task StartTidying()
+    {
+        if (SelectedFolder is null)
+            return;
+
+        try
+        {
+            var sorter = new FileSorter(SelectedFolder.FullPath, _mapper);
+            await Task.Run(() => sorter.Sort());
+            Console.WriteLine("Tidying complete.");
+            await LoadFilesForSelectedFolder();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Tidying failed: {ex.Message}");
+        }
+    }
 
     [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
     [RelayCommand] private void StopSorting() => Console.WriteLine("Stop sorting triggered");
