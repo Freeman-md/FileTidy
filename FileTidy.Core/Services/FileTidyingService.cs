@@ -24,6 +24,19 @@ public class FileTidyingService : IFileTidyingService
             Stopwatch sw = Stopwatch.StartNew();
 
             var filesToProcess = GetFilesToProcess(directoryPath);
+
+            if (!filesToProcess.Any())
+            {
+                return new TidyingResult
+                {
+                    TotalFiles = 0,
+                    TotalMoved = 0,
+                    TotalErrors = 0,
+                    PerCategoryCounts = new(),
+                    Elapsed = TimeSpan.Zero
+                };
+            }
+
             _reporter?.SetTotalFiles(filesToProcess.Count);
 
             var sorter = new FileSorter(directoryPath, _mapper, _reporter);

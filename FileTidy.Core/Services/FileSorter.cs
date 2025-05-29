@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using FileTidy.Core.Interfaces;
+using FileTidy.Core.Models;
 
 namespace FileTidy.Core.Services;
 
@@ -7,7 +8,7 @@ namespace FileTidy.Core.Services;
 /// Handles the sorting of files in a given directory by file extension categories,
 /// preserving the original folder structure and reporting progress through an optional reporter.
 /// </summary>
-public class FileSorter
+public class FileSorter : IFileSorter
 {
     private readonly string _directoryToSort;
     private readonly IFileCategoryMapper _mapper;
@@ -30,21 +31,15 @@ public class FileSorter
     /// Sorts all files in the directory (and subdirectories) into category folders,
     /// preserving their relative paths and skipping already sorted files.
     /// </summary>
-    public void Sort()
+    public TidyingResult Sort(List<string> filesToSort)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
-
-        IEnumerable<string> allFiles = Directory.EnumerateFiles(_directoryToSort, "*", SearchOption.AllDirectories);
-        int totalFiles = allFiles.Count();
-
-        if (totalFiles == 0)
-            return;
 
         HashSet<string> createdDirectories = new();
         Dictionary<string, int> sortedSummary = new();
         int totalFilesMoved = 0, totalErrors = 0, processedFiles = 0;
 
-        foreach (var file in allFiles)
+        foreach (var file in filesToSort)
         {
             try
             {
@@ -88,12 +83,23 @@ public class FileSorter
         RemoveEmptyDirectories(_directoryToSort);
         stopwatch.Stop();
 
+        var result = new TidyingResult
+        {
+            TotalFiles = filesToSort.Count,
+            TotalMoved = totalFilesMoved,
+            TotalErrors = totalErrors,
+            PerCategoryCounts = sortedSummary,
+            Elapsed = stopwatch.Elapsed
+        };
+
         _reporter?.OnSummary(
-            totalFiles,
+            result.TotalFiles,
             totalFilesMoved,
             totalErrors,
             sortedSummary
         );
+
+        return result;
     }
 
     /// <summary>
