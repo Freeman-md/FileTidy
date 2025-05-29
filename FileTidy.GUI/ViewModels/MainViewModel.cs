@@ -163,7 +163,8 @@ public partial class MainViewModel : ViewModelBase
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
             
-            await LoadFilesForSelectedFolder();
+            _ = LoadFilesForSelectedFolder();
+            _ = InitializeFolderTreeAsync();
         }
         catch (Exception ex)
         {
