@@ -151,20 +151,22 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanStartTidying))]
     private async Task StartTidying()
     {
-        if (SelectedFolder is null)
-            return;
-
-        try
-        {
-            var sorter = new FileSorter(SelectedFolder.FullPath, _mapper);
-            await Task.Run(() => sorter.Sort());
-            Console.WriteLine("Tidying complete.");
-            await LoadFilesForSelectedFolder();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Tidying failed: {ex.Message}");
-        }
+        // if (SelectedFolder is null)
+        //     return;
+        //
+        // try
+        // {
+        //     var sorter = new FileSorter(SelectedFolder.FullPath, _mapper);
+        //     await Task.Run(() => sorter.Sort());
+        //     Console.WriteLine("Tidying complete.");
+        //     await LoadFilesForSelectedFolder();
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Tidying failed: {ex.Message}");
+        // }
+        
+        Console.WriteLine("StartTidying");
     }
 
     [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");

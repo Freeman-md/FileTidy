@@ -5,9 +5,9 @@ namespace FileTidy.GUI.Models;
 public partial class FileItem : ObservableObject
 {
     [ObservableProperty] private bool isSelected;
-    public string Name { get; set; }
-    public string Type { get; set; }
-    public string Size { get; set; }
-    public string Modified { get; set; }
-    public string Status { get; set; }
+    public required string Name { get; set; }
+    public required string Type { get; set; }
+    public required string Size { get; set; }
+    public required string Modified { get; set; }
+    public required string Status { get; set; }
 }
