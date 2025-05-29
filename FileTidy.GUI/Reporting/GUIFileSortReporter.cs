@@ -45,6 +45,10 @@ public class GUIFileSortReporter : ISortReporter
 
     public void ReportElapsed(TimeSpan elapsed)
     {
-        _elapsedUpdate?.Invoke($"{elapsed.Minutes}m {elapsed.Seconds:D2}s");
+        if (elapsed.TotalSeconds < 1)
+            _elapsedUpdate?.Invoke($"{elapsed.TotalMilliseconds:F0}ms");
+        else
+            _elapsedUpdate?.Invoke($"{(int)elapsed.TotalMinutes}m {elapsed.Seconds:D2}s");
+
     }
 }

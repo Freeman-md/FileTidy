@@ -40,4 +40,6 @@ public interface ISortReporter
     /// </summary>
     /// <param name="total">The total count of files to be sorted.</param>
     void SetTotalFiles(int total);
+
+    void ReportElapsed(TimeSpan elapsed);
 }

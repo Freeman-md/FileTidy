@@ -21,8 +21,6 @@ public class FileTidyingService : IFileTidyingService
     {
         return await Task.Run(() =>
         {
-            Stopwatch sw = Stopwatch.StartNew();
-
             var filesToProcess = GetFilesToProcess(directoryPath);
 
             if (!filesToProcess.Any())
@@ -42,8 +40,6 @@ public class FileTidyingService : IFileTidyingService
             var sorter = new FileSorter(directoryPath, _mapper, _reporter);
             var result = sorter.Sort(filesToProcess);
 
-            sw.Stop();
-            result.Elapsed = sw.Elapsed;
             return result;
 
         }, cancellationToken);

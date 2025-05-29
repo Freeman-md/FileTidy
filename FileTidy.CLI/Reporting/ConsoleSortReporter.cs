@@ -54,4 +54,10 @@ public class ConsoleSortReporter : ISortReporter
         Console.Write(new string(' ', barWidth - filledLength));
         Console.Write($"] {current}/{total} ({progress * 100:F1}%)");
     }
+
+    public void ReportElapsed(TimeSpan elapsed)
+    {
+        throw new NotImplementedException();
+    }
+
 }

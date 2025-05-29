@@ -78,10 +78,17 @@ public class FileSorter : IFileSorter
             }
 
             processedFiles++;
+
+            if (processedFiles % 10 == 0)
+            {
+                _reporter?.ReportElapsed(stopwatch.Elapsed);
+            }
         }
 
         RemoveEmptyDirectories(_directoryToSort);
         stopwatch.Stop();
+
+        _reporter?.ReportElapsed(stopwatch.Elapsed);
 
         var result = new TidyingResult
         {
