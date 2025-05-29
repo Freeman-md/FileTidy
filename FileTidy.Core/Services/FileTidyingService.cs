@@ -9,7 +9,7 @@ public class FileTidyingService : IFileTidyingService
     private readonly FileCategoryMapper _mapper;
     private readonly ISortReporter? _reporter;
 
-    public FileTidyingService(ISortReporter? reporter = null, string dataPath = null)
+    public FileTidyingService(ISortReporter? reporter = null, string? dataPath = null)
     {
         _reporter = reporter;
 

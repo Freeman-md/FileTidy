@@ -1,11 +1,23 @@
-namespace FileTidy.Core.Utils;
+namespace FileTidy.CLI.Utils;
 
-/// <summary>
-/// Provides common directory-related utility methods for resolving paths, checking existence,
-/// and retrieving files recursively.
-/// </summary>
 public static class DirectoryHelper
 {
+    public static bool CheckIfDirectoryExists(string path)
+    {
+        if (DirectoryHelper.DirectoryExists(path))
+        {
+            Console.WriteLine($"\n✅ Directory found: {path}");
+            var allFiles = DirectoryHelper.GetAllFiles(path);
+            Console.WriteLine($"📂 Total files in '{path}': {allFiles.Count()}");
+            return true;
+        }
+        else
+        {
+            Console.WriteLine($"❌ Directory does not exist: {path}");
+            return false;
+        }
+    }
+
     /// <summary>
     /// Resolves a user-friendly folder keyword (e.g., "downloads", "desktop") to its full absolute path.
     /// Falls back to Path.GetFullPath if the keyword is unrecognized.

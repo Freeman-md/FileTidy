@@ -1,6 +1,5 @@
 ﻿using FileTidy.CLI.Handlers;
 using FileTidy.CLI.Utils;
-using FileTidy.Core.Utils;
 
 List<string> directoriesToSort = new();
 
@@ -19,7 +18,7 @@ while (true)
     {
         string fullPath = DirectoryHelper.GetFullPath(path);
 
-        if (DirectoryDiagnostics.CheckIfDirectoryExists(fullPath))
+        if (DirectoryHelper.CheckIfDirectoryExists(fullPath))
         {
             directoriesToSort.Add(fullPath);
         }
@@ -27,7 +26,7 @@ while (true)
 
     if (directoriesToSort.Any())
     {
-        SortingHandler.SortDirectories(directoriesToSort);
+        await SortingHandler.SortDirectories(directoriesToSort);
         directoriesToSort.Clear();
     }
 }
