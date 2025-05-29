@@ -23,8 +23,6 @@
             var services = new ServiceCollection();
 
             services.AddSingleton<IFolderService, FolderService>();
-            services.AddSingleton<IFileTidyingService, FileTidyingService>();
-            
             services.AddSingleton<MainViewModel>();
 
             var serviceProvider = services.BuildServiceProvider();

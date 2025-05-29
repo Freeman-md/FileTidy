@@ -12,19 +12,18 @@ using FileTidy.Core.Services;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
+using FileTidy.GUI.Reporting;
 
 namespace FileTidy.GUI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
-    private readonly IFileTidyingService _fileTidyingService;
 
 #if DEBUG
-    public string MockFolderSize => "2.7GB";
-    [ObservableProperty] private int _sortProgress = 75;
-    [ObservableProperty] private int _sortedFiles = 527;
-    [ObservableProperty] private string _elapsedTime = "2m 34s";
+    [ObservableProperty] private int _sortProgress = 0;
+    [ObservableProperty] private int _sortedFiles = 0;
+    [ObservableProperty] private string _elapsedTime = "0m 00s";
 #endif
 
     [ObservableProperty]
@@ -59,10 +58,9 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel() { }
 
-    public MainViewModel(IFolderService folderService, IFileTidyingService fileTidyingService)
+    public MainViewModel(IFolderService folderService)
     {
         _folderService = folderService;
-        _fileTidyingService = fileTidyingService;
         _ = InitializeFolderTreeAsync();
     }
 
@@ -163,11 +161,21 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             IsLoadingFiles = true;
+            SortProgress = 0;
+            SortedFiles = 0;
+            ElapsedTime = "0m 00s";
 
-            var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath);
+            var reporter = new GUIFileSortReporter(
+            progress => SortProgress = progress,
+            elapsed => ElapsedTime = elapsed,
+            filesMoved => SortedFiles = filesMoved
+        );
+
+            var tidyService = new FileTidyingService(reporter);
+            var result = await tidyService.SortDirectory(SelectedFolder.FullPath);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
-            
+
             _ = LoadFilesForSelectedFolder();
             _ = InitializeFolderTreeAsync();
         }
