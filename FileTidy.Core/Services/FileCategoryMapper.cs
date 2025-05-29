@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 
 namespace FileTidy.Core.Services;
@@ -6,7 +7,7 @@ namespace FileTidy.Core.Services;
 /// <summary>
 /// Maps file extensions to user-defined categories loaded from JSON data files.
 /// </summary>
-public class FileCategoryMapper
+public class FileCategoryMapper : IFileCategoryMapper
 {
     private readonly Dictionary<string, string> _fileCategories = new();
     private readonly string _dataDirectory;
