@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.Core.Interfaces;
 using FileTidy.Core.Services;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
@@ -17,7 +18,7 @@ namespace FileTidy.GUI.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
-    private readonly FileCategoryMapper _mapper;
+    private readonly IFileTidyingService _fileTidyingService;
 
 #if DEBUG
     public string MockFolderSize => "2.7GB";
@@ -58,10 +59,10 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel() { }
 
-    public MainViewModel(IFolderService folderService, FileCategoryMapper mapper)
+    public MainViewModel(IFolderService folderService, IFileTidyingService fileTidyingService)
     {
         _folderService = folderService;
-        _mapper = mapper;
+        _fileTidyingService = fileTidyingService;
         _ = InitializeFolderTreeAsync();
     }
 
@@ -151,22 +152,27 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanStartTidying))]
     private async Task StartTidying()
     {
-        // if (SelectedFolder is null)
-        //     return;
-        //
-        // try
-        // {
-        //     var sorter = new FileSorter(SelectedFolder.FullPath, _mapper);
-        //     await Task.Run(() => sorter.Sort());
-        //     Console.WriteLine("Tidying complete.");
-        //     await LoadFilesForSelectedFolder();
-        // }
-        // catch (Exception ex)
-        // {
-        //     Console.WriteLine($"Tidying failed: {ex.Message}");
-        // }
-        
-        Console.WriteLine("StartTidying");
+        if (SelectedFolder is null)
+            return;
+
+        try
+        {
+            IsLoadingFiles = true;
+
+            var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath);
+
+            Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
+            
+            await LoadFilesForSelectedFolder();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Tidying failed: {ex.Message}");
+        }
+        finally
+        {
+            IsLoadingFiles = false;
+        }
     }
 
     [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
