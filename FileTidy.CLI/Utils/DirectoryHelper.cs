@@ -29,7 +29,7 @@ public static class DirectoryHelper
         if (path.Equals("downloads", StringComparison.OrdinalIgnoreCase))
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
-        if (path.Equals("testing", StringComparison.OrdinalIgnoreCase))
+        if (path.Equals("test-folder", StringComparison.OrdinalIgnoreCase))
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", path);
 
         if (path.Equals("documents", StringComparison.OrdinalIgnoreCase))
