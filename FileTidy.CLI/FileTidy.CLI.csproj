@@ -4,12 +4,6 @@
     <ProjectReference Include="..\FileTidy.Core\FileTidy.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>

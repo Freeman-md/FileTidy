@@ -13,7 +13,7 @@ public class FileTidyingService : IFileTidyingService
     {
         _reporter = reporter;
 
-        string resolvedPath = dataPath ?? Path.Combine(AppContext.BaseDirectory, "Data");
+        string resolvedPath = dataPath ?? Path.Combine(Path.GetDirectoryName(typeof(FileTidyingService).Assembly.Location)!, "Data");
         _mapper = new FileCategoryMapper(resolvedPath);
     }
 
