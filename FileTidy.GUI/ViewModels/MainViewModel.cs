@@ -149,6 +149,11 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    // TODO: Preserve folder tree state (expanded nodes, selected folder) after sorting
+    // - Before refreshing FolderTree, store expanded paths and selected folder path
+    // - Refresh FolderTree in-place or rebuild while restoring expansion/selection
+    // - Ensure UI updates and bindings stay intact after refresh
+
     [RelayCommand(CanExecute = nameof(CanStartTidying))]
     private async Task StartTidying()
     {
