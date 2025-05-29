@@ -10,7 +10,7 @@ namespace FileTidy.Core.Services;
 public class FileSorter
 {
     private readonly string _directoryToSort;
-    private readonly FileCategoryMapper _mapper;
+    private readonly IFileCategoryMapper _mapper;
     private readonly ISortReporter? _reporter;
 
     /// <summary>
@@ -19,7 +19,7 @@ public class FileSorter
     /// <param name="directoryToSort">The root directory to scan and sort files in.</param>
     /// <param name="mapper">The category mapper for determining file categories.</param>
     /// <param name="reporter">An optional progress reporter for UI or logging.</param>
-    public FileSorter(string directoryToSort, FileCategoryMapper mapper, ISortReporter? reporter = null)
+    public FileSorter(string directoryToSort, IFileCategoryMapper mapper, ISortReporter? reporter = null)
     {
         _directoryToSort = directoryToSort;
         _mapper = mapper;

@@ -1,6 +1,8 @@
+using FileTidy.Core.Models;
+
 namespace FileTidy.Core.Interfaces;
 
 public interface IFileTidyingService
 {
-    void SortDirectory(string directoryPath, ISortReporter? reporter = null);
+    Task<TidyingResult> SortDirectory(string directoryPath, CancellationToken cancellationToken = default);
 }
