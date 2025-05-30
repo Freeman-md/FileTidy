@@ -40,8 +40,15 @@
     
     <!-- Custom overrides for TreeViewItem visuals -->
     <SolidColorBrush x:Key="TreeViewItemForeground" Color="{StaticResource Gray700}" />
+    
     <SolidColorBrush x:Key="TreeViewItemForegroundPointerOver" Color="{StaticResource Gray900}" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="{StaticResource Gray300}" />
+    <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="{StaticResource Gray200}" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="{StaticResource Gray900}" />
+    <SolidColorBrush x:Key="TreeViewItemForegroundSelectedPointerOver" Color="{StaticResource Gray200}" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundSelectedPointerOver" Color="{StaticResource Gray900}" />
     <SolidColorBrush x:Key="TreeViewItemForegroundPressed" Color="{StaticResource Gray900}" />
+    <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="{StaticResource Gray300}" />
     
     <!-- Custom overrides for CheckBox visuals -->
     <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{StaticResource Gray700}" />

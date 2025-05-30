@@ -9,14 +9,30 @@
     <Style Selector="TreeViewItem">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="Black" />
-
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="#f0f0f0" />
-        </Style>
-
-        <Style Selector="^:selected">
-            <Setter Property="Background" Value="{DynamicResource PanelBrush}" />
-            <Setter Property="Foreground" Value="#2c3e50" />
-        </Style>
     </Style>
+    
+    <Style Selector="TreeViewItem:selected > StackPanel > Label">
+        <Setter Property="Foreground" Value="{DynamicResource TreeViewItemForegroundSelected}" />
+    </Style>
+
+    <Style Selector="TreeViewItem:selected > StackPanel > TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TreeViewItemForegroundSelected}" />
+    </Style>
+    
+    <Style Selector="TreeViewItem:selected:pointerover > StackPanel > Label">
+        <Setter Property="Foreground" Value="{DynamicResource TreeViewItemForegroundSelectedPointerOver}" />
+    </Style>
+
+    <Style Selector="TreeViewItem:selected:pointerover > StackPanel > TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TreeViewItemForegroundSelectedPointerOver}" />
+    </Style>
+
+
+    
+    <Style Selector="TreeViewItem:selected /template/ ToggleButton#PART_ExpandCollapseChevron /template/ Path">
+        <Setter Property="Fill" Value="{DynamicResource TreeViewItemForegroundSelected}" />
+    </Style>
+
+
+
 </Styles>
