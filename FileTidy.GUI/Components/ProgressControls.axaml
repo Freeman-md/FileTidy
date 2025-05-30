@@ -39,12 +39,6 @@
                 <GridSplitter Grid.Column="1" Width="10" Background="Transparent" />
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <Button Classes="btn btn-outline">
-                        <StackPanel Orientation="Horizontal" Spacing="2">
-                            <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe444;" Classes="btn-icon" />
-                            <Label>Sort Current Folder</Label>
-                        </StackPanel>
-                    </Button>
                     
                     <Button Classes="btn btn-outline" Command="{Binding StopSortingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
