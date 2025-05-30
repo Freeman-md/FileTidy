@@ -26,12 +26,15 @@ public class FileSorter : IFileSorter
         _mapper = mapper;
         _reporter = reporter;
     }
+    
+    public TidyingResult Sort(List<string> filesToSort)
+        => Sort(filesToSort, CancellationToken.None);
 
     /// <summary>
     /// Sorts all files in the directory (and subdirectories) into category folders,
     /// preserving their relative paths and skipping already sorted files.
     /// </summary>
-    public TidyingResult Sort(List<string> filesToSort)
+    public TidyingResult Sort(List<string> filesToSort, CancellationToken cancellationToken = default)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -41,6 +44,8 @@ public class FileSorter : IFileSorter
 
         foreach (var file in filesToSort)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             try
             {
                 string extension = Path.GetExtension(file).ToLower();

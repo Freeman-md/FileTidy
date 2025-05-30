@@ -38,7 +38,7 @@ public class FileTidyingService : IFileTidyingService
             _reporter?.SetTotalFiles(filesToProcess.Count);
 
             var sorter = new FileSorter(directoryPath, _mapper, _reporter);
-            var result = sorter.Sort(filesToProcess);
+            var result = sorter.Sort(filesToProcess, cancellationToken);
 
             return result;
 
