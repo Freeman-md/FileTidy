@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,11 +21,11 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
 
-#if DEBUG
+    private CancellationTokenSource? _sortingCancellationTokenSource;
+        
     [ObservableProperty] private int _sortProgress = 0;
     [ObservableProperty] private int _sortedFiles = 0;
     [ObservableProperty] private string _elapsedTime = "0m 00s";
-#endif
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
@@ -164,15 +165,18 @@ public partial class MainViewModel : ViewModelBase
             SortProgress = 0;
             SortedFiles = 0;
             ElapsedTime = "0m 00s";
+            
+            _sortingCancellationTokenSource = new CancellationTokenSource();
+            var token = _sortingCancellationTokenSource.Token;
 
             var reporter = new GUIFileSortReporter(
             progress => SortProgress = progress,
             elapsed => ElapsedTime = elapsed,
             filesMoved => SortedFiles = filesMoved
-        );
+            );
 
             var tidyService = new FileTidyingService(reporter);
-            var result = await tidyService.SortDirectory(SelectedFolder.FullPath);
+            var result = await tidyService.SortDirectory(SelectedFolder.FullPath, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
@@ -186,6 +190,9 @@ public partial class MainViewModel : ViewModelBase
         finally
         {
             IsLoadingFiles = false;
+            
+            _sortingCancellationTokenSource?.Dispose();
+            _sortingCancellationTokenSource = null;
         }
     }
 
