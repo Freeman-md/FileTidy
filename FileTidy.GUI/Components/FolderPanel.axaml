@@ -24,12 +24,22 @@
                         <ComboBoxItem Content="Documents" />
                         <ComboBoxItem Content="Downloads" />
                     </ComboBox>
+                    
                     <Button Classes="btn btn-primary" Command="{Binding StartTidyingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe6F0;" Classes="btn-icon" />
                             <Label>Start Tidying</Label>
                         </StackPanel>
                     </Button>
+                    
+                    <Button Classes="btn btn-primary" Command="{Binding StopSortingCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe46C;" Classes="btn-icon" />
+                            <Label>Stop Tidying</Label>
+                        </StackPanel>
+                    </Button>
+                    
+                    <TextBlock Text="Sorting cancelled" IsVisible="{Binding WasCancelled}" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center"
