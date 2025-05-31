@@ -124,6 +124,7 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
+            
             var files = await _folderService.LoadFilesAsync(SelectedFolder.FullPath).ConfigureAwait(false);
             await SetFileItemsAsync(files);
         }
@@ -144,11 +145,14 @@ public partial class MainViewModel : ViewModelBase
         foreach (var file in observableFiles)
             file.PropertyChanged += OnFileItemPropertyChanged;
 
-        FolderSize = files.Sum(f =>
-        {
-            var path = Path.Combine(SelectedFolder!.FullPath, f.Name);
-            return File.Exists(path) ? new FileInfo(path).Length : 0;
-        });
+        FolderSize = files
+            .Where(f => !f.IsFolder)
+            .Sum(f =>
+            {
+                var path = Path.Combine(SelectedFolder!.FullPath, f.Name);
+                return File.Exists(path) ? new FileInfo(path).Length : 0;
+            });
+
 
         await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
     }

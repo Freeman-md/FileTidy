@@ -10,4 +10,5 @@ public partial class FileItem : ObservableObject
     public required string Size { get; set; }
     public required string Modified { get; set; }
     public required string Status { get; set; }
+    public bool IsFolder { get; set; }
 }

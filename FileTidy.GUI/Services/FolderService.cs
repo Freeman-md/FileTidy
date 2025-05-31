@@ -63,19 +63,42 @@ public class FolderService : IFolderService
     {
         if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
             return new List<FileItem>();
-        
-        var filePaths = Directory.GetFiles(folderPath);
 
-        var result = await Task.Run(() => filePaths.Select(path => new FileItem
+        return await Task.Run(() =>
         {
-            Name = Path.GetFileName(path),
-            Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
-            Size = new FileInfo(path).Length.BytesToReadableSize(),
-            Modified = File.GetLastWriteTime(path).ToString("MMM dd, yyyy"),
-            Status = "Unprocessed"
-        }).ToList());
+            var folderItems = Directory.GetDirectories(folderPath)
+                .Select(path =>
+                {
+                    var directoryInfo = new DirectoryInfo(path);
+                    return new FileItem
+                    {
+                        Name = Path.GetFileName(path),
+                        Type = "FOLDER",
+                        Size = "-",
+                        Modified = directoryInfo.LastWriteTime.ToString("MMM dd, yyyy"),
+                        Status = "",
+                        IsFolder = true
+                    };
+                });
 
-        return result;
+            var fileItems = Directory.GetFiles(folderPath)
+                .Select(path =>
+                {
+                    var fileInfo = new FileInfo(path);
+
+                    return new FileItem
+                    {
+                        Name = Path.GetFileName(path),
+                        Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
+                        Size = fileInfo.Length.BytesToReadableSize(),
+                        Modified = fileInfo.LastWriteTime.ToString("MMM dd, yyyy"),
+                        Status = "Unprocessed",
+                        IsFolder = false
+                    };
+                });
+            
+            return folderItems.Concat(fileItems).ToList();
+        });
     }
 
     private static List<FolderItem> GetSubFolders(string rootFolderPath)
