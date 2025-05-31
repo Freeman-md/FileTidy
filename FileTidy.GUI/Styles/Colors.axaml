@@ -56,12 +56,24 @@
     <SolidColorBrush x:Key="TreeViewItemBackgroundPressed" Color="{StaticResource Gray300}" />
     
     <!-- Custom overrides for CheckBox visuals -->
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUnchecked" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="{StaticResource Gray700}" />
-    <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="{DynamicResource Gray700}"></SolidColorBrush>
-    <SolidColorBrush x:Key="CheckBoxForegroundUncheckedPointerOver" Color="{DynamicResource Gray900}"></SolidColorBrush>
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundUnchecked" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundUncheckedPointerOver" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminate" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxCheckBackgroundStrokeUnchecked" ResourceKey="TextBrush" />
+    <StaticResource x:Key="CheckBoxForegroundUncheckedPointerOver" ResourceKey="TextBrush" />
+    
+    <!--TextBrush Custom overrides for ComboBox visuals -->
+    <SolidColorBrush x:Key="ComboBoxForeground" Color="{StaticResource Gray800}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownGlyphForeground" Color="{StaticResource Gray600}"></SolidColorBrush>
+    <SolidColorBrush x:Key="ComboBoxPlaceHolderForeground" Color="{StaticResource Gray600}" />
+    <StaticResource x:Key="ComboBoxBorderBrush" ResourceKey="BorderBrush" />
+    <StaticResource x:Key="ComboBoxDropDownBorderBrush" ResourceKey="BorderBrush" />
+    <SolidColorBrush x:Key="ComboBoxBackground" Color="White"></SolidColorBrush>
+    <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="White"></SolidColorBrush>
+    <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource Gray100}"></SolidColorBrush>
+    
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver" Color="{StaticResource Gray100}"></SolidColorBrush>
 </ResourceDictionary>
