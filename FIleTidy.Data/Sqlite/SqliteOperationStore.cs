@@ -19,7 +19,7 @@ public class SqliteOperationStore : IFileOperationStore
 
         CreateTablesIfNotExists();
     }
-    
+
     private static string GetDefaultDbPath()
     {
         string baseDir;
@@ -29,7 +29,8 @@ public class SqliteOperationStore : IFileOperationStore
         }
         else if (OperatingSystem.IsMacOS())
         {
-            baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Library", "Application Support", "FileTidy");
+            baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Library",
+                "Application Support", "FileTidy");
         }
         else
         {
@@ -65,24 +66,119 @@ public class SqliteOperationStore : IFileOperationStore
         }
     }
 
-    
-    public Task LogOperationAsync(FileOperation operation)
+
+    public async Task LogOperationAsync(FileOperation operation)
     {
-        throw new NotImplementedException();
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+                INSERT INTO FileOperations (
+                            Id, FileName, OriginalPath, NewPath, Status, Timestamp, SortSessionId
+                )
+                VALUES (
+                        @Id, @FileName, @OriginalPath, @NewPath, @Status, @Timestamp, @SortSessionId
+                )
+            ";
+
+        command.Parameters.AddWithValue("@Id", operation.Id.ToString());
+        command.Parameters.AddWithValue("@FileName", operation.FileName);
+        command.Parameters.AddWithValue("@OriginalPath", operation.OriginalPath);
+        command.Parameters.AddWithValue("@NewPath", operation.NewPath);
+        command.Parameters.AddWithValue("@Status", operation.Status.ToString());
+        command.Parameters.AddWithValue("@Timestamp", operation.Timestamp.ToUniversalTime());
+        command.Parameters.AddWithValue("@SortSessionId", operation.Id.ToString());
+
+        await command.ExecuteNonQueryAsync();
     }
 
-    public Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId)
+    public async Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId)
     {
-        throw new NotImplementedException();
+        var operations = new List<FileOperation>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+SELECT Id, FileName, OriginalPath, NewPath, Status, Timestamp, SortSessionId
+FROM FileOperations
+WHERE SortSessionId = @SortSessionId
+ORDER BY Timestamp ASC";
+
+        command.Parameters.AddWithValue("@SortSessionId", sessionId.ToString());
+
+        using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            operations.Add(new FileOperation
+            {
+                Id = Guid.Parse(reader.GetString(0)),
+                FileName = reader.GetString(1),
+                OriginalPath = reader.GetString(2),
+                NewPath = reader.GetString(3),
+                Status = Enum.Parse<FileOperationStatus>(reader.GetString(4)),
+                Timestamp = reader.GetDateTime(5),
+                SortSessionId = Guid.Parse(reader.GetString(6))
+            });
+        }
+
+        return operations;
     }
 
-    public Task<IEnumerable<FileOperation>> GetRecentOperationsAsync(int limit)
+    public async Task<IEnumerable<FileOperation>> GetRecentOperationsAsync(int limit)
     {
-        throw new NotImplementedException();
+        var operations = new List<FileOperation>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+        SELECT Id, FileName, OriginalPath, NewPath, Status, Timestamp, SortSessionId
+        FROM FileOperations
+        ORDER BY Timestamp DESC
+        LIMIT @Limit
+    ";
+
+        command.Parameters.AddWithValue("@Limit", limit);
+
+        using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            operations.Add(new FileOperation
+            {
+                Id = Guid.Parse(reader.GetString(0)),
+                FileName = reader.GetString(1),
+                OriginalPath = reader.GetString(2),
+                NewPath = reader.GetString(3),
+                Status = Enum.Parse<FileOperationStatus>(reader.GetString(4)),
+                Timestamp = reader.GetDateTime(5),
+                SortSessionId = Guid.Parse(reader.GetString(6))
+            });
+        }
+
+        return operations;
     }
 
-    public Task UpdateOperationStatusAsync(Guid operationId, FileOperationStatus status)
+
+    public async Task UpdateOperationStatusAsync(Guid operationId, FileOperationStatus status)
     {
-        throw new NotImplementedException();
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+UPDATE FileOperations
+SET Status = @Status
+WHERE Id = @Id";
+        
+        command.Parameters.AddWithValue("@Id", operationId.ToString());
+        command.Parameters.AddWithValue("@Status", status);
+        
+        await command.ExecuteNonQueryAsync();
     }
 }
