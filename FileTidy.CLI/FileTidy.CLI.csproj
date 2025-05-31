@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileTidy.Core\FileTidy.Core.csproj" />
-    <ProjectReference Include="..\FIleTidy.Data\FIleTidy.Data.csproj" />
+    <ProjectReference Include="..\FileTidy.Data\FileTidy.Data.csproj" />
   </ItemGroup>
 
 

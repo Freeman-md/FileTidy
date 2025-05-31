@@ -9,12 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.7"/>
+        <PackageReference Include="Avalonia" Version="11.2.7" />
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.7" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.7"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.7" />
         <PackageReference Include="Avalonia.Svg.Skia" Version="11.2.7.1" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.7"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.7"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.7" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.7" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="Avalonia.Diagnostics" Version="11.2.7">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
@@ -72,6 +72,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FileTidy.Core\FileTidy.Core.csproj" />
-      <ProjectReference Include="..\FIleTidy.Data\FIleTidy.Data.csproj" />
+      <ProjectReference Include="..\FileTidy.Data\FileTidy.Data.csproj" />
     </ItemGroup>
 </Project>
