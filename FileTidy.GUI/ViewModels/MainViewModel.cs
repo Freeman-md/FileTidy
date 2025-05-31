@@ -43,6 +43,9 @@ public partial class MainViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
     [NotifyPropertyChangedFor(nameof(ShouldShowFileTable))]
     private FolderItem? _selectedFolder;
+    
+    [ObservableProperty]
+    private FolderItem? _selectedRootFolder;
 
     [ObservableProperty]
     private bool _isAllSelected;
@@ -166,6 +169,23 @@ public partial class MainViewModel : ViewModelBase
     partial void OnSelectedFolderChanged(FolderItem? value)
     {
         _ = LoadFilesForSelectedFolder();
+
+        if (value is null)
+        {
+            SelectedRootFolder = null;
+            return;
+        }
+        
+        var root = TopLevelFolders.FirstOrDefault(root => value.FullPath.StartsWith(root.FullPath, StringComparison.OrdinalIgnoreCase));
+        
+        if (root is not null)
+            SelectedRootFolder = root;
+    }
+
+    partial void OnSelectedRootFolderChanged(FolderItem? value)
+    {
+        if (value is not null)
+            SelectedFolder = value;
     }
 
     partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)

@@ -20,7 +20,7 @@
             <Grid ColumnDefinitions="*, Auto">
                 <StackPanel Spacing="5" Orientation="Horizontal">
                     <ComboBox   ItemsSource="{Binding TopLevelFolders}" 
-                                SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"  Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
+                                SelectedItem="{Binding SelectedRootFolder, Mode=TwoWay}"  Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" />
