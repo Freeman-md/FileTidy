@@ -12,36 +12,52 @@ namespace FileTidy.GUI.Services;
 
 public class FolderService : IFolderService
 {
-    public async Task<List<FolderItem>> GetSystemRootFolders()
+    public async Task<List<FolderItem>> GetTopLevelFoldersAsync()
     {
         return await Task.Run(() =>
         {
-            var rootFolderPaths = new[]
+            var folderPaths = new[]
             {
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
             };
 
-            var rootFolderItems = new List<FolderItem>();
-
-            foreach (var rootFolderPath in rootFolderPaths)
-            {
-                if (!Directory.Exists(rootFolderPath)) continue;
-
-                var rootFolderItem = new FolderItem
+            return folderPaths
+                .Where(Directory.Exists)
+                .Select(path => new FolderItem
                 {
-                    Name = Path.GetFileName(rootFolderPath),
-                    FullPath = rootFolderPath,
-                    SubFolders = GetSubFolders(rootFolderPath)
-                };
-
-                rootFolderItems.Add(rootFolderItem);
-            }
-
-            return rootFolderItems;
+                    Name = Path.GetFileName(path),
+                    FullPath = path,
+                    SubFolders = new List<FolderItem>() // Empty for now
+                })
+                .ToList();
         });
     }
+
+    public async Task<List<FolderItem>> GetFolderTreeAsync()
+    {
+        return await Task.Run(() =>
+        {
+            var folderPaths = new[]
+            {
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
+            };
+
+            return folderPaths
+                .Where(Directory.Exists)
+                .Select(path => new FolderItem
+                {
+                    Name = Path.GetFileName(path),
+                    FullPath = path,
+                    SubFolders = GetSubFolders(path)
+                })
+                .ToList();
+        });
+    }
+
 
     public async Task<List<FileItem>> LoadFilesAsync(string folderPath)
     {

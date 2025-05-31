@@ -54,6 +54,8 @@ public partial class MainViewModel : ViewModelBase
     private ObservableCollection<FileItem> _currentFiles = new();
 
     public ObservableCollection<FolderItem> FolderTree { get; private set; } = new();
+    
+    public ObservableCollection<FolderItem> TopLevelFolders { get; private set; } = new();
 
     private bool CanStartTidying => SelectedFolder is not null && IsSorting is false;
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
@@ -66,15 +68,43 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(IFolderService folderService)
     {
         _folderService = folderService;
-        _ = InitializeFolderTreeAsync();
+        _ = InitializeAsync();
+    }
+    
+    private async Task InitializeAsync()
+    {
+        await InitializeTopLevelFoldersAsync();
+        await InitializeFolderTreeAsync();
+    }
+
+    private async Task InitializeTopLevelFoldersAsync()
+    {
+        var rootFolders = await _folderService.GetTopLevelFoldersAsync().ConfigureAwait(false);
+        await RunOnUIThreadAsync(() =>
+        {
+            TopLevelFolders = new ObservableCollection<FolderItem>(rootFolders);
+            OnPropertyChanged(nameof(TopLevelFolders));
+        });
     }
 
     private async Task InitializeFolderTreeAsync()
     {
-        var rootFolders = await _folderService.GetSystemRootFolders().ConfigureAwait(false);
+        var folderTree = await _folderService.GetFolderTreeAsync().ConfigureAwait(false);
+        
+        foreach (var top in TopLevelFolders)
+        {
+            var match = folderTree.FirstOrDefault(f => f.FullPath == top.FullPath);
+            if (match != null)
+            {
+                var index = folderTree.IndexOf(match);
+                folderTree[index] = top;
+                top.SubFolders = match.SubFolders;
+            }
+        }
+        
         await RunOnUIThreadAsync(() =>
         {
-            FolderTree = new ObservableCollection<FolderItem>(rootFolders);
+            FolderTree = new ObservableCollection<FolderItem>(folderTree);
             OnPropertyChanged(nameof(FolderTree));
         });
     }

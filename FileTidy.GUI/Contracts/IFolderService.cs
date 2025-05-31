@@ -7,7 +7,9 @@ namespace FileTidy.GUI.Contracts;
 
 public interface IFolderService
 {
-    Task<List<FolderItem>> GetSystemRootFolders();
+
+    Task<List<FolderItem>> GetTopLevelFoldersAsync();
+    Task<List<FolderItem>> GetFolderTreeAsync();
 
     Task<List<FileItem>> LoadFilesAsync(string folderPath);
 }

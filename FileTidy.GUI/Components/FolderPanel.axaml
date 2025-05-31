@@ -19,10 +19,13 @@
 
             <Grid ColumnDefinitions="*, Auto">
                 <StackPanel Spacing="5" Orientation="Horizontal">
-                    <ComboBox Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
-                        <ComboBoxItem Content="Desktop" />
-                        <ComboBoxItem Content="Documents" />
-                        <ComboBoxItem Content="Downloads" />
+                    <ComboBox   ItemsSource="{Binding TopLevelFolders}" 
+                                SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"  Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
                     
                     <Button Classes="btn btn-primary" Command="{Binding StartTidyingCommand}">
