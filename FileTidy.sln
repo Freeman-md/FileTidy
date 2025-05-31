@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.CLI", "FileTidy.CL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.GUI", "FileTidy.GUI\FileTidy.GUI.csproj", "{7BD216E8-171D-4EDD-8962-E7AE5FB40429}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FIleTidy.Data", "FIleTidy.Data\FIleTidy.Data.csproj", "{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x64.Build.0 = Release|Any CPU
 		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x86.ActiveCfg = Release|Any CPU
 		{7BD216E8-171D-4EDD-8962-E7AE5FB40429}.Release|x86.Build.0 = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|x64.Build.0 = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AA09B8A6-43F7-4E61-A354-AE166AFF20EA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
