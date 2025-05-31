@@ -4,8 +4,13 @@
     <Color x:Key="Gray100">#F9FAFB</Color> <!-- Background -->
     <Color x:Key="Gray200">#F2F2F2</Color> <!-- Panel background -->
     <Color x:Key="Gray300">#E5E7EB</Color> <!-- Border / Divider -->
+    <Color x:Key="Gray400">#D1D5DB</Color> <!-- Light border / hover -->
+    <Color x:Key="Gray500">#9CA3AF</Color> <!-- Subtle text / icons -->
+    <Color x:Key="Gray600">#6B7280</Color> <!-- Regular text -->
     <Color x:Key="Gray700">#374151</Color> <!-- Dark text -->
+    <Color x:Key="Gray800">#1F2937</Color> <!-- Primary dark panels -->
     <Color x:Key="Gray900">#111827</Color> <!-- Headings (optional) -->
+
 
     <!-- Primary Accent (Dark Gray) -->
     <Color x:Key="PrimaryColor">#1F2937</Color>         <!-- Matches text/icons -->

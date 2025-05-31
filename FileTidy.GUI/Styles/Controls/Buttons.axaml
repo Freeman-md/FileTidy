@@ -73,4 +73,11 @@
     <Style Selector="Button.btn Label.btn-icon">
         <Setter Property="Margin" Value="0 1 0 0"></Setter>
     </Style>
+    
+    <Style Selector="Button:disabled > StackPanel > Label">
+        <Setter Property="Foreground" Value="{DynamicResource Gray500}"></Setter>
+    </Style>
+    <Style Selector="Button:disabled > StackPanel > TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Gray500}"></Setter>
+    </Style>
 </Styles>

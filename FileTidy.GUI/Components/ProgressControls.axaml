@@ -40,17 +40,12 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     
-                    <Button Classes="btn btn-outline" Command="{Binding StopSortingCommand}">
+                    <TextBlock Text="Sorting cancelled" IsVisible="{Binding WasCancelled}" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
+                    
+                    <Button Classes="btn btn-primary" Command="{Binding StopSortingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe46C;" Classes="btn-icon" />
                             <Label>Stop</Label>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Classes="btn btn-primary" Command="{Binding PauseSortingCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="2">
-                            <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe39e;" Classes="btn-icon" />
-                            <Label>Pause</Label>
                         </StackPanel>
                     </Button>
                 </StackPanel>

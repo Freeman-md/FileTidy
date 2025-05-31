@@ -33,6 +33,11 @@ public partial class MainViewModel : ViewModelBase
     private bool _isLoadingFiles;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StopSortingCommand))]
+    private bool _isSorting;
+    [ObservableProperty] private bool _wasCancelled;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(SelectedFolderPath))]
     [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
     [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
@@ -50,8 +55,7 @@ public partial class MainViewModel : ViewModelBase
 
     public ObservableCollection<FolderItem> FolderTree { get; private set; } = new();
 
-    private bool CanStartTidying => SelectedFolder is not null;
-
+    private bool CanStartTidying => SelectedFolder is not null && IsSorting is false;
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
     public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
@@ -161,10 +165,11 @@ public partial class MainViewModel : ViewModelBase
 
         try
         {
-            IsLoadingFiles = true;
+            IsSorting = true;
             SortProgress = 0;
             SortedFiles = 0;
             ElapsedTime = "0m 00s";
+            WasCancelled = false;
             
             _sortingCancellationTokenSource = new CancellationTokenSource();
             var token = _sortingCancellationTokenSource.Token;
@@ -189,7 +194,7 @@ public partial class MainViewModel : ViewModelBase
         }
         finally
         {
-            IsLoadingFiles = false;
+            IsSorting = false;
             
             _sortingCancellationTokenSource?.Dispose();
             _sortingCancellationTokenSource = null;
@@ -197,6 +202,16 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
-    [RelayCommand] private void StopSorting() => Console.WriteLine("Stop sorting triggered");
+    
+    [RelayCommand(CanExecute = nameof(IsSorting))] 
+    private void StopSorting() {
+        if (_sortingCancellationTokenSource is not null)
+        {
+            _sortingCancellationTokenSource?.Cancel();
+            _sortingCancellationTokenSource = null;
+            IsSorting = false;
+            WasCancelled = true;
+        }
+    }
     [RelayCommand] private void RevertSorting() => Console.WriteLine("Revert clicked");
 }
