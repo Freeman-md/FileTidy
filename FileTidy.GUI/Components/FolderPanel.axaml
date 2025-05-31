@@ -11,22 +11,23 @@
              x:Class="FileTidy.GUI.Components.FolderPanel"
              x:DataType="viewModels:MainViewModel">
     
-<UserControl.Resources>
-    <DataTemplate x:Key="FileCheckBoxTemplate" x:DataType="models:FileItem">
-        <CheckBox IsChecked="{Binding IsSelected}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Foreground="{DynamicResource TextBrush}" />
-    </DataTemplate>
+    <UserControl.Resources>
+        <DataTemplate x:Key="FileCheckBoxTemplate" x:DataType="models:FileItem">
+            <CheckBox IsChecked="{Binding IsSelected}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource TextBrush}" />
+        </DataTemplate>
 
-    <DataTemplate x:Key="EmptyTemplate" />
-    
-    <converters:FolderToTemplateConverter
-        x:Key="FolderToTemplateConverter"
-        FileTemplate="{StaticResource FileCheckBoxTemplate}"
-        EmptyTemplate="{StaticResource EmptyTemplate}"
-        />
-</UserControl.Resources>
+        <DataTemplate x:Key="EmptyTemplate" />
+        
+        <converters:FolderToTemplateConverter
+            x:Key="FolderToTemplateConverter"
+            FileTemplate="{StaticResource FileCheckBoxTemplate}"
+            EmptyTemplate="{StaticResource EmptyTemplate}"
+            />
+        <converters:FolderToCursorConverter x:Key="FolderToCursorConverter" />
+    </UserControl.Resources>
 
 
     <Design.DataContext>
@@ -179,17 +180,30 @@
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
-<DataTemplate>
+                                        <DataTemplate>
 
-    <ContentControl 
-        Content="{Binding .}" 
-        ContentTemplate="{Binding IsFolder, Converter={StaticResource FolderToTemplateConverter}}" 
-    />
+                                            <ContentControl 
+                                                Content="{Binding .}" 
+                                                ContentTemplate="{Binding IsFolder, Converter={StaticResource FolderToTemplateConverter}}" 
+                                            />
 
-</DataTemplate>
+                                        </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto" IsReadOnly="True" />
+                                <DataGridTemplateColumn Header="Name" Width="Auto" IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock 
+                                                Name="FileItemNameTextBlock"
+                                                Text="{Binding Name}"
+                                                Cursor="{Binding IsFolder, Converter={StaticResource FolderToCursorConverter}}"
+                                                Foreground="{DynamicResource TextBrush}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Stretch" PointerPressed="FileItemNameTextBlock_OnPointerPressed"
+                                                />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100"
                                                     IsReadOnly="True" />
                                 <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100"

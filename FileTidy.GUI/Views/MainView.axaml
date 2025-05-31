@@ -8,7 +8,7 @@
         x:Class="FileTidy.GUI.Views.MainView"
         x:DataType="viewModels:MainViewModel"
         Background="#f2f2f2"
-        MinWidth="600"
+        MinWidth="1300"
         MinHeight="600"
         Title="FileTidy">
 

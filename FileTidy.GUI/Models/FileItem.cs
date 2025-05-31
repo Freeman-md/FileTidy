@@ -11,4 +11,6 @@ public partial class FileItem : ObservableObject
     public required string Modified { get; set; }
     public required string Status { get; set; }
     public bool IsFolder => Type == "FOLDER";
+    
+    public string? FullPath { get; set; }
 }

@@ -267,5 +267,18 @@ public partial class MainViewModel : ViewModelBase
             WasCancelled = true;
         }
     }
+
+    [RelayCommand]
+    private void OpenFolder(FileItem? fileItem)
+    {
+        if (fileItem is null || fileItem.IsFolder is false) return;
+
+        SelectedFolder = new FolderItem
+        {
+            Name = fileItem.Name,
+            FullPath = fileItem.FullPath!
+        };
+    }
+    
     [RelayCommand] private void RevertSorting() => Console.WriteLine("Revert clicked");
 }

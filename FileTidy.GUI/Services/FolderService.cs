@@ -76,7 +76,8 @@ public class FolderService : IFolderService
                         Type = "FOLDER",
                         Size = "-",
                         Modified = directoryInfo.LastWriteTime.ToString("MMM dd, yyyy"),
-                        Status = ""
+                        Status = "",
+                        FullPath = directoryInfo.FullName
                     };
                 });
 
