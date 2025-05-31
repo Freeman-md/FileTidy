@@ -18,9 +18,10 @@
                  <ResourceInclude Source="Styles/Fonts.axaml" ></ResourceInclude>
                  
              </ResourceDictionary.MergedDictionaries>
+
+             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+             <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
          </ResourceDictionary>
-         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
      </Application.Resources>
 </Application>

@@ -4,11 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
              xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
+             xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
              xmlns:components="clr-namespace:FileTidy.GUI.Components"
              xmlns:models="clr-namespace:FileTidy.GUI.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.FolderPanel"
              x:DataType="viewModels:MainViewModel">
+    
+<UserControl.Resources>
+    <DataTemplate x:Key="FileCheckBoxTemplate" x:DataType="models:FileItem">
+        <CheckBox IsChecked="{Binding IsSelected}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Foreground="{DynamicResource TextBrush}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="EmptyTemplate" />
+    
+    <converters:FolderToTemplateConverter
+        x:Key="FolderToTemplateConverter"
+        FileTemplate="{StaticResource FileCheckBoxTemplate}"
+        EmptyTemplate="{StaticResource EmptyTemplate}"
+        />
+</UserControl.Resources>
+
 
     <Design.DataContext>
         <vm:MainViewModel></vm:MainViewModel>
@@ -160,11 +179,14 @@
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            
-                                                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource TextBrush}" />
-                                            
-                                        </DataTemplate>
+<DataTemplate>
+
+    <ContentControl 
+        Content="{Binding .}" 
+        ContentTemplate="{Binding IsFolder, Converter={StaticResource FolderToTemplateConverter}}" 
+    />
+
+</DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto" IsReadOnly="True" />
