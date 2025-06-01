@@ -76,6 +76,56 @@ public class SqliteOperationStoreTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Timestamp, Is.EqualTo(expected).Within(TimeSpan.FromSeconds(1)));
     }
+    
+    [Test]
+    public async Task GetOperationByIdAsync_Should_Return_Operation_When_Id_Exists()
+    {
+        // Arrange
+        var operation = new FileOperationBuilder().Build();
+        await _store.LogOperationAsync(operation);
+
+        // Act
+        var result = await _store.GetOperationByIdAsync(operation.Id);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Id, Is.EqualTo(operation.Id));
+    }
+
+    [Test]
+    public async Task GetOperationByIdAsync_Should_Return_Null_When_Id_Does_Not_Exist()
+    {
+        // Act
+        var result = await _store.GetOperationByIdAsync(Guid.NewGuid());
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task GetOperationByIdAsync_Should_Return_Correct_Values_For_All_Fields()
+    {
+        // Arrange
+        var operation = new FileOperationBuilder().Build();
+        await _store.LogOperationAsync(operation);
+
+        // Act
+        var result = await _store.GetOperationByIdAsync(operation.Id);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result!.Id, Is.EqualTo(operation.Id));
+            Assert.That(result.FileName, Is.EqualTo(operation.FileName));
+            Assert.That(result.OriginalPath, Is.EqualTo(operation.OriginalPath));
+            Assert.That(result.NewPath, Is.EqualTo(operation.NewPath));
+            Assert.That(result.Status, Is.EqualTo(operation.Status));
+            Assert.That(result.SortSessionId, Is.EqualTo(operation.SortSessionId));
+            Assert.That(result.Timestamp, Is.EqualTo(operation.Timestamp).Within(TimeSpan.FromSeconds(1)));
+        });
+    }
+
 
     [Test]
     public async Task GetOperationsBySessionAsync_Should_Return_Operations_For_Session()
