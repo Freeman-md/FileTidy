@@ -13,6 +13,11 @@ public class ConsoleSortReporter : ISortReporter
         DisplayProgressBar(_processed, _total);
     }
 
+    public void OnFileSkipped(string filePath)
+    {
+        Console.WriteLine($"\n⚠️ Skipped file (already sorted or unsupported): {filePath}");
+    }
+
     public void OnError(string filePath, Exception ex)
     {
         Console.WriteLine($"\n❌ Error moving file: {filePath}");
@@ -42,6 +47,11 @@ public class ConsoleSortReporter : ISortReporter
         _total = total;
     }
 
+    public void OnElapsedTimeReported(TimeSpan elapsed)
+    {
+        Console.WriteLine($"\n⏱️ Elapsed time so far: {elapsed:mm\\:ss}");
+    }
+
     private void DisplayProgressBar(int current, int total)
     {
         int barWidth = 50;
@@ -53,11 +63,6 @@ public class ConsoleSortReporter : ISortReporter
         Console.Write(new string('█', filledLength));
         Console.Write(new string(' ', barWidth - filledLength));
         Console.Write($"] {current}/{total} ({progress * 100:F1}%)");
-    }
-
-    public void ReportElapsed(TimeSpan elapsed)
-    {
-        throw new NotImplementedException();
     }
 
 }

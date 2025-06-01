@@ -255,7 +255,7 @@ public class SqliteOperationStoreTests
     }
 
     [Test]
-    public async Task UpdateOperationStatusAsync_Should_Not_Throw_When_Operation_Does_Not_Exist()
+    public void UpdateOperationStatusAsync_Should_Not_Throw_When_Operation_Does_Not_Exist()
     {
         // Arrange
         var nonExistentId = Guid.NewGuid();

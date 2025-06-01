@@ -43,6 +43,7 @@ public class FileTidyingService : IFileTidyingService
 
             Dictionary<string, int> perCategoryCounts = new();
             int totalMoved = 0, totalErrors = 0, processed = 0;
+            Guid sortSessionId = Guid.NewGuid();
 
             foreach (var file in filesToProcess)
             {
@@ -59,11 +60,13 @@ public class FileTidyingService : IFileTidyingService
 
                     await _fileOperationStore.LogOperationAsync(new FileOperation
                     {
+                        Id = Guid.NewGuid(),
                         FileName = Path.GetFileName(file),
                         OriginalPath = result.OriginalPath,
                         NewPath = result.NewPath,
                         Status = result.Status,
-                        Timestamp = DateTime.UtcNow
+                        Timestamp = DateTime.UtcNow,
+                        SortSessionId = sortSessionId
                     });
 
                     _reporter?.OnFileProcessed(file, category);

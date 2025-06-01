@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FileTidy.CLI.Reporting;
 using FileTidy.Core.Services;
+using FIleTidy.Data.Sqlite;
 
 namespace FileTidy.CLI.Handlers;
 
@@ -11,7 +12,8 @@ public static class SortingHandler
         foreach (var directoryToSort in directories)
         {
             var reporter = new ConsoleSortReporter();
-            var service = new FileTidyingService(reporter);
+            var store = new SqliteOperationStore();
+            var service = new FileTidyingService(store, reporter);
             await service.SortDirectory(directoryToSort);
         }
     }
