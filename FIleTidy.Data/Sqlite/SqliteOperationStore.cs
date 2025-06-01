@@ -83,6 +83,9 @@ public class SqliteOperationStore : IFileOperationStore
 
     public async Task LogOperationAsync(FileOperation operation)
     {
+        if (operation is null)
+            throw new ArgumentNullException(nameof(operation));
+        
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
@@ -102,9 +105,38 @@ public class SqliteOperationStore : IFileOperationStore
         command.Parameters.AddWithValue("@NewPath", operation.NewPath);
         command.Parameters.AddWithValue("@Status", operation.Status.ToString());
         command.Parameters.AddWithValue("@Timestamp", operation.Timestamp.ToUniversalTime());
-        command.Parameters.AddWithValue("@SortSessionId", operation.Id.ToString());
+        command.Parameters.AddWithValue("@SortSessionId", operation.SortSessionId.ToString());
 
         await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task<FileOperation?> GetOperationByIdAsync(Guid operationId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = @"SELECT * FROM FileOperations WHERE Id = @Id";
+        
+        command.Parameters.AddWithValue("@Id", operationId.ToString());
+        
+        using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            return new FileOperation()
+            {
+                Id = reader.GetGuid(0),
+                FileName = reader.GetString(1),
+                OriginalPath = reader.GetString(2),
+                NewPath = reader.GetString(3),
+                Status = Enum.Parse<FileOperationStatus>(reader.GetString(4)),
+                Timestamp = reader.GetDateTime(5),
+                SortSessionId = reader.GetGuid(6),
+            };
+        }
+        
+        return null;
     }
 
     public async Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId)
