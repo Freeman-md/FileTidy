@@ -9,7 +9,7 @@ Tired of a cluttered **Downloads** folder?
 ✅ **Supports multiple directories** – Downloads, Documents, Desktop  
 ✅ **Works on Windows, macOS, and Linux**  
 ✅ **Real-time progress bar** for tracking large organizing tasks  
-✅ **Simple CLI interface** (Web version coming soon!)  
+✅ **Simple CLI interface** (Work In Progress for Desktop Version)  
 
 ## 📸 Preview
 **Before Organizing:**  
