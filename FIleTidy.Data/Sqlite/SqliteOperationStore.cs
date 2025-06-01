@@ -19,6 +19,20 @@ public class SqliteOperationStore : IFileOperationStore
 
         CreateTablesIfNotExists();
     }
+    
+    public SqliteOperationStore(string? customPath = null)
+    {
+        var dbPath = customPath ?? GetDefaultDbPath();
+
+        _connectionString = new SqliteConnectionStringBuilder
+        {
+            DataSource = dbPath,
+            Mode = SqliteOpenMode.ReadWriteCreate
+        }.ToString();
+
+        CreateTablesIfNotExists();
+    }
+
 
     private static string GetDefaultDbPath()
     {
