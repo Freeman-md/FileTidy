@@ -70,7 +70,7 @@ public class SqliteOperationStore : IFileOperationStore
                 FileName TEXT NOT NULL,
                 OriginalPath TEXT NOT NULL,
                 NewPath TEXT NOT NULL,
-                Status TEXT NOT NULL CHECK(Status IN ('Moved', 'Deleted', 'Reverted', 'Unchanged')) DEFAULT 'Moved',
+                Status TEXT NOT NULL CHECK(Status IN ('Moved', 'Deleted', 'Reverted', 'Skipped', 'Failed')) DEFAULT 'Moved',
                 Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
                 SortSessionId TEXT NOT NULL
             )

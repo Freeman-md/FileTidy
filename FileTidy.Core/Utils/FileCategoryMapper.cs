@@ -2,7 +2,7 @@ using System.Text.Json;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 
-namespace FileTidy.Core.Services;
+namespace FileTidy.Core.Utils;
 
 /// <summary>
 /// Maps file extensions to user-defined categories loaded from JSON data files.
