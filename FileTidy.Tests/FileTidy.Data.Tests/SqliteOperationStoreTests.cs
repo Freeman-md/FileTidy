@@ -76,14 +76,14 @@ public class SqliteOperationStoreTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Timestamp, Is.EqualTo(expected).Within(TimeSpan.FromSeconds(1)));
     }
-    
+
     [Test]
     public async Task GetOperationsBySessionAsync_Should_Return_Operations_For_Session()
     {
         // Arrange
         var sessionId = Guid.NewGuid();
         var builder = new FileOperationBuilder();
-        var operations = builder.BuildMany(5).Select(op => 
+        var operations = builder.BuildMany(5).Select(op =>
             new FileOperationBuilder()
                 .WithSortSessionId(sessionId)
                 .WithTimestamp(op.Timestamp)
@@ -100,7 +100,7 @@ public class SqliteOperationStoreTests
         Assert.That(results, Has.Count.EqualTo(5));
         Assert.That(results.Select(x => x.Id), Is.EquivalentTo(operations.Select(x => x.Id)));
     }
-    
+
     [Test]
     public async Task GetOperationsBySessionAsync_Should_Return_Empty_When_Session_Has_No_Operations()
     {
@@ -113,7 +113,7 @@ public class SqliteOperationStoreTests
         // Assert
         Assert.That(results, Is.Empty);
     }
-    
+
     [Test]
     public async Task GetOperationsBySessionAsync_Should_Return_Results_Ordered_By_Timestamp()
     {
@@ -121,9 +121,11 @@ public class SqliteOperationStoreTests
         var sessionId = Guid.NewGuid();
         var baseTime = DateTime.UtcNow;
 
-        var op1 = new FileOperationBuilder().WithSortSessionId(sessionId).WithTimestamp(baseTime.AddMinutes(-10)).Build();
+        var op1 = new FileOperationBuilder().WithSortSessionId(sessionId).WithTimestamp(baseTime.AddMinutes(-10))
+            .Build();
         var op2 = new FileOperationBuilder().WithSortSessionId(sessionId).WithTimestamp(baseTime).Build();
-        var op3 = new FileOperationBuilder().WithSortSessionId(sessionId).WithTimestamp(baseTime.AddMinutes(-5)).Build();
+        var op3 = new FileOperationBuilder().WithSortSessionId(sessionId).WithTimestamp(baseTime.AddMinutes(-5))
+            .Build();
 
         var expectedOrder = new[] { op1.Id, op3.Id, op2.Id };
 
@@ -138,6 +140,50 @@ public class SqliteOperationStoreTests
         Assert.That(results.Select(x => x.Id), Is.EqualTo(expectedOrder));
     }
 
+    [Test]
+    public async Task GetRecentOperationsAsync_Should_Return_Limited_Number_Of_Recent_Operations()
+    {
+        // Arrange
+        var allOperations = new FileOperationBuilder().BuildMany(10).ToList();
+
+        foreach (var op in allOperations)
+            await _store.LogOperationAsync(op);
+
+        // Act
+        var results = (await _store.GetRecentOperationsAsync(5)).ToList();
+
+        // Assert
+        Assert.That(results, Has.Count.EqualTo(5));
+        var expected = allOperations.OrderByDescending(x => x.Timestamp).Take(5).Select(x => x.Id);
+        Assert.That(results.Select(x => x.Id), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public async Task GetRecentOperationsAsync_Should_Return_Empty_When_No_Operations_Exist()
+    {
+        // Act
+        var results = await _store.GetRecentOperationsAsync(5);
+
+        // Assert
+        Assert.That(results, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetRecentOperationsAsync_Should_Return_Results_Ordered_By_Timestamp_Descending()
+    {
+        // Arrange
+        var operations = new FileOperationBuilder().BuildMany(3).ToList();
+
+        foreach (var op in operations)
+            await _store.LogOperationAsync(op);
+
+        // Act
+        var results = (await _store.GetRecentOperationsAsync(3)).ToList();
+
+        // Assert
+        var expectedOrder = operations.OrderByDescending(x => x.Timestamp).Select(x => x.Id);
+        Assert.That(results.Select(x => x.Id), Is.EqualTo(expectedOrder));
+    }
 
 
     [TearDown]
