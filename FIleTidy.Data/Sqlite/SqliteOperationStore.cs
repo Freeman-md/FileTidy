@@ -223,7 +223,7 @@ SET Status = @Status
 WHERE Id = @Id";
         
         command.Parameters.AddWithValue("@Id", operationId.ToString());
-        command.Parameters.AddWithValue("@Status", status);
+        command.Parameters.AddWithValue("@Status", status.ToString());
         
         await command.ExecuteNonQueryAsync();
     }

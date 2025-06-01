@@ -185,6 +185,56 @@ public class SqliteOperationStoreTests
         Assert.That(results.Select(x => x.Id), Is.EqualTo(expectedOrder));
     }
 
+    [Test]
+    public async Task UpdateOperationStatusAsync_Should_Update_Status_Successfully()
+    {
+        // Arrange
+        var operation = new FileOperationBuilder()
+            .WithStatus(FileOperationStatus.Moved)
+            .Build();
+
+        await _store.LogOperationAsync(operation);
+
+        // Act
+        await _store.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Deleted);
+        var updated = await _store.GetOperationByIdAsync(operation.Id);
+
+        // Assert
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated!.Status, Is.EqualTo(FileOperationStatus.Deleted));
+    }
+
+    [Test]
+    public async Task UpdateOperationStatusAsync_Should_Not_Throw_When_Operation_Does_Not_Exist()
+    {
+        // Arrange
+        var nonExistentId = Guid.NewGuid();
+
+        // Act & Assert
+        Assert.DoesNotThrowAsync(async () =>
+            await _store.UpdateOperationStatusAsync(nonExistentId, FileOperationStatus.Reverted));
+    }
+
+    [Test]
+    public async Task UpdateOperationStatusAsync_Should_Allow_Multiple_Status_Changes()
+    {
+        // Arrange
+        var operation = new FileOperationBuilder()
+            .WithStatus(FileOperationStatus.Moved)
+            .Build();
+
+        await _store.LogOperationAsync(operation);
+
+        // Act
+        await _store.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Deleted);
+        await _store.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Reverted);
+        var updated = await _store.GetOperationByIdAsync(operation.Id);
+
+        // Assert
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated!.Status, Is.EqualTo(FileOperationStatus.Reverted));
+    }
+
 
     [TearDown]
     public void TearDown()
