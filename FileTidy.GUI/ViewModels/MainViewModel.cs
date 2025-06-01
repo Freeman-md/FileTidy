@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Services;
+using FIleTidy.Data.Sqlite;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
@@ -228,13 +229,13 @@ public partial class MainViewModel : ViewModelBase
             _sortingCancellationTokenSource = new CancellationTokenSource();
             var token = _sortingCancellationTokenSource.Token;
 
-            var reporter = new GUIFileSortReporter(
+            var reporter = new GuiFileSortReporter(
             progress => SortProgress = progress,
             elapsed => ElapsedTime = elapsed,
             filesMoved => SortedFiles = filesMoved
             );
-
-            var tidyService = new FileTidyingService(reporter);
+            var store = new SqliteOperationStore();
+            var tidyService = new FileTidyingService(store, reporter);
             var result = await tidyService.SortDirectory(SelectedFolder.FullPath, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");

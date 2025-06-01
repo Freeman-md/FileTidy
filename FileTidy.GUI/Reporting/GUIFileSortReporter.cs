@@ -4,7 +4,7 @@ using FileTidy.Core.Interfaces;
 
 namespace FileTidy.GUI.Reporting;
 
-public class GUIFileSortReporter : ISortReporter
+public class GuiFileSortReporter : ISortReporter
 {
     private readonly Action<int>? _progressUpdate;
     private readonly Action<string>? _elapsedUpdate;
@@ -13,7 +13,7 @@ public class GUIFileSortReporter : ISortReporter
     private int _total = 0;
     private int _processed = 0;
 
-    public GUIFileSortReporter(Action<int>? progressUpdate, Action<string>? elapsedUpdate, Action<int>? filesMovedUpdate)
+    public GuiFileSortReporter(Action<int>? progressUpdate, Action<string>? elapsedUpdate, Action<int>? filesMovedUpdate)
     {
         _progressUpdate = progressUpdate;
         _elapsedUpdate = elapsedUpdate;
@@ -27,11 +27,24 @@ public class GUIFileSortReporter : ISortReporter
         _progressUpdate?.Invoke(0);
     }
 
+    public void OnElapsedTimeReported(TimeSpan elapsed)
+    {
+        if (elapsed.TotalSeconds < 1)
+            _elapsedUpdate?.Invoke($"{elapsed.TotalMilliseconds:F0}ms");
+        else
+            _elapsedUpdate?.Invoke($"{(int)elapsed.TotalMinutes}m {elapsed.Seconds:D2}s");
+    }
+
     public void OnFileProcessed(string filePath, string category)
     {
         _processed++;
         var progress = (_total > 0) ? (_processed * 100) / _total : 0;
         _progressUpdate?.Invoke(progress);
+    }
+
+    public void OnFileSkipped(string filePath)
+    {
+        throw new NotImplementedException();
     }
 
     public void OnSummary(int totalFiles, int totalMoved, int totalErrors, Dictionary<string, int> perCategoryCounts)
@@ -42,13 +55,4 @@ public class GUIFileSortReporter : ISortReporter
     public void OnError(string filePath, Exception ex) { }
 
     public void OnDirectoryEmptied(string directoryPath) { }
-
-    public void ReportElapsed(TimeSpan elapsed)
-    {
-        if (elapsed.TotalSeconds < 1)
-            _elapsedUpdate?.Invoke($"{elapsed.TotalMilliseconds:F0}ms");
-        else
-            _elapsedUpdate?.Invoke($"{(int)elapsed.TotalMinutes}m {elapsed.Seconds:D2}s");
-
-    }
 }
