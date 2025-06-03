@@ -52,6 +52,31 @@ public class ConsoleSortReporter : ISortReporter
         Console.WriteLine($"\n⏱️ Elapsed time so far: {elapsed:mm\\:ss}");
     }
 
+    public void OnFileReverted(string operationNewPath)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnSessionReverted(Guid sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnBulkRevertSummary(int total, int reverted, int failed)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnFileDeleted(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnBulkDeleteSummary(int total, int deleted, int failed)
+    {
+        throw new NotImplementedException();
+    }
+
     private void DisplayProgressBar(int current, int total)
     {
         int barWidth = 50;

@@ -11,4 +11,7 @@ public interface ISortReporter
     void OnElapsedTimeReported(TimeSpan elapsed);
     void OnFileReverted(string operationNewPath);
     void OnSessionReverted(Guid sessionId);
+    void OnBulkRevertSummary(int total, int reverted, int failed);
+    void OnFileDeleted(string path);
+    void OnBulkDeleteSummary(int total, int deleted, int failed);
 }

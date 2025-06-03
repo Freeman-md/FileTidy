@@ -155,6 +155,71 @@ public class FileTidyingService : IFileTidyingService
         _reporter?.OnSessionReverted(sessionId);
     }
     
+    public async Task RevertFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
+    {
+        int total = 0, reverted = 0, failed = 0;
+
+        foreach (var path in filePaths)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            total++;
+
+            try
+            {
+                var operation = await _fileOperationStore
+                    .GetLatestNonRevertedOperationByNewPathAsync(path, FileOperationStatus.Moved);
+
+                if (operation == null)
+                {
+                    _reporter?.OnError(path, new InvalidOperationException(
+                        $"Cannot revert. No active operation found for file at path: {path}"));
+                    failed++;
+                    continue;
+                }
+
+                await _fileManager.RevertFileAsync(operation.NewPath, operation.OriginalPath, cancellationToken);
+                await _fileOperationStore.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Reverted);
+                _reporter?.OnFileReverted(operation.NewPath);
+                reverted++;
+            }
+            catch (Exception ex)
+            {
+                _reporter?.OnError(path, ex);
+                failed++;
+            }
+        }
+
+        _reporter?.OnBulkRevertSummary(total, reverted, failed);
+    }
+    
+    public async Task DeleteFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
+    {
+        int total = 0, deleted = 0, failed = 0;
+
+        foreach (var path in filePaths)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            total++;
+
+            try
+            {
+                await _fileManager.DeleteFileAsync(path, cancellationToken);
+
+                //TODO: Add File Operation to get file operation by path. Either original path or new path. And then update the file operation status if an operation exists
+
+                _reporter?.OnFileDeleted(path);
+                deleted++;
+            }
+            catch (Exception ex)
+            {
+                _reporter?.OnError(path, ex);
+                failed++;
+            }
+        }
+
+        _reporter?.OnBulkDeleteSummary(total, deleted, failed);
+    }
+    
     private void RemoveEmptyDirectories(string directory)
     {
         foreach (var subDirectory in Directory.GetDirectories(directory))
