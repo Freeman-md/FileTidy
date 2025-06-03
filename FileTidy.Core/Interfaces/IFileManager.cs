@@ -8,5 +8,6 @@ public interface IFileManager
         CancellationToken cancellationToken = default);
 
     Task RevertFileAsync(string fromPath, string toPath, CancellationToken cancellationToken = default);
+    Task DeleteFileAsync(string path, CancellationToken cancellationToken = default);
 
 }

@@ -74,6 +74,16 @@ public class FileManager : IFileManager
             File.Move(fromPath, toPath);
         }, cancellationToken);
     }
+    
+    public Task DeleteFileAsync(string path, CancellationToken cancellationToken = default)
+    {
+        return Task.Run(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            File.Delete(path);
+        }, cancellationToken);
+    }
 
 
     private string GetUniqueFilePath(string filePath)

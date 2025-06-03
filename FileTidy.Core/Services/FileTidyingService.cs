@@ -109,7 +109,7 @@ public class FileTidyingService : IFileTidyingService
         var retrievedFileOperation =
             await _fileOperationStore.GetLatestNonRevertedOperationByNewPathAsync(newPath, FileOperationStatus.Moved);
 
-        if (retrievedFileOperation == null)
+        if (retrievedFileOperation is null)
         {
             _reporter?.OnError(newPath,
                 new InvalidOperationException($"Cannot revert. No active operation found for file at path: {newPath}"));
@@ -122,6 +122,14 @@ public class FileTidyingService : IFileTidyingService
             cancellationToken);
 
         await _fileOperationStore.UpdateOperationStatusAsync(retrievedFileOperation.Id, FileOperationStatus.Reverted);
+    }
+    
+    public async Task DeleteFileAsync(string path,
+        CancellationToken cancellationToken = default)
+    {
+        await _fileManager.DeleteFileAsync(path, cancellationToken);
+        
+        //TODO: Add File Operation to get file operation by path. Either original path or new path. And then update the file operation status if an operation exists
     }
 
     private void RemoveEmptyDirectories(string directory)
