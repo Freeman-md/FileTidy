@@ -54,27 +54,33 @@ public class ConsoleSortReporter : ISortReporter
 
     public void OnFileReverted(string operationNewPath)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"\n↩️ Reverted file: {operationNewPath}");
     }
 
     public void OnSessionReverted(Guid sessionId)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"\n📦 Revert complete for session: {sessionId}");
     }
 
     public void OnBulkRevertSummary(int total, int reverted, int failed)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("\n🧾 Revert Summary:");
+        Console.WriteLine($"🔹 Total Files: {total}");
+        Console.WriteLine($"✅ Reverted: {reverted}");
+        Console.WriteLine($"❌ Failed: {failed}");
     }
 
     public void OnFileDeleted(string path)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"\n🗑️ Deleted file: {path}");
     }
 
     public void OnBulkDeleteSummary(int total, int deleted, int failed)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("\n🧾 Delete Summary:");
+        Console.WriteLine($"🔹 Total Files: {total}");
+        Console.WriteLine($"✅ Deleted: {deleted}");
+        Console.WriteLine($"❌ Failed: {failed}");
     }
 
     private void DisplayProgressBar(int current, int total)
