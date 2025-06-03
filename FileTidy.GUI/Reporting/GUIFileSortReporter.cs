@@ -35,6 +35,31 @@ public class GuiFileSortReporter : ISortReporter
             _elapsedUpdate?.Invoke($"{(int)elapsed.TotalMinutes}m {elapsed.Seconds:D2}s");
     }
 
+    public void OnFileReverted(string operationNewPath)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnSessionReverted(Guid sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnBulkRevertSummary(int total, int reverted, int failed)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnFileDeleted(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnBulkDeleteSummary(int total, int deleted, int failed)
+    {
+        throw new NotImplementedException();
+    }
+
     public void OnFileProcessed(string filePath, string category)
     {
         _processed++;
