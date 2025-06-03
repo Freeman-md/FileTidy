@@ -141,7 +141,7 @@ public class SqliteOperationStore : IFileOperationStore
         return null;
     }
 
-    public async Task<FileOperation?> GetNonRevertedOperationByNewPathAsync(string newPath, FileOperationStatus status)
+    public async Task<FileOperation?> GetLatestNonRevertedOperationByNewPathAsync(string newPath, FileOperationStatus status)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();

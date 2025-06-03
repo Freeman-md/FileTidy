@@ -4,6 +4,9 @@ namespace FileTidy.Core.Interfaces;
 
 public interface IFileManager
 {
-    FileMoveResult MoveFile(string file, string category, string directoryPath,
+    Task<FileMoveResult> MoveFileAsync(string file, string category, string directoryPath,
         CancellationToken cancellationToken = default);
+
+    Task RevertFileAsync(string fromPath, string toPath, CancellationToken cancellationToken = default);
+
 }

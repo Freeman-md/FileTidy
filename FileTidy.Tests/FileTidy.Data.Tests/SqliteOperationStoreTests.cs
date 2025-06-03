@@ -152,7 +152,7 @@ public class SqliteOperationStoreTests
     }
 
     [Test]
-    public async Task GetNonRevertedOperationByNewPathAsync_Should_Return_Operation_When_Match_Exists()
+    public async Task GetLatestNonRevertedOperationByNewPathAsync_Should_Return_Operation_When_Match_Exists()
     {
         // Arrange
         var fileOperation = new FileOperationBuilder()
@@ -163,7 +163,7 @@ public class SqliteOperationStoreTests
         await _store.LogOperationAsync(fileOperation);
         
         // Act
-        var result = await _store.GetNonRevertedOperationByNewPathAsync(fileOperation.NewPath, fileOperation.Status);
+        var result = await _store.GetLatestNonRevertedOperationByNewPathAsync(fileOperation.NewPath, fileOperation.Status);
         
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -171,7 +171,7 @@ public class SqliteOperationStoreTests
     }
 
     [Test]
-    public async Task GetNonRevertedOperationByNewFilePathAsync_Should_Return_Null_When_No_Matching_Status()
+    public async Task GetLatestNonRevertedOperationByNewPathAsync_Should_Return_Null_When_No_Matching_Status()
     {
         // Arrange
         var fileOperation = new FileOperationBuilder()
@@ -182,14 +182,14 @@ public class SqliteOperationStoreTests
         await _store.LogOperationAsync(fileOperation);
         
         // Act
-        var result = await _store.GetNonRevertedOperationByNewPathAsync(fileOperation.NewPath, FileOperationStatus.Moved);
+        var result = await _store.GetLatestNonRevertedOperationByNewPathAsync(fileOperation.NewPath, FileOperationStatus.Moved);
         
         // Assert
         Assert.That(result, Is.Null);
     }
 
     [Test]
-    public async Task GetNonRevertedOperationByNewFilePathAsync_Should_Return_Latest_When_Multiple_Exist()
+    public async Task GetLatestNonRevertedOperationByNewPathAsync_Should_Return_Latest_When_Multiple_Exist()
     {
         // Arrange
         var path = "C:/Sorted/Videos/movie.mp4";
@@ -211,7 +211,7 @@ public class SqliteOperationStoreTests
         await _store.LogOperationAsync(newer);
         
         // Act
-        var result = await _store.GetNonRevertedOperationByNewPathAsync(path, FileOperationStatus.Moved);
+        var result = await _store.GetLatestNonRevertedOperationByNewPathAsync(path, FileOperationStatus.Moved);
 
         // Assert
         Assert.That(result, Is.Not.Null);
