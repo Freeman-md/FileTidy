@@ -6,6 +6,7 @@ public interface IFileOperationStore
 {
     Task LogOperationAsync(FileOperation operation);
     Task<FileOperation?> GetOperationByIdAsync(Guid operationId);
+    Task<FileOperation?> GetNonRevertedOperationByNewPathAsync(string newPath, FileOperationStatus status);
     Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId);
     Task<IEnumerable<FileOperation>> GetRecentOperationsAsync(int limit);
     Task UpdateOperationStatusAsync(Guid operationId, FileOperationStatus status);

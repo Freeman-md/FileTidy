@@ -141,6 +141,40 @@ public class SqliteOperationStore : IFileOperationStore
         return null;
     }
 
+    public async Task<FileOperation?> GetNonRevertedOperationByNewPathAsync(string newPath, FileOperationStatus status)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+        SELECT * FROM FileOperations 
+        WHERE NewPath = @NewPath AND Status = @Status 
+        ORDER BY Timestamp DESC 
+        LIMIT 1";
+        
+        command.Parameters.AddWithValue("@NewPath", newPath);
+        command.Parameters.AddWithValue("@Status", status.ToString());
+        
+        using var reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            return new FileOperation()
+            {
+                Id = reader.GetGuid(0),
+                FileName = reader.GetString(1),
+                OriginalPath = reader.GetString(2),
+                NewPath = reader.GetString(3),
+                Status = Enum.Parse<FileOperationStatus>(reader.GetString(4)),
+                Timestamp = reader.GetDateTime(5),
+                SortSessionId = reader.GetGuid(6),
+            };
+        }
+
+        return null;
+    }
+
     public async Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId)
     {
         var operations = new List<FileOperation>();

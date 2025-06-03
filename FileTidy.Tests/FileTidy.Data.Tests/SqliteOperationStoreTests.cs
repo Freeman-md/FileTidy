@@ -152,6 +152,73 @@ public class SqliteOperationStoreTests
     }
 
     [Test]
+    public async Task GetNonRevertedOperationByNewPathAsync_Should_Return_Operation_When_Match_Exists()
+    {
+        // Arrange
+        var fileOperation = new FileOperationBuilder()
+            .WithNewPath("C:/Sorted/Images/photo.jpg")
+            .WithStatus(FileOperationStatus.Moved)
+            .Build();
+        
+        await _store.LogOperationAsync(fileOperation);
+        
+        // Act
+        var result = await _store.GetNonRevertedOperationByNewPathAsync(fileOperation.NewPath, fileOperation.Status);
+        
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Id, Is.EqualTo(fileOperation.Id));
+    }
+
+    [Test]
+    public async Task GetNonRevertedOperationByNewFilePathAsync_Should_Return_Null_When_No_Matching_Status()
+    {
+        // Arrange
+        var fileOperation = new FileOperationBuilder()
+            .WithNewPath("C:/Sorted/Docs/report.pdf")
+            .WithStatus(FileOperationStatus.Reverted)
+            .Build();
+
+        await _store.LogOperationAsync(fileOperation);
+        
+        // Act
+        var result = await _store.GetNonRevertedOperationByNewPathAsync(fileOperation.NewPath, FileOperationStatus.Moved);
+        
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task GetNonRevertedOperationByNewFilePathAsync_Should_Return_Latest_When_Multiple_Exist()
+    {
+        // Arrange
+        var path = "C:/Sorted/Videos/movie.mp4";
+        var baseTime = DateTime.UtcNow;
+        
+        var older = new FileOperationBuilder()
+            .WithNewPath(path)
+            .WithTimestamp(baseTime.AddMinutes(-10))
+            .WithStatus(FileOperationStatus.Moved)
+            .Build();
+
+        var newer = new FileOperationBuilder()
+            .WithNewPath(path)
+            .WithTimestamp(baseTime)
+            .WithStatus(FileOperationStatus.Moved)
+            .Build();
+        
+        await _store.LogOperationAsync(older);
+        await _store.LogOperationAsync(newer);
+        
+        // Act
+        var result = await _store.GetNonRevertedOperationByNewPathAsync(path, FileOperationStatus.Moved);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Id, Is.EqualTo(newer.Id));
+    }
+
+    [Test]
     public async Task GetOperationsBySessionAsync_Should_Return_Empty_When_Session_Has_No_Operations()
     {
         // Arrange
