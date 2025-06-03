@@ -132,6 +132,29 @@ public class FileTidyingService : IFileTidyingService
         //TODO: Add File Operation to get file operation by path. Either original path or new path. And then update the file operation status if an operation exists
     }
 
+    public async Task RevertSessionAsync(Guid sessionId, CancellationToken cancellationToken = default)
+    {
+        var operations = await _fileOperationStore.GetOperationsBySessionAsync(sessionId);
+
+        foreach (var operation in operations)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
+            {
+                await _fileManager.RevertFileAsync(operation.NewPath, operation.OriginalPath, cancellationToken);
+                await _fileOperationStore.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Reverted);
+                _reporter?.OnFileReverted(operation.NewPath);
+            }
+            catch (Exception ex)
+            {
+                _reporter?.OnError(operation.NewPath, ex);
+            }
+        }
+
+        _reporter?.OnSessionReverted(sessionId);
+    }
+    
     private void RemoveEmptyDirectories(string directory)
     {
         foreach (var subDirectory in Directory.GetDirectories(directory))

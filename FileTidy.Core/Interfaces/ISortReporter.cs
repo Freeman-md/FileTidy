@@ -9,4 +9,6 @@ public interface ISortReporter
     void OnSummary(int totalFiles, int totalMoved, int totalErrors, Dictionary<string, int> perCategoryCounts);
     void SetTotalFiles(int total);
     void OnElapsedTimeReported(TimeSpan elapsed);
+    void OnFileReverted(string operationNewPath);
+    void OnSessionReverted(Guid sessionId);
 }
