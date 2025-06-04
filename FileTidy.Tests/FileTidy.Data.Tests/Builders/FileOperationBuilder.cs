@@ -32,17 +32,18 @@ public class FileOperationBuilder
         return this;
     }
     
-    public FileOperationBuilder WithNewPath(string newPath)
+    public FileOperationBuilder WithNewPath(string path)
     {
-        _fileOperation.NewPath = newPath;
+        _fileOperation.NewPath = path.Replace('\\', '/');
         return this;
     }
-    
-    public FileOperationBuilder WithOriginalPath(string originalPath)
+
+    public FileOperationBuilder WithOriginalPath(string path)
     {
-        _fileOperation.OriginalPath = originalPath;
+        _fileOperation.OriginalPath = path.Replace('\\', '/');
         return this;
     }
+
     
     public FileOperationBuilder WithStatus(FileOperationStatus status)
     {

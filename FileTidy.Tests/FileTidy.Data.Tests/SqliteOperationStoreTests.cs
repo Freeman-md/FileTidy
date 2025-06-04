@@ -351,7 +351,108 @@ public class SqliteOperationStoreTests
         Assert.That(updated, Is.Not.Null);
         Assert.That(updated!.Status, Is.EqualTo(FileOperationStatus.Reverted));
     }
+    
+     [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Return_Empty_When_No_Matches()
+    {
+        var unrelated = new FileOperationBuilder()
+            .WithOriginalPath("/random/folder/file.txt")
+            .WithNewPath("/random/folder/file.txt")
+            .Build();
 
+        await _store.LogOperationAsync(unrelated);
+
+        var result = await _store.GetFileOperationsInDirectoryAsync("/home/user/Downloads");
+
+        Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Not_Return_Deeply_Nested_Paths()
+    {
+        var nested = new FileOperationBuilder()
+            .WithOriginalPath("/home/user/Downloads/deep/nested/file.txt")
+            .WithNewPath("/home/user/Downloads/deep/nested/target/file.txt")
+            .Build();
+
+        await _store.LogOperationAsync(nested);
+
+        var result = await _store.GetFileOperationsInDirectoryAsync("/home/user/Downloads");
+
+        Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Handle_WindowsStyle_Paths()
+    {
+        var folderPath = "C:\\Users\\User\\Downloads";
+        var direct = new FileOperationBuilder()
+            .WithNewPath("C:\\Users\\User\\Downloads\\pic.jpg")
+            .Build();
+
+        var nested = new FileOperationBuilder()
+            .WithNewPath("C:\\Users\\User\\Downloads\\Nested\\Folder\\deep.txt")
+            .Build();
+
+        await _store.LogOperationAsync(direct);
+        await _store.LogOperationAsync(nested);
+
+        var result = (await _store.GetFileOperationsInDirectoryAsync(folderPath)).ToList();
+
+        Assert.That(result.Select(x => x.Id), Contains.Item(direct.Id));
+        Assert.That(result.Select(x => x.Id), Does.Not.Contain(nested.Id));
+    }
+
+    [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Ignore_Trailing_Slashes()
+    {
+        var op = new FileOperationBuilder()
+            .WithNewPath("/home/user/Downloads/file.txt")
+            .Build();
+
+        await _store.LogOperationAsync(op);
+
+        var result = await _store.GetFileOperationsInDirectoryAsync("/home/user/Downloads/");
+
+        Assert.That(result.Select(r => r.Id), Contains.Item(op.Id));
+    }
+
+    [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Return_Multiple_Valid_Operations()
+    {
+        var folderPath = "/home/user/Downloads/Images";
+
+        var op1 = new FileOperationBuilder().WithNewPath($"{folderPath}/one.png").Build();
+        var op2 = new FileOperationBuilder().WithNewPath($"{folderPath}/two.jpg").Build();
+
+        await _store.LogOperationAsync(op1);
+        await _store.LogOperationAsync(op2);
+
+        var result = await _store.GetFileOperationsInDirectoryAsync(folderPath);
+
+        Assert.That(result.Select(x => x.Id), Is.EquivalentTo(new[] { op1.Id, op2.Id }));
+    }
+    
+    [Test]
+    public async Task GetFileOperationsInDirectoryAsync_Should_Return_Only_Operations_Under_Folder()
+    {
+        // Arrange
+        var folderPath = "/home/user/Downloads";
+
+        var matching1 = new FileOperationBuilder().WithOriginalPath($"{folderPath}/doc1.pdf").WithNewPath($"{folderPath}/doc1.pdf").Build();
+        var matching2 = new FileOperationBuilder().WithOriginalPath($"{folderPath}/image1.png").WithNewPath($"{folderPath}/Images/image1.png").Build();
+        var nonMatching = new FileOperationBuilder().WithOriginalPath("/other/path/unrelated.txt").WithNewPath("/other/path/unrelated.txt").Build();
+
+        await _store.LogOperationAsync(matching1);
+        await _store.LogOperationAsync(matching2);
+        await _store.LogOperationAsync(nonMatching);
+
+        // Act
+        var results = (await _store.GetFileOperationsInDirectoryAsync(folderPath)).ToList();
+
+        // Assert
+        Assert.That(results.Select(r => r.Id), Is.EquivalentTo(new[] { matching1.Id }));
+    }
 
     [TearDown]
     public void TearDown()

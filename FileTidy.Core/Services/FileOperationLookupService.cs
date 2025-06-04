@@ -18,7 +18,6 @@ public class FileOperationLookupService : IFileOperationLookupService
         var fileOperations = await _fileOperationStore.GetFileOperationsInDirectoryAsync(folderPath);
         
         var filteredOperations = fileOperations
-            .Where(operation => Path.GetDirectoryName(operation.NewPath)?.TrimEnd(Path.DirectorySeparatorChar) == folderPath.TrimEnd(Path.DirectorySeparatorChar))
             .GroupBy(operation => operation.NewPath)
             .Select(group => group.OrderByDescending(operation => operation.Timestamp).First())
             .ToDictionary(operation => operation.NewPath, operation => operation.Status);

@@ -103,8 +103,8 @@ public class SqliteOperationStore : IFileOperationStore
 
         command.Parameters.AddWithValue("@Id", operation.Id.ToString());
         command.Parameters.AddWithValue("@FileName", operation.FileName);
-        command.Parameters.AddWithValue("@OriginalPath", operation.OriginalPath);
-        command.Parameters.AddWithValue("@NewPath", operation.NewPath);
+        command.Parameters.AddWithValue("@OriginalPath", operation.OriginalPath.Replace('\\', '/'));
+        command.Parameters.AddWithValue("@NewPath", operation.NewPath.Replace('\\', '/'));
         command.Parameters.AddWithValue("@Status", operation.Status.ToString());
         command.Parameters.AddWithValue("@Timestamp", operation.Timestamp.ToUniversalTime());
         command.Parameters.AddWithValue("@SortSessionId", operation.SortSessionId.ToString());
@@ -274,12 +274,12 @@ WHERE Id = @Id";
         command.CommandText = @"
 SELECT Id, FileName, OriginalPath, NewPath, Status, Timestamp, SortSessionId
 FROM FileOperations
-WHERE TRIM(TRAILING '/' FROM REPLACE(REPLACE(NewPath, '\', '/'), '//', '/')) 
-      LIKE @FolderPath || '/%';";
+WHERE NewPath LIKE @PathPrefix";
 
-        // Normalize folderPath for consistent comparison
+        // Ensure consistent forward slashes
         var normalizedFolderPath = folderPath.Replace('\\', '/').TrimEnd('/');
-        command.Parameters.AddWithValue("@FolderPath", normalizedFolderPath);
+        command.Parameters.AddWithValue("@PathPrefix", normalizedFolderPath + "/%");
+
 
         var results = new List<FileOperation>();
 
