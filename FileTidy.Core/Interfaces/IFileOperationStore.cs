@@ -10,4 +10,5 @@ public interface IFileOperationStore
     Task<IEnumerable<FileOperation>> GetOperationsBySessionAsync(Guid sessionId);
     Task<IEnumerable<FileOperation>> GetRecentOperationsAsync(int limit);
     Task UpdateOperationStatusAsync(Guid operationId, FileOperationStatus status);
+    Task<IEnumerable<FileOperation>> GetFileOperationsInDirectoryAsync(string folderPath);
 }
