@@ -12,7 +12,8 @@ public class RevertVisibilityConverter : IValueConverter
     {
         if (value is FileOperationStatus status)
         {
-            return status == FileOperationStatus.Moved ? Visibility.Visible : Visibility.Hidden;
+            // NOTE: this is flipped because Avalonia is wild sometimes
+            return status != FileOperationStatus.Moved ? Visibility.Visible : Visibility.Hidden;
         }
 
         return Visibility.Hidden;

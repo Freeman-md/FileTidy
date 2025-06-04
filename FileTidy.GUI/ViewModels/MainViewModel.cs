@@ -166,14 +166,6 @@ public partial class MainViewModel : ViewModelBase
         
         var statuses = await _fileOperationLookupService.GetFileStatusesForDirectoryAsync(SelectedFolder.FullPath)
             .ConfigureAwait(false);
-        
-        Console.WriteLine("==== Status Dictionary ====");
-        foreach (var entry in statuses)
-        {
-            Console.WriteLine($"[STATUS MAP] {entry.Key} → {entry.Value}");
-        }
-        Console.WriteLine("============================");
-
 
         foreach (var file in observableFiles)
         {
@@ -190,15 +182,6 @@ public partial class MainViewModel : ViewModelBase
                 var path = Path.Combine(SelectedFolder!.FullPath, f.Name);
                 return File.Exists(path) ? new FileInfo(path).Length : 0;
             });
-        
-        // Console.WriteLine("==== File Statuses ====");
-        // foreach (var file in observableFiles)
-        // {
-        //     Console.WriteLine($"• {file.Name}");
-        //     Console.WriteLine($"  ↳ Full Path: {file.FullPath}");
-        //     Console.WriteLine($"  ↳ Status: {file.FileOperationStatus}");
-        // }
-        // Console.WriteLine("========================");
 
         await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
     }
@@ -320,9 +303,15 @@ public partial class MainViewModel : ViewModelBase
         };
     }
     
-    [RelayCommand] private void RevertSorting(FileItem fileItem)
+    [RelayCommand] private async Task RevertSorting(FileItem fileItem)
     {
-        Console.WriteLine($"Revert clicked, {fileItem}");
+        if (fileItem?.FullPath is null)
+            return;
+        
+        await _fileTidyingService.RevertFileAsync(fileItem.FullPath);
+
+        CurrentFiles.Remove(fileItem);
+        FolderSize -= fileItem.Size;
     }
 
     [RelayCommand] private async Task DeleteFile(FileItem fileItem)
