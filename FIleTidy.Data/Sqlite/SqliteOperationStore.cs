@@ -263,4 +263,48 @@ WHERE Id = @Id";
         
         await command.ExecuteNonQueryAsync();
     }
+
+    public async Task<IEnumerable<FileOperation>> GetFileOperationsInDirectoryAsync(string folderPath)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+
+        command.CommandText = @"
+SELECT Id, FileName, OriginalPath, NewPath, Status, Timestamp, SortSessionId
+FROM FileOperations
+WHERE TRIM(TRAILING '/' FROM REPLACE(REPLACE(NewPath, '\', '/'), '//', '/')) 
+      LIKE @FolderPath || '/%';";
+
+        // Normalize folderPath for consistent comparison
+        var normalizedFolderPath = folderPath.Replace('\\', '/').TrimEnd('/');
+        command.Parameters.AddWithValue("@FolderPath", normalizedFolderPath);
+
+        var results = new List<FileOperation>();
+
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var newPath = reader.GetString(reader.GetOrdinal("NewPath"));
+            var directoryOfNewPath = Path.GetDirectoryName(newPath)?.Replace('\\', '/').TrimEnd('/');
+
+            // Only include files directly in the folder, not nested
+            if (string.Equals(directoryOfNewPath, normalizedFolderPath, StringComparison.OrdinalIgnoreCase))
+            {
+                results.Add(new FileOperation
+                {
+                    Id = Guid.Parse(reader.GetString(reader.GetOrdinal("Id"))),
+                    FileName = reader.GetString(reader.GetOrdinal("FileName")),
+                    OriginalPath = reader.GetString(reader.GetOrdinal("OriginalPath")),
+                    NewPath = newPath,
+                    Status = Enum.Parse<FileOperationStatus>(reader.GetString(reader.GetOrdinal("Status"))),
+                    Timestamp = reader.GetDateTime(reader.GetOrdinal("Timestamp")),
+                    SortSessionId = Guid.Parse(reader.GetString(reader.GetOrdinal("SortSessionId")))
+                });
+            }
+        }
+
+        return results;
+    }
 }
