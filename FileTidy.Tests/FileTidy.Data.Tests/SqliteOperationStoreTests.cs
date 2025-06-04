@@ -1,5 +1,5 @@
 using FileTidy.Core.Models;
-using FIleTidy.Data.Sqlite;
+using FileTidy.Data.Sqlite;
 using FileTidy.Data.Tests.Builders;
 
 namespace FileTidy.Data.Tests;
