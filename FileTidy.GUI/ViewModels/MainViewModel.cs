@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
+using FileTidy.Core.Models;
 using FileTidy.Core.Services;
 using FileTidy.Data.Sqlite;
 using FileTidy.GUI.Contracts;
@@ -65,6 +66,10 @@ public partial class MainViewModel : ViewModelBase
     
     public ObservableCollection<FolderItem> TopLevelFolders { get; private set; } = new();
 
+    public int SelectedFileCount => CurrentFiles.Count(f => f.IsSelected);
+    public int SelectedRevertableCount => CurrentFiles.Count(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved);
+    public bool CanRevertSelected => SelectedRevertableCount > 0;
+    public bool CanDeleteSelected => SelectedFileCount > 0;
     private bool CanStartTidying => SelectedFolder is not null && IsSorting is false;
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
@@ -196,6 +201,13 @@ public partial class MainViewModel : ViewModelBase
         if (e.PropertyName == nameof(FileItem.IsSelected))
         {
             IsAllSelected = CurrentFiles.All(item => item.IsSelected);
+            OnPropertyChanged(nameof(SelectedFileCount));
+            OnPropertyChanged(nameof(SelectedRevertableCount));
+            OnPropertyChanged(nameof(CanRevertSelected));
+            OnPropertyChanged(nameof(CanDeleteSelected));
+            
+            RevertSelectedCommand.NotifyCanExecuteChanged();
+            DeleteSelectedCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -323,5 +335,35 @@ public partial class MainViewModel : ViewModelBase
         CurrentFiles.Remove(fileItem);
 
         FolderSize -= fileItem.Size;
+    }
+    
+    [RelayCommand(CanExecute = nameof(CanRevertSelected))]
+    private async Task RevertSelected()
+    {
+        var filesToRevert = CurrentFiles
+            .Where(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved)
+            .ToList();
+
+        foreach (var file in filesToRevert)
+        {
+            await _fileTidyingService.RevertFileAsync(file.FullPath!);
+            CurrentFiles.Remove(file);
+            FolderSize -= file.Size;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
+    private async Task DeleteSelected()
+    {
+        var filesToDelete = CurrentFiles
+            .Where(f => f.IsSelected && !f.IsFolder)
+            .ToList();
+
+        foreach (var file in filesToDelete)
+        {
+            await _fileTidyingService.DeleteFileAsync(file.FullPath!);
+            CurrentFiles.Remove(file);
+            FolderSize -= file.Size;
+        }
     }
 }

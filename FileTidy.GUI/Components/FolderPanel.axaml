@@ -177,20 +177,32 @@
                                                   Foreground="{DynamicResource TextBrush}" />
 
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                                            <Button Classes="btn btn-outline">
+                                            <Button Classes="btn btn-outline"         Command="{Binding RevertSelectedCommand}"
+                                            >
                                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                                     <Label FontFamily="{StaticResource PhosphorFill}"
                                                            Content="&#xe038;" Classes="btn-icon" />
-                                                    <Label>Revert</Label>
+                                                    <TextBlock>
+                                                        <Run Text="Revert Selected" />
+                                                        <Run Text=" (" />
+                                                        <Run Text="{Binding SelectedRevertableCount}" />
+                                                        <Run Text=")" />
+                                                    </TextBlock>
                                                 </StackPanel>
                                             </Button>
 
-                                            <Button Classes="btn btn-outline">
+                                            <Button Classes="btn btn-outline"         Command="{Binding DeleteSelectedCommand}"
+                                            >
                                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                                     <Label FontFamily="{StaticResource Phosphor}"
                                                            Content="&#xe4A6;"
                                                            Classes="btn-icon" />
-                                                    <Label>Delete</Label>
+                                                    <TextBlock>
+                                                        <Run Text="Delete Selected" />
+                                                        <Run Text=" (" />
+                                                        <Run Text="{Binding SelectedFileCount}" />
+                                                        <Run Text=")" />
+                                                    </TextBlock>
                                                 </StackPanel>
                                             </Button>
                                         </StackPanel>
