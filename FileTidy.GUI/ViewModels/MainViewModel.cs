@@ -23,6 +23,8 @@ public partial class MainViewModel : ViewModelBase
     private readonly IFolderService _folderService;
     private readonly IFileOperationStore _fileOperationStore;
     private readonly IFileOperationLookupService _fileOperationLookupService;
+    private readonly ISortReporter _sortReporter;
+    private readonly IFileTidyingService _fileTidyingService;
 
     private CancellationTokenSource? _sortingCancellationTokenSource;
         
@@ -80,6 +82,12 @@ public partial class MainViewModel : ViewModelBase
         _folderService = folderService;
         _fileOperationStore = fileOperationStore;
         _fileOperationLookupService = fileOperationLookupService;
+        _sortReporter = new GuiFileSortReporter(
+            progress => SortProgress = progress,
+            elapsed => ElapsedTime = elapsed,
+            filesMoved => SortedFiles = filesMoved
+        );
+        _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
         
         _ = InitializeAsync();
     }
@@ -265,15 +273,8 @@ public partial class MainViewModel : ViewModelBase
             
             _sortingCancellationTokenSource = new CancellationTokenSource();
             var token = _sortingCancellationTokenSource.Token;
-
-            var reporter = new GuiFileSortReporter(
-            progress => SortProgress = progress,
-            elapsed => ElapsedTime = elapsed,
-            filesMoved => SortedFiles = filesMoved
-            );
             
-            var tidyService = new FileTidyingService(_fileOperationStore, reporter);
-            var result = await tidyService.SortDirectory(SelectedFolder.FullPath, token);
+            var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
@@ -324,7 +325,14 @@ public partial class MainViewModel : ViewModelBase
         Console.WriteLine($"Revert clicked, {fileItem}");
     }
 
-    [RelayCommand] private void DeleteFile(FileItem fileItem){
-        Console.WriteLine($"Delete clicked, {fileItem}");
+    [RelayCommand] private async Task DeleteFile(FileItem fileItem)
+    {
+        if (fileItem.IsFolder || string.IsNullOrWhiteSpace(fileItem.FullPath))
+            return;
+
+        await _fileTidyingService.DeleteFileAsync(fileItem.FullPath);
+        CurrentFiles.Remove(fileItem);
+
+        FolderSize -= fileItem.Size;
     }
 }

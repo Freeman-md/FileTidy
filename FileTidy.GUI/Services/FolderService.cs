@@ -74,7 +74,7 @@ public class FolderService : IFolderService
                     {
                         Name = Path.GetFileName(path),
                         Type = "FOLDER",
-                        Size = "-",
+                        Size = 0,
                         Modified = directoryInfo.LastWriteTime.ToString("MMM dd, yyyy"),
                         FullPath = directoryInfo.FullName
                     };
@@ -89,7 +89,7 @@ public class FolderService : IFolderService
                     {
                         Name = Path.GetFileName(path),
                         Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
-                        Size = fileInfo.Length.BytesToReadableSize(),
+                        Size = fileInfo.Length,
                         Modified = fileInfo.LastWriteTime.ToString("MMM dd, yyyy"),
                         FullPath = fileInfo.FullName
                     };

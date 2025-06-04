@@ -249,7 +249,7 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100"
                                                     IsReadOnly="True" />
-                                <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100"
+                                <DataGridTextColumn Header="Size" Binding="{Binding ReadableSize}" Width="100"
                                                     IsReadOnly="True" />
                                 <DataGridTextColumn Header="Modified" Binding="{Binding Modified}" Width="150"
                                                     IsReadOnly="True" />
