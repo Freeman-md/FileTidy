@@ -18,12 +18,23 @@
                         HorizontalAlignment="Center"
                         Foreground="{DynamicResource TextBrush}" />
         </DataTemplate>
+        
+        <DataTemplate x:Key="StatusBadgeTemplate" x:DataType="models:FileItem">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <components:StatusBadge Status="{Binding FileOperationStatus}" />
+            </Grid>
+        </DataTemplate>
 
         <DataTemplate x:Key="EmptyTemplate" />
         
         <converters:FolderToTemplateConverter
             x:Key="FolderToTemplateConverter"
             FileTemplate="{StaticResource FileCheckBoxTemplate}"
+            EmptyTemplate="{StaticResource EmptyTemplate}"
+            />
+        <converters:FolderToTemplateConverter
+            x:Key="StatusTemplateConverter"
+            FileTemplate="{StaticResource StatusBadgeTemplate}"
             EmptyTemplate="{StaticResource EmptyTemplate}"
             />
         <converters:FolderToCursorConverter x:Key="FolderToCursorConverter" />
@@ -213,9 +224,10 @@
                                 <DataGridTemplateColumn Header="Status" Width="120" IsReadOnly="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <components:StatusBadge Status="{Binding FileOperationStatus}"></components:StatusBadge>
-                                            </Grid>
+                                            <ContentControl 
+                                                Content="{Binding .}" 
+                                                ContentTemplate="{Binding IsFolder, Converter={StaticResource StatusTemplateConverter}}" 
+                                            />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
