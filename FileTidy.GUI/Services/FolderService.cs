@@ -76,7 +76,6 @@ public class FolderService : IFolderService
                         Type = "FOLDER",
                         Size = "-",
                         Modified = directoryInfo.LastWriteTime.ToString("MMM dd, yyyy"),
-                        Status = "",
                         FullPath = directoryInfo.FullName
                     };
                 });
@@ -92,7 +91,6 @@ public class FolderService : IFolderService
                         Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
                         Size = fileInfo.Length.BytesToReadableSize(),
                         Modified = fileInfo.LastWriteTime.ToString("MMM dd, yyyy"),
-                        Status = "Unprocessed"
                     };
                 });
             

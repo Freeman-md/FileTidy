@@ -214,7 +214,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <components:StatusBadge Status="{Binding Status}"></components:StatusBadge>
+                                                <components:StatusBadge Status="{Binding FileOperationStatus}"></components:StatusBadge>
                                             </Grid>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>

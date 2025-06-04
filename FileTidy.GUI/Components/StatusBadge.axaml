@@ -18,7 +18,7 @@
         HorizontalAlignment="Center"
         Height="20"
         >
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Status, Mode=OneWay}" Foreground="Black" FontSize="11"></TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileOperationStatus, Mode=OneWay}" Foreground="Black" FontSize="11"></TextBlock>
     </Border>
     
 </UserControl>

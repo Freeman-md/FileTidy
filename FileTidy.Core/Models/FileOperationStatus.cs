@@ -6,5 +6,6 @@ public enum FileOperationStatus
     Reverted,
     Deleted,
     Failed,
-    Skipped
+    Skipped,
+    Unprocessed
 }
