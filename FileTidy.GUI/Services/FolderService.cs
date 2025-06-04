@@ -91,6 +91,7 @@ public class FolderService : IFolderService
                         Type = Path.GetExtension(path).TrimStart('.').ToUpper(),
                         Size = fileInfo.Length.BytesToReadableSize(),
                         Modified = fileInfo.LastWriteTime.ToString("MMM dd, yyyy"),
+                        FullPath = fileInfo.FullName
                     };
                 });
             

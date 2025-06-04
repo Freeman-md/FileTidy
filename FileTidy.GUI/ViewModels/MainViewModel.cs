@@ -151,9 +151,29 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task SetFileItemsAsync(List<FileItem> files)
     {
+        if (SelectedFolder is null)
+            return;
+        
         var observableFiles = new ObservableCollection<FileItem>(files);
+        
+        var statuses = await _fileOperationLookupService.GetFileStatusesForDirectoryAsync(SelectedFolder.FullPath)
+            .ConfigureAwait(false);
+        
+        Console.WriteLine("==== Status Dictionary ====");
+        foreach (var entry in statuses)
+        {
+            Console.WriteLine($"[STATUS MAP] {entry.Key} → {entry.Value}");
+        }
+        Console.WriteLine("============================");
+
+
         foreach (var file in observableFiles)
+        {
             file.PropertyChanged += OnFileItemPropertyChanged;
+
+            if (!string.IsNullOrEmpty(file.FullPath) && statuses.TryGetValue(file.FullPath, out var status))
+                file.FileOperationStatus = status;
+        }
 
         FolderSize = files
             .Where(f => !f.IsFolder)
@@ -162,7 +182,15 @@ public partial class MainViewModel : ViewModelBase
                 var path = Path.Combine(SelectedFolder!.FullPath, f.Name);
                 return File.Exists(path) ? new FileInfo(path).Length : 0;
             });
-
+        
+        // Console.WriteLine("==== File Statuses ====");
+        // foreach (var file in observableFiles)
+        // {
+        //     Console.WriteLine($"• {file.Name}");
+        //     Console.WriteLine($"  ↳ Full Path: {file.FullPath}");
+        //     Console.WriteLine($"  ↳ Status: {file.FileOperationStatus}");
+        // }
+        // Console.WriteLine("========================");
 
         await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
     }

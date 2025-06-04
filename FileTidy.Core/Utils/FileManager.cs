@@ -36,7 +36,7 @@ public class FileManager : IFileManager
                 return new FileMoveResult
                 {
                     OriginalPath = file,
-                    NewPath = uniqueDestinationPath,
+                    NewPath = NormalizePath(uniqueDestinationPath),
                     Status = FileOperationStatus.Moved
                 };
             }
@@ -102,4 +102,13 @@ public class FileManager : IFileManager
 
         return newFilePath;
     }
+    
+    private static string NormalizePath(string path)
+    {
+        return Path.GetFullPath(path)
+            .Replace("\\", "/")
+            .Replace("/./", "/")
+            .TrimEnd('/');
+    }
+
 }
