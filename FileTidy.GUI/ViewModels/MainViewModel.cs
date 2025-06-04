@@ -319,5 +319,12 @@ public partial class MainViewModel : ViewModelBase
         };
     }
     
-    [RelayCommand] private void RevertSorting() => Console.WriteLine("Revert clicked");
+    [RelayCommand] private void RevertSorting(FileItem fileItem)
+    {
+        Console.WriteLine($"Revert clicked, {fileItem}");
+    }
+
+    [RelayCommand] private void DeleteFile(FileItem fileItem){
+        Console.WriteLine($"Delete clicked, {fileItem}");
+    }
 }

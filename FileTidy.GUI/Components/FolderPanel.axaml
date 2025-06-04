@@ -9,7 +9,9 @@
              xmlns:models="clr-namespace:FileTidy.GUI.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.FolderPanel"
-             x:DataType="viewModels:MainViewModel">
+             x:DataType="viewModels:MainViewModel"
+             x:Name="RootPanel"
+             >
     
     <UserControl.Resources>
         <DataTemplate x:Key="FileCheckBoxTemplate" x:DataType="models:FileItem">
@@ -24,6 +26,35 @@
                 <components:StatusBadge Status="{Binding FileOperationStatus}" />
             </Grid>
         </DataTemplate>
+        
+        <DataTemplate x:Key="ActionsTemplate" x:DataType="models:FileItem">
+            <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsFolder, Converter={StaticResource BoolToVisibilityConverter}}">
+        
+                <!-- Revert -->
+                <Button Classes="btn btn-outline"
+                        IsVisible="{Binding FileOperationStatus, Converter={StaticResource RevertVisibilityConverter}}"
+                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).RevertSortingCommand}"
+                        CommandParameter="{Binding}">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe038;" Classes="btn-icon" />
+                        <Label>Revert</Label>
+                    </StackPanel>
+                </Button>
+
+                <!-- Delete -->
+                <Button Classes="btn btn-outline"
+                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).DeleteFileCommand}"
+                        CommandParameter="{Binding}">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <Label FontFamily="{StaticResource Phosphor}" Content="&#xe4A6;" Classes="btn-icon" />
+                        <Label>Delete</Label>
+                    </StackPanel>
+                </Button>
+
+        
+            </StackPanel>
+        </DataTemplate>
+
 
         <DataTemplate x:Key="EmptyTemplate" />
         
@@ -38,6 +69,7 @@
             EmptyTemplate="{StaticResource EmptyTemplate}"
             />
         <converters:FolderToCursorConverter x:Key="FolderToCursorConverter" />
+        <converters:RevertVisibilityConverter x:Key="RevertVisibilityConverter" />
     </UserControl.Resources>
 
 
@@ -228,6 +260,13 @@
                                                 Content="{Binding .}" 
                                                 ContentTemplate="{Binding IsFolder, Converter={StaticResource StatusTemplateConverter}}" 
                                             />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Actions" Width="200" IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Content="{Binding .}" ContentTemplate="{StaticResource ActionsTemplate}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
