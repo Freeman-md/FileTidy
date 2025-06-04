@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FileTidy.CLI.Reporting;
 using FileTidy.Core.Services;
-using FIleTidy.Data.Sqlite;
+using FileTidy.Data.Sqlite;
 
 namespace FileTidy.CLI.Handlers;
 

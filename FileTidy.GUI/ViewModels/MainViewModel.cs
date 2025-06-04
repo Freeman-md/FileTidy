@@ -10,7 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Services;
-using FIleTidy.Data.Sqlite;
+using FileTidy.Data.Sqlite;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
