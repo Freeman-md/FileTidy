@@ -3,7 +3,7 @@ using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 using Microsoft.Data.Sqlite;
 
-namespace FIleTidy.Data.Sqlite;
+namespace FileTidy.Data.Sqlite;
 
 public class SqliteOperationStore : IFileOperationStore
 {
