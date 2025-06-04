@@ -250,7 +250,8 @@ public partial class MainViewModel : ViewModelBase
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
             _ = LoadFilesForSelectedFolder();
-            _ = InitializeFolderTreeAsync();
+            // Instead of doing this, let's just update the current folder with the new structure directly
+            // _ = InitializeFolderTreeAsync();
         }
         catch (Exception ex)
         {
