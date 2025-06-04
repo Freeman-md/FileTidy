@@ -3,6 +3,7 @@
     using Avalonia.Markup.Xaml;
     using FileTidy.Core.Interfaces;
     using FileTidy.Core.Services;
+    using FileTidy.Data.Sqlite;
     using FileTidy.GUI.Contracts;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
@@ -22,6 +23,13 @@
         {
             var services = new ServiceCollection();
 
+            services.AddSingleton<IFileOperationStore, SqliteOperationStore>();
+            services.AddSingleton<IFileOperationLookupService>(serviceProvider =>
+            {
+                var fileOperationStore = serviceProvider.GetRequiredService<IFileOperationStore>();
+                
+                return new FileOperationLookupService(fileOperationStore);
+            });
             services.AddSingleton<IFolderService, FolderService>();
             services.AddSingleton<MainViewModel>();
 

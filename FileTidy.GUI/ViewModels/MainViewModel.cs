@@ -21,6 +21,8 @@ namespace FileTidy.GUI.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
+    private readonly IFileOperationStore _fileOperationStore;
+    private readonly IFileOperationLookupService _fileOperationLookupService;
 
     private CancellationTokenSource? _sortingCancellationTokenSource;
         
@@ -69,9 +71,16 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel() { }
 
-    public MainViewModel(IFolderService folderService)
+    public MainViewModel(
+        IFolderService folderService, 
+        IFileOperationStore fileOperationStore, 
+        IFileOperationLookupService fileOperationLookupService
+    )
     {
         _folderService = folderService;
+        _fileOperationStore = fileOperationStore;
+        _fileOperationLookupService = fileOperationLookupService;
+        
         _ = InitializeAsync();
     }
     
@@ -234,8 +243,8 @@ public partial class MainViewModel : ViewModelBase
             elapsed => ElapsedTime = elapsed,
             filesMoved => SortedFiles = filesMoved
             );
-            var store = new SqliteOperationStore();
-            var tidyService = new FileTidyingService(store, reporter);
+            
+            var tidyService = new FileTidyingService(_fileOperationStore, reporter);
             var result = await tidyService.SortDirectory(SelectedFolder.FullPath, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
