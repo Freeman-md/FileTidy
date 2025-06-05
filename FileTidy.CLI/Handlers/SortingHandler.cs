@@ -14,7 +14,8 @@ public static class SortingHandler
             var reporter = new ConsoleSortReporter();
             var store = new SqliteOperationStore();
             var service = new FileTidyingService(store, reporter);
-            await service.SortDirectory(directoryToSort);
+            Guid sortSessionId = Guid.NewGuid();
+            await service.SortDirectory(directoryToSort, sortSessionId);
         }
     }
 

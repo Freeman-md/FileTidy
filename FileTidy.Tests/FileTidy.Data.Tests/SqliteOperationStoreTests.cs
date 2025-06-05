@@ -453,6 +453,142 @@ public class SqliteOperationStoreTests
         // Assert
         Assert.That(results.Select(r => r.Id), Is.EquivalentTo(new[] { matching1.Id }));
     }
+    
+    [Test]
+    public async Task SaveConfigValueAsync_Should_Insert_New_Config_Value()
+    {
+        // Arrange
+        var key = "Theme";
+        var value = "Dark";
+
+        // Act
+        await _store.SaveConfigValueAsync(key, value);
+        var stored = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(stored, Is.EqualTo(value));
+    }
+
+    [Test]
+    public async Task SaveConfigValueAsync_Should_Update_Existing_Value()
+    {
+        // Arrange
+        var key = "Theme";
+        var first = "Light";
+        var second = "Dark";
+
+        await _store.SaveConfigValueAsync(key, first);
+
+        // Act
+        await _store.SaveConfigValueAsync(key, second);
+        var updated = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(updated, Is.EqualTo(second));
+    }
+
+    [Test]
+    public void SaveConfigValueAsync_Should_Throw_When_Key_Is_Null()
+    {
+        // Act & Assert
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await _store.SaveConfigValueAsync(null!, "value"));
+    }
+
+    [Test]
+    public void SaveConfigValueAsync_Should_Throw_When_Value_Is_Null()
+    {
+        // Act & Assert
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await _store.SaveConfigValueAsync("SomeKey", null!));
+    }
+
+    [Test]
+    public async Task SaveConfigValueAsync_Should_Allow_Empty_String_Key_And_Value()
+    {
+        // Arrange
+        var key = "";
+        var value = "";
+
+        // Act
+        await _store.SaveConfigValueAsync(key, value);
+        var stored = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(stored, Is.EqualTo(value));
+    }
+
+    [Test]
+    public async Task GetConfigValueAsync_Should_Return_Value_When_Key_Exists()
+    {
+        // Arrange
+        var key = "LastSessionId";
+        var value = Guid.NewGuid().ToString();
+
+        await _store.SaveConfigValueAsync(key, value);
+
+        // Act
+        var result = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(value));
+    }
+
+    [Test]
+    public async Task GetConfigValueAsync_Should_Return_Updated_Value_When_Key_Is_Updated()
+    {
+        // Arrange
+        var key = "LastSessionId";
+        var initialValue = "abc123";
+        var updatedValue = "xyz789";
+
+        await _store.SaveConfigValueAsync(key, initialValue);
+        await _store.SaveConfigValueAsync(key, updatedValue);
+
+        // Act
+        var result = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(updatedValue));
+    }
+
+    [Test]
+    public async Task GetConfigValueAsync_Should_Return_Null_When_Key_Does_Not_Exist()
+    {
+        // Arrange
+        var missingKey = "NonExistentKey";
+
+        // Act
+        var result = await _store.GetConfigValueAsync(missingKey);
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task GetConfigValueAsync_Should_Handle_Empty_String_Key()
+    {
+        // Arrange
+        var key = "";
+        var value = "value-for-empty-key";
+        await _store.SaveConfigValueAsync(key, value);
+
+        // Act
+        var result = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(value));
+    }
+
+    [Test]
+    public void GetConfigValueAsync_Should_Throw_When_Key_Is_Null()
+    {
+        // Act & Assert
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            await _store.GetConfigValueAsync(null!);
+        });
+    }
 
     [TearDown]
     public void TearDown()

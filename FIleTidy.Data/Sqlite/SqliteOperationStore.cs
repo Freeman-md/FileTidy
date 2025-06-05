@@ -316,6 +316,9 @@ WHERE NewPath LIKE @PathPrefix";
 
     public async Task SaveConfigValueAsync(string key, string value)
     {
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(value);
+        
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
         
@@ -333,6 +336,8 @@ WHERE NewPath LIKE @PathPrefix";
 
     public async Task<string?> GetConfigValueAsync(string key)
     {
+        ArgumentNullException.ThrowIfNull(key);
+        
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
         
