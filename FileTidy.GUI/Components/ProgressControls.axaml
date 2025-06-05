@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
+             xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.ProgressControls"
              x:DataType="vm:MainViewModel"
@@ -40,6 +41,16 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     
+                    <Border Background="{DynamicResource PrimaryColorDark}"
+                            CornerRadius="4"
+                            Padding="8"
+                            IsVisible="{Binding IsNotificationVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding NotificationTitle}" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding NotificationMessage}" Foreground="White"/>
+                        </StackPanel>
+                    </Border>
+
                     
                 </StackPanel>
             </Grid>

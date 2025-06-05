@@ -70,6 +70,11 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ReadableFolderSize))]
     private long _folderSize;
+    
+    [ObservableProperty] private string? _notificationTitle;
+    [ObservableProperty] private string? _notificationMessage;
+    [ObservableProperty] private bool _isNotificationVisible;
+
 
     [ObservableProperty]
     private ObservableCollection<FileItem> _currentFiles = new();
@@ -115,7 +120,18 @@ public partial class MainViewModel : ViewModelBase
         _sortReporter = new GuiFileSortReporter(
             progress => OperationProgress = progress,
             elapsed => ElapsedTime = elapsed,
-            filesProcessed => FilesProcessed = filesProcessed
+            filesProcessed => FilesProcessed = filesProcessed,
+            (title, message) =>
+            {
+                NotificationTitle = title;
+                NotificationMessage = message;
+                IsNotificationVisible = true;
+                
+                Task.Delay(4000).ContinueWith(_ =>
+                {
+                    IsNotificationVisible = false;
+                });
+            }
         );
         _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
         
