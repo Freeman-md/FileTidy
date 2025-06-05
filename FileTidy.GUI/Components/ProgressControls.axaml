@@ -41,6 +41,7 @@
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     
+                    <!-- Not the best animation but works for now - will update later. -->
                     <Border Background="{DynamicResource PrimaryColorDark}"
                             CornerRadius="4"
                             Padding="8"
