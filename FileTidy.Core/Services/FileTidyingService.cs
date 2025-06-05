@@ -24,7 +24,7 @@ public class FileTidyingService : IFileTidyingService
         _mapper = new FileCategoryMapper(resolvedPath);
     }
 
-    public async Task<TidyingResult> SortDirectory(string directoryPath, CancellationToken cancellationToken = default)
+    public async Task<TidyingResult> SortDirectory(string directoryPath, Guid sortSessionId, CancellationToken cancellationToken = default)
     {
         var filesToProcess = GetFilesToProcess(directoryPath);
         if (!filesToProcess.Any())
@@ -44,7 +44,6 @@ public class FileTidyingService : IFileTidyingService
 
         Dictionary<string, int> perCategoryCounts = new();
         int totalMoved = 0, totalErrors = 0, processed = 0;
-        Guid sortSessionId = Guid.NewGuid();
 
         foreach (var file in filesToProcess)
         {

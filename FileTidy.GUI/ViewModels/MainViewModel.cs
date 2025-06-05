@@ -52,6 +52,10 @@ public partial class MainViewModel : ViewModelBase
     
     [ObservableProperty]
     private FolderItem? _selectedRootFolder;
+    
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RevertLastSortCommand))]
+    private Guid _lastSortSessionId = Guid.Empty;
 
     [ObservableProperty]
     private bool _isAllSelected;
@@ -74,6 +78,8 @@ public partial class MainViewModel : ViewModelBase
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
     public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
+    private bool CanRevertLastSort() => LastSortSessionId != Guid.Empty;
+
     public string ReadableFolderSize => FolderSize.BytesToReadableSize();
 
     public MainViewModel() { }
@@ -95,6 +101,57 @@ public partial class MainViewModel : ViewModelBase
         _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
         
         _ = InitializeAsync();
+    }
+    
+    private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(FileItem.IsSelected))
+        {
+            IsAllSelected = CurrentFiles.All(item => item.IsSelected);
+            OnPropertyChanged(nameof(SelectedFileCount));
+            OnPropertyChanged(nameof(SelectedRevertableCount));
+            OnPropertyChanged(nameof(CanRevertSelected));
+            OnPropertyChanged(nameof(CanDeleteSelected));
+            
+            RevertSelectedCommand.NotifyCanExecuteChanged();
+            DeleteSelectedCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    partial void OnSelectedFolderChanged(FolderItem? value)
+    {
+        _ = LoadFilesForSelectedFolder();
+
+        if (value is null)
+        {
+            SelectedRootFolder = null;
+            return;
+        }
+        
+        var root = TopLevelFolders.FirstOrDefault(root => value.FullPath.StartsWith(root.FullPath, StringComparison.OrdinalIgnoreCase));
+        
+        if (root is not null)
+            SelectedRootFolder = root;
+    }
+
+    partial void OnSelectedRootFolderChanged(FolderItem? value)
+    {
+        if (value is not null)
+            SelectedFolder = value;
+    }
+
+    partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
+    {
+        bool userUncheckingManually = !newValue;
+        bool notAllFilesSelected = CurrentFiles.Any(file => !file.IsSelected);
+
+        if (userUncheckingManually && notAllFilesSelected)
+            return;
+
+        foreach (var file in CurrentFiles)
+        {
+            file.IsSelected = newValue;
+        }
     }
     
     private async Task InitializeAsync()
@@ -196,57 +253,6 @@ public partial class MainViewModel : ViewModelBase
         await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action);
     }
 
-    private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(FileItem.IsSelected))
-        {
-            IsAllSelected = CurrentFiles.All(item => item.IsSelected);
-            OnPropertyChanged(nameof(SelectedFileCount));
-            OnPropertyChanged(nameof(SelectedRevertableCount));
-            OnPropertyChanged(nameof(CanRevertSelected));
-            OnPropertyChanged(nameof(CanDeleteSelected));
-            
-            RevertSelectedCommand.NotifyCanExecuteChanged();
-            DeleteSelectedCommand.NotifyCanExecuteChanged();
-        }
-    }
-
-    partial void OnSelectedFolderChanged(FolderItem? value)
-    {
-        _ = LoadFilesForSelectedFolder();
-
-        if (value is null)
-        {
-            SelectedRootFolder = null;
-            return;
-        }
-        
-        var root = TopLevelFolders.FirstOrDefault(root => value.FullPath.StartsWith(root.FullPath, StringComparison.OrdinalIgnoreCase));
-        
-        if (root is not null)
-            SelectedRootFolder = root;
-    }
-
-    partial void OnSelectedRootFolderChanged(FolderItem? value)
-    {
-        if (value is not null)
-            SelectedFolder = value;
-    }
-
-    partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
-    {
-        bool userUncheckingManually = !newValue;
-        bool notAllFilesSelected = CurrentFiles.Any(file => !file.IsSelected);
-
-        if (userUncheckingManually && notAllFilesSelected)
-            return;
-
-        foreach (var file in CurrentFiles)
-        {
-            file.IsSelected = newValue;
-        }
-    }
-
     // TODO: Preserve folder tree state (expanded nodes, selected folder) after sorting
     // - Before refreshing FolderTree, store expanded paths and selected folder path
     // - Refresh FolderTree in-place or rebuild while restoring expansion/selection
@@ -268,8 +274,9 @@ public partial class MainViewModel : ViewModelBase
             
             _sortingCancellationTokenSource = new CancellationTokenSource();
             var token = _sortingCancellationTokenSource.Token;
+            LastSortSessionId = Guid.NewGuid();
             
-            var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath, token);
+            var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath, LastSortSessionId, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
@@ -367,7 +374,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanRevertLastSort))]
     private async Task RevertLastSort()
     {
         Console.WriteLine("Revert last sort clicked");
