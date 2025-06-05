@@ -156,6 +156,10 @@ public class FileTidyingService : IFileTidyingService
         _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
         _reporter?.OnBulkRevertSummary(operations.Count, successCount, failureCount);
         _reporter?.OnSessionReverted(sessionId);
+        
+        var baseDir = Path.GetDirectoryName(operations.First().OriginalPath);
+        if (!string.IsNullOrWhiteSpace(baseDir) && Directory.Exists(baseDir))
+            RemoveEmptyDirectories(baseDir);
     }
 
     public async Task RevertFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
