@@ -158,6 +158,11 @@ public partial class MainViewModel : ViewModelBase
     {
         await InitializeTopLevelFoldersAsync();
         await InitializeFolderTreeAsync();
+        
+        var sessionIdStr = await _fileOperationStore.GetConfigValueAsync(nameof(LastSortSessionId));
+        if (Guid.TryParse(sessionIdStr, out var restoredId))
+            LastSortSessionId = restoredId;
+
     }
 
     private async Task InitializeTopLevelFoldersAsync()
@@ -274,7 +279,10 @@ public partial class MainViewModel : ViewModelBase
             
             _sortingCancellationTokenSource = new CancellationTokenSource();
             var token = _sortingCancellationTokenSource.Token;
+            
             LastSortSessionId = Guid.NewGuid();
+            await _fileOperationStore.SaveConfigValueAsync(nameof(LastSortSessionId), LastSortSessionId.ToString());
+
             
             var result = await _fileTidyingService.SortDirectory(SelectedFolder.FullPath, LastSortSessionId, token);
 
@@ -377,6 +385,12 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRevertLastSort))]
     private async Task RevertLastSort()
     {
-        Console.WriteLine("Revert last sort clicked");
+        if (LastSortSessionId == Guid.Empty)
+            return;
+
+        await _fileTidyingService.RevertSessionAsync(LastSortSessionId);
+        LastSortSessionId = Guid.Empty;
+
+        _ = LoadFilesForSelectedFolder();
     }
 }

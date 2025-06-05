@@ -42,7 +42,7 @@ public class GuiFileSortReporter : ISortReporter
 
     public void OnSessionReverted(Guid sessionId)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"Revert session {sessionId}");
     }
 
     public void OnBulkRevertSummary(int total, int reverted, int failed)
@@ -65,6 +65,7 @@ public class GuiFileSortReporter : ISortReporter
         _processed++;
         var progress = (_total > 0) ? (_processed * 100) / _total : 0;
         _progressUpdate?.Invoke(progress);
+        _filesMovedUpdate?.Invoke(_processed);
     }
 
     public void OnFileSkipped(string filePath)
