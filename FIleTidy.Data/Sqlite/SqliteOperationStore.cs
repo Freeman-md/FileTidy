@@ -18,10 +18,10 @@ public class SqliteOperationStore : IFileOperationStore
         }.ToString();
 
         CreateTablesIfNotExists();
-        
+
         // Console.WriteLine($"DB Path: {new SqliteConnectionStringBuilder(_connectionString).DataSource}");
     }
-    
+
     public SqliteOperationStore(string? customPath = null)
     {
         var dbPath = customPath ?? GetDefaultDbPath();
@@ -60,13 +60,13 @@ public class SqliteOperationStore : IFileOperationStore
 
     private void CreateTablesIfNotExists()
     {
-        using (var connection = new SqliteConnection(_connectionString))
-        {
-            connection.Open();
+        using var connection = new SqliteConnection(_connectionString);
 
-            var command = connection.CreateCommand();
+        connection.Open();
 
-            command.CommandText = @"
+        var command = connection.CreateCommand();
+
+        command.CommandText = @"
             CREATE TABLE IF NOT EXISTS FileOperations (
                 Id TEXT PRIMARY KEY NOT NULL,
                 FileName TEXT NOT NULL,
@@ -84,8 +84,7 @@ public class SqliteOperationStore : IFileOperationStore
 
         ";
 
-            command.ExecuteNonQuery();
-        }
+        command.ExecuteNonQuery();
     }
 
 
@@ -93,8 +92,8 @@ public class SqliteOperationStore : IFileOperationStore
     {
         if (operation is null)
             throw new ArgumentNullException(nameof(operation));
-        
-        using var connection = new SqliteConnection(_connectionString);
+
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
@@ -120,15 +119,15 @@ public class SqliteOperationStore : IFileOperationStore
 
     public async Task<FileOperation?> GetOperationByIdAsync(Guid operationId)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
         command.CommandText = @"SELECT * FROM FileOperations WHERE Id = @Id";
-        
+
         command.Parameters.AddWithValue("@Id", operationId.ToString());
-        
-        using var reader = await command.ExecuteReaderAsync();
+
+        await using var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
         {
@@ -143,26 +142,27 @@ public class SqliteOperationStore : IFileOperationStore
                 SortSessionId = reader.GetGuid(6),
             };
         }
-        
+
         return null;
     }
 
-    public async Task<FileOperation?> GetLatestNonRevertedOperationByNewPathAsync(string newPath, FileOperationStatus status)
+    public async Task<FileOperation?> GetLatestNonRevertedOperationByNewPathAsync(string newPath,
+        FileOperationStatus status)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
-        
+
         var command = connection.CreateCommand();
         command.CommandText = @"
         SELECT * FROM FileOperations 
         WHERE NewPath = @NewPath AND Status = @Status 
         ORDER BY Timestamp DESC 
         LIMIT 1";
-        
+
         command.Parameters.AddWithValue("@NewPath", newPath);
         command.Parameters.AddWithValue("@Status", status.ToString());
-        
-        using var reader = await command.ExecuteReaderAsync();
+
+        await using var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
         {
@@ -185,7 +185,7 @@ public class SqliteOperationStore : IFileOperationStore
     {
         var operations = new List<FileOperation>();
 
-        using var connection = new SqliteConnection(_connectionString);
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
@@ -197,7 +197,7 @@ ORDER BY Timestamp ASC";
 
         command.Parameters.AddWithValue("@SortSessionId", sessionId.ToString());
 
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
         {
@@ -220,7 +220,7 @@ ORDER BY Timestamp ASC";
     {
         var operations = new List<FileOperation>();
 
-        using var connection = new SqliteConnection(_connectionString);
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
@@ -233,7 +233,7 @@ ORDER BY Timestamp ASC";
 
         command.Parameters.AddWithValue("@Limit", limit);
 
-        using var reader = await command.ExecuteReaderAsync();
+        await using var reader = await command.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
         {
@@ -255,7 +255,7 @@ ORDER BY Timestamp ASC";
 
     public async Task UpdateOperationStatusAsync(Guid operationId, FileOperationStatus status)
     {
-        using var connection = new SqliteConnection(_connectionString);
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
@@ -263,10 +263,10 @@ ORDER BY Timestamp ASC";
 UPDATE FileOperations
 SET Status = @Status
 WHERE Id = @Id";
-        
+
         command.Parameters.AddWithValue("@Id", operationId.ToString());
         command.Parameters.AddWithValue("@Status", status.ToString());
-        
+
         await command.ExecuteNonQueryAsync();
     }
 
@@ -318,35 +318,48 @@ WHERE NewPath LIKE @PathPrefix";
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(value);
-        
+
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
-        
+
         var command = connection.CreateCommand();
         command.CommandText = @"
             INSERT INTO AppConfig(Key, Value) VALUES (@Key, @Value)
             ON CONFLICT(Key) DO UPDATE SET Value = @Value;
             ";
-        
+
         command.Parameters.AddWithValue("@Key", key);
         command.Parameters.AddWithValue("@Value", value);
-        
+
         await command.ExecuteNonQueryAsync();
     }
+
+    public async Task DeleteConfigValueAsync(string key)
+    {
+        await using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        await using var command = connection.CreateCommand();
+        command.CommandText = @"DELETE FROM AppConfig WHERE Key = @Key";
+        command.Parameters.AddWithValue("@Key", key);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
 
     public async Task<string?> GetConfigValueAsync(string key)
     {
         ArgumentNullException.ThrowIfNull(key);
-        
-        using var connection = new SqliteConnection(_connectionString);
+
+        await using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
-        
+
         var command = connection.CreateCommand();
         command.CommandText = @"
                 SELECT Value FROM AppConfig WHERE Key = @Key
                 ";
         command.Parameters.AddWithValue("@Key", key);
-        
+
         var result = await command.ExecuteScalarAsync();
         return result?.ToString();
     }

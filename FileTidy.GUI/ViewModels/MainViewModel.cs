@@ -40,7 +40,13 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StopSortingCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RevertLastSortCommand))]
     private bool _isSorting;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
+    private bool _isReverting;
+    
     [ObservableProperty] private bool _wasCancelled;
 
     [ObservableProperty]
@@ -74,11 +80,11 @@ public partial class MainViewModel : ViewModelBase
     public int SelectedRevertableCount => CurrentFiles.Count(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved);
     public bool CanRevertSelected => SelectedRevertableCount > 0;
     public bool CanDeleteSelected => SelectedFileCount > 0;
-    private bool CanStartTidying => SelectedFolder is not null && IsSorting is false;
+    private bool CanStartTidying => SelectedFolder is not null && IsSorting is false && IsReverting is false;
+    private bool CanRevertLastSort() => LastSortSessionId != Guid.Empty && IsSorting == false && IsReverting == false;
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
     public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
-    private bool CanRevertLastSort() => LastSortSessionId != Guid.Empty;
 
     public string ReadableFolderSize => FolderSize.BytesToReadableSize();
 
@@ -385,6 +391,8 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRevertLastSort))]
     private async Task RevertLastSort()
     {
+        IsReverting = true;
+        
         if (LastSortSessionId == Guid.Empty)
             return;
 
@@ -392,5 +400,7 @@ public partial class MainViewModel : ViewModelBase
         LastSortSessionId = Guid.Empty;
 
         _ = LoadFilesForSelectedFolder();
+
+        IsReverting = false;
     }
 }

@@ -589,6 +589,51 @@ public class SqliteOperationStoreTests
             await _store.GetConfigValueAsync(null!);
         });
     }
+    
+    [Test]
+    public async Task DeleteConfigValueAsync_Should_Remove_Existing_Config_Value()
+    {
+        // Arrange
+        var key = "SessionId";
+        var value = Guid.NewGuid().ToString();
+        await _store.SaveConfigValueAsync(key, value);
+
+        // Act
+        await _store.DeleteConfigValueAsync(key);
+        var result = await _store.GetConfigValueAsync(key);
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task DeleteConfigValueAsync_Should_Not_Throw_When_Key_Does_Not_Exist()
+    {
+        // Act & Assert
+        Assert.DoesNotThrowAsync(async () =>
+        {
+            await _store.DeleteConfigValueAsync("NonExistingKey");
+        });
+    }
+
+    [Test]
+    public async Task DeleteConfigValueAsync_Should_Not_Affect_Other_Keys()
+    {
+        // Arrange
+        await _store.SaveConfigValueAsync("Key1", "Value1");
+        await _store.SaveConfigValueAsync("Key2", "Value2");
+
+        // Act
+        await _store.DeleteConfigValueAsync("Key1");
+
+        // Assert
+        var key1 = await _store.GetConfigValueAsync("Key1");
+        var key2 = await _store.GetConfigValueAsync("Key2");
+
+        Assert.That(key1, Is.Null);
+        Assert.That(key2, Is.EqualTo("Value2"));
+    }
+
 
     [TearDown]
     public void TearDown()
