@@ -366,4 +366,10 @@ public partial class MainViewModel : ViewModelBase
             FolderSize -= file.Size;
         }
     }
+
+    [RelayCommand]
+    private async Task RevertLastSort()
+    {
+        Console.WriteLine("Revert last sort clicked");
+    }
 }

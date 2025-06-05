@@ -105,6 +105,13 @@
                         </StackPanel>
                     </Button>
                     
+                    <Button Classes="btn btn-primary" Command="{Binding RevertLastSortCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe038;" Classes="btn-icon" />
+                            <Label>Revert Last Sort</Label>
+                        </StackPanel>
+                    </Button>
+                    
                     <TextBlock Text="Sorting cancelled" IsVisible="{Binding WasCancelled}" Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                 </StackPanel>
 
