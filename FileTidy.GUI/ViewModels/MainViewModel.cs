@@ -29,8 +29,8 @@ public partial class MainViewModel : ViewModelBase
 
     private CancellationTokenSource? _sortingCancellationTokenSource;
         
-    [ObservableProperty] private int _sortProgress = 0;
-    [ObservableProperty] private int _sortedFiles = 0;
+    [ObservableProperty] private int _operationProgress = 0;
+    [ObservableProperty] private int _filesProcessed = 0;
     [ObservableProperty] private string _elapsedTime = "0m 00s";
 
     [ObservableProperty]
@@ -41,10 +41,12 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StopSortingCommand))]
     [NotifyCanExecuteChangedFor(nameof(RevertLastSortCommand))]
+    [NotifyPropertyChangedFor(nameof(CurrentOperationLabel))]
     private bool _isSorting;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartTidyingCommand))]
+    [NotifyPropertyChangedFor(nameof(CurrentOperationLabel))]
     private bool _isReverting;
     
     [ObservableProperty] private bool _wasCancelled;
@@ -85,6 +87,17 @@ public partial class MainViewModel : ViewModelBase
     public string SelectedFolderPath => SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !IsLoadingFiles && SelectedFolder is null;
     public bool ShouldShowFileTable => !IsLoadingFiles && SelectedFolder is not null;
+    public string CurrentOperationLabel
+    {
+        get
+        {
+            if (IsReverting)
+                return "files reverted";
+            if (IsSorting)
+                return "files sorted";
+            return "files processed";
+        }
+    }
 
     public string ReadableFolderSize => FolderSize.BytesToReadableSize();
 
@@ -100,9 +113,9 @@ public partial class MainViewModel : ViewModelBase
         _fileOperationStore = fileOperationStore;
         _fileOperationLookupService = fileOperationLookupService;
         _sortReporter = new GuiFileSortReporter(
-            progress => SortProgress = progress,
+            progress => OperationProgress = progress,
             elapsed => ElapsedTime = elapsed,
-            filesMoved => SortedFiles = filesMoved
+            filesProcessed => FilesProcessed = filesProcessed
         );
         _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
         
@@ -278,8 +291,8 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             IsSorting = true;
-            SortProgress = 0;
-            SortedFiles = 0;
+            OperationProgress = 0;
+            FilesProcessed = 0;
             ElapsedTime = "0m 00s";
             WasCancelled = false;
             
@@ -392,6 +405,9 @@ public partial class MainViewModel : ViewModelBase
     private async Task RevertLastSort()
     {
         IsReverting = true;
+        OperationProgress = 0;
+        FilesProcessed = 0;
+        ElapsedTime = "0m 00s";
         
         if (LastSortSessionId == Guid.Empty)
             return;

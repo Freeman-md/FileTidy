@@ -133,7 +133,19 @@ public class FileTidyingService : IFileTidyingService
 
     public async Task RevertSessionAsync(Guid sessionId, CancellationToken cancellationToken = default)
     {
-        var operations = await _fileOperationStore.GetOperationsBySessionAsync(sessionId);
+        var operations = (await _fileOperationStore.GetOperationsBySessionAsync(sessionId)).ToList();
+        
+        if (!operations.Any())
+        {
+            _reporter?.OnBulkRevertSummary(0, 0, 0);
+            return;
+        }
+
+        _reporter?.SetTotalFiles(operations.Count);
+        var stopwatch = Stopwatch.StartNew();
+
+        int successCount = 0;
+        int failureCount = 0;
 
         foreach (var operation in operations)
         {
@@ -143,14 +155,23 @@ public class FileTidyingService : IFileTidyingService
             {
                 await _fileManager.RevertFileAsync(operation.NewPath, operation.OriginalPath, cancellationToken);
                 await _fileOperationStore.UpdateOperationStatusAsync(operation.Id, FileOperationStatus.Reverted);
+
+                successCount++;
                 _reporter?.OnFileReverted(operation.NewPath);
+                
+                if (successCount % 10 == 0)
+                    _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
             }
             catch (Exception ex)
             {
+                failureCount++;
                 _reporter?.OnError(operation.NewPath, ex);
             }
         }
 
+        stopwatch.Stop();
+        _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
+        _reporter?.OnBulkRevertSummary(operations.Count, successCount, failureCount);
         _reporter?.OnSessionReverted(sessionId);
     }
     

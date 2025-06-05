@@ -8,16 +8,16 @@ public class GuiFileSortReporter : ISortReporter
 {
     private readonly Action<int>? _progressUpdate;
     private readonly Action<string>? _elapsedUpdate;
-    private readonly Action<int>? _filesMovedUpdate;
+    private readonly Action<int>? _filesProcessedUpdate;
 
     private int _total = 0;
     private int _processed = 0;
 
-    public GuiFileSortReporter(Action<int>? progressUpdate, Action<string>? elapsedUpdate, Action<int>? filesMovedUpdate)
+    public GuiFileSortReporter(Action<int>? progressUpdate, Action<string>? elapsedUpdate, Action<int>? filesProcessedUpdate)
     {
         _progressUpdate = progressUpdate;
         _elapsedUpdate = elapsedUpdate;
-        _filesMovedUpdate = filesMovedUpdate;
+        _filesProcessedUpdate = filesProcessedUpdate;
     }
 
     public void SetTotalFiles(int total)
@@ -37,7 +37,10 @@ public class GuiFileSortReporter : ISortReporter
 
     public void OnFileReverted(string operationNewPath)
     {
-        throw new NotImplementedException();
+        _processed++;
+        var progress = (_total > 0) ? (_processed * 100) / _total : 0;
+        _progressUpdate?.Invoke(progress);
+        _filesProcessedUpdate?.Invoke(_processed);
     }
 
     public void OnSessionReverted(Guid sessionId)
@@ -47,7 +50,7 @@ public class GuiFileSortReporter : ISortReporter
 
     public void OnBulkRevertSummary(int total, int reverted, int failed)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"Reverted {reverted} of {total} files. Failed: {failed}");
     }
 
     public void OnFileDeleted(string path)
@@ -65,7 +68,7 @@ public class GuiFileSortReporter : ISortReporter
         _processed++;
         var progress = (_total > 0) ? (_processed * 100) / _total : 0;
         _progressUpdate?.Invoke(progress);
-        _filesMovedUpdate?.Invoke(_processed);
+        _filesProcessedUpdate?.Invoke(_processed);
     }
 
     public void OnFileSkipped(string filePath)
@@ -75,7 +78,7 @@ public class GuiFileSortReporter : ISortReporter
 
     public void OnSummary(int totalFiles, int totalMoved, int totalErrors, Dictionary<string, int> perCategoryCounts)
     {
-        _filesMovedUpdate?.Invoke(totalMoved);
+        _filesProcessedUpdate?.Invoke(totalMoved);
     }
 
     public void OnError(string filePath, Exception ex) { }

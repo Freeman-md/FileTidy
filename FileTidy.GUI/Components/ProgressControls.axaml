@@ -16,20 +16,20 @@
                 <StackPanel Spacing="4">
                     <TextBlock FontSize="10">
                         <Run FontWeight="Bold">Progress:</Run>
-                        <Run Text="{Binding SortedFiles}"></Run>
-                        <Run> files sorted</Run>
+                        <Run Text="{Binding FilesProcessed}"></Run>
+                        <Run Text="{Binding CurrentOperationLabel}" />
                     </TextBlock>
 
                     <ProgressBar Minimum="0"
                                  Maximum="100"
-                                 Value="{Binding SortProgress}"
+                                 Value="{Binding OperationProgress}"
                                  Height="6"
                                  HorizontalAlignment="Stretch"
                                  Foreground="{DynamicResource TextBrush}"
                                  Background="{DynamicResource BorderBrush}" />
 
                     <DockPanel>
-                        <TextBlock FontSize="10" Text="{Binding SortProgress, StringFormat='{}{0}% Complete'}" DockPanel.Dock="Right" />
+                        <TextBlock FontSize="10" Text="{Binding OperationProgress, StringFormat='{}{0}% Complete'}" DockPanel.Dock="Right" />
                         <TextBlock FontSize="10" Text="Elapsed: " />
                         <TextBlock FontSize="10" Text="{Binding ElapsedTime}"></TextBlock>
                     </DockPanel>
