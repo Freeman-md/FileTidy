@@ -75,7 +75,13 @@ public class SqliteOperationStore : IFileOperationStore
                 Status TEXT NOT NULL CHECK(Status IN ('Moved', 'Deleted', 'Reverted', 'Skipped', 'Failed', 'Unprocessed')) DEFAULT 'Unprocessed',
                 Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
                 SortSessionId TEXT NOT NULL
-            )
+            );
+
+            CREATE TABLE IF NOT EXISTS AppConfig (
+                Key TEXT PRIMARY KEY,
+                Value TEXT
+            );
+
         ";
 
             command.ExecuteNonQuery();
@@ -306,5 +312,37 @@ WHERE NewPath LIKE @PathPrefix";
         }
 
         return results;
+    }
+
+    public async Task SaveConfigValueAsync(string key, string value)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+            INSERT INTO AppConfig(Key, Value) VALUES (@Key, @Value)
+            ON CONFLICT(Key) DO UPDATE SET Value = @Value;
+            ";
+        
+        command.Parameters.AddWithValue("@Key", key);
+        command.Parameters.AddWithValue("@Value", value);
+        
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task<string?> GetConfigValueAsync(string key)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        
+        var command = connection.CreateCommand();
+        command.CommandText = @"
+                SELECT Value FROM AppConfig WHERE Key = @Key
+                ";
+        command.Parameters.AddWithValue("@Key", key);
+        
+        var result = await command.ExecuteScalarAsync();
+        return result?.ToString();
     }
 }
