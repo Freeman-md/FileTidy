@@ -24,7 +24,8 @@ public class FileTidyingService : IFileTidyingService
         _mapper = new FileCategoryMapper(resolvedPath);
     }
 
-    public async Task<TidyingResult> SortDirectory(string directoryPath, Guid sortSessionId, CancellationToken cancellationToken = default)
+    public async Task<TidyingResult> SortDirectory(string directoryPath, Guid sortSessionId,
+        CancellationToken cancellationToken = default)
     {
         var filesToProcess = GetFilesToProcess(directoryPath);
         if (!filesToProcess.Any())
@@ -51,34 +52,16 @@ public class FileTidyingService : IFileTidyingService
             string ext = Path.GetExtension(file);
             string category = _mapper.GetCategory(ext);
 
-            var result = await _fileManager.MoveFileAsync(file, category, directoryPath, cancellationToken);
+            bool success = await TryMoveAndLogFileAsync(file, category, directoryPath, sortSessionId, cancellationToken);
 
-            if (result.Success)
+            if (success)
             {
                 perCategoryCounts[category] = perCategoryCounts.GetValueOrDefault(category, 0) + 1;
                 totalMoved++;
-
-                await _fileOperationStore.LogOperationAsync(new FileOperation
-                {
-                    Id = Guid.NewGuid(),
-                    FileName = Path.GetFileName(file),
-                    OriginalPath = result.OriginalPath,
-                    NewPath = result.NewPath,
-                    Status = result.Status,
-                    Timestamp = DateTime.UtcNow,
-                    SortSessionId = sortSessionId
-                });
-
-                _reporter?.OnFileProcessed(file, category);
-            }
-            else if (result.Status == FileOperationStatus.Skipped)
-            {
-                _reporter?.OnFileSkipped(file);
             }
             else
             {
                 totalErrors++;
-                _reporter?.OnError(file, result.Error!);
             }
 
             processed++;
@@ -122,19 +105,19 @@ public class FileTidyingService : IFileTidyingService
 
         await _fileOperationStore.UpdateOperationStatusAsync(retrievedFileOperation.Id, FileOperationStatus.Reverted);
     }
-    
+
     public async Task DeleteFileAsync(string path,
         CancellationToken cancellationToken = default)
     {
         await _fileManager.DeleteFileAsync(path, cancellationToken);
-        
+
         //TODO: Add File Operation to get file operation by path. Either original path or new path. And then update the file operation status if an operation exists
     }
 
     public async Task RevertSessionAsync(Guid sessionId, CancellationToken cancellationToken = default)
     {
         var operations = (await _fileOperationStore.GetOperationsBySessionAsync(sessionId)).ToList();
-        
+
         if (!operations.Any())
         {
             _reporter?.OnBulkRevertSummary(0, 0, 0);
@@ -158,7 +141,7 @@ public class FileTidyingService : IFileTidyingService
 
                 successCount++;
                 _reporter?.OnFileReverted(operation.NewPath);
-                
+
                 if (successCount % 10 == 0)
                     _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
             }
@@ -174,7 +157,7 @@ public class FileTidyingService : IFileTidyingService
         _reporter?.OnBulkRevertSummary(operations.Count, successCount, failureCount);
         _reporter?.OnSessionReverted(sessionId);
     }
-    
+
     public async Task RevertFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
     {
         int total = 0, reverted = 0, failed = 0;
@@ -211,7 +194,7 @@ public class FileTidyingService : IFileTidyingService
 
         _reporter?.OnBulkRevertSummary(total, reverted, failed);
     }
-    
+
     public async Task DeleteFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
     {
         int total = 0, deleted = 0, failed = 0;
@@ -239,7 +222,7 @@ public class FileTidyingService : IFileTidyingService
 
         _reporter?.OnBulkDeleteSummary(total, deleted, failed);
     }
-    
+
     private void RemoveEmptyDirectories(string directory)
     {
         foreach (var subDirectory in Directory.GetDirectories(directory))
@@ -275,5 +258,68 @@ public class FileTidyingService : IFileTidyingService
                 !categoryFolders.Any(folder =>
                     file.StartsWith(folder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)))
             .ToList();
+    }
+
+    private async Task<bool> TryMoveAndLogFileAsync(
+        string file,
+        string category,
+        string baseDirectory,
+        Guid sortSessionId,
+        CancellationToken cancellationToken)
+    {
+        var result = await _fileManager.MoveFileAsync(file, category, baseDirectory, cancellationToken);
+
+        if (!result.Success)
+        {
+            if (result.Status == FileOperationStatus.Skipped)
+                _reporter?.OnFileSkipped(file);
+            else
+                _reporter?.OnError(file, result.Error!);
+
+            return false;
+        }
+
+        try
+        {
+            await RetryAsync(() => _fileOperationStore.LogOperationAsync(new FileOperation
+            {
+                Id = Guid.NewGuid(),
+                FileName = Path.GetFileName(file),
+                OriginalPath = result.OriginalPath,
+                NewPath = result.NewPath,
+                Status = result.Status,
+                Timestamp = DateTime.UtcNow,
+                SortSessionId = sortSessionId
+            }));
+
+            _reporter?.OnFileProcessed(file, category);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Rollback file move
+            await _fileManager.RevertFileAsync(result.NewPath, result.OriginalPath, cancellationToken);
+
+            _reporter?.OnError(file, ex);
+            return false;
+        }
+    }
+
+
+    private async Task RetryAsync(Func<Task> action, int maxRetries = 3, int delayMs = 200)
+    {
+        int attempts = 0;
+        while (true)
+        {
+            try
+            {
+                await action();
+                return;
+            }
+            catch when (++attempts < maxRetries)
+            {
+                await Task.Delay(delayMs);
+            }
+        }
     }
 }
