@@ -397,7 +397,10 @@ public partial class MainViewModel : ViewModelBase
             return;
 
         await _fileTidyingService.RevertSessionAsync(LastSortSessionId);
+        
         LastSortSessionId = Guid.Empty;
+        await _fileOperationStore.DeleteConfigValueAsync(nameof(LastSortSessionId));
+
 
         _ = LoadFilesForSelectedFolder();
 
