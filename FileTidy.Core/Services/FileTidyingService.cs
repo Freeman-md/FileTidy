@@ -19,7 +19,7 @@ public class FileTidyingService : IFileTidyingService
         _reporter = reporter;
 
         string resolvedPath = dataPath ??
-                              Path.Combine(Path.GetDirectoryName(typeof(FileTidyingService).Assembly.Location)!,
+                              Path.Combine(Path.GetDirectoryName(System.AppContext.BaseDirectory)!,
                                   "Data");
         _mapper = new FileCategoryMapper(resolvedPath);
     }
