@@ -35,6 +35,6 @@ chmod +x $PACKAGE_DIR/FileTidy.GUI.exe
 mv $PACKAGE_DIR/FileTidy.GUI.exe $PACKAGE_DIR/FileTidy.exe
 
 echo "▶ Zipping package..."
-zip -r $ARCHIVE_NAME $PACKAGE_DIR > /dev/null
+powershell.exe -Command "Compress-Archive -Path '$PACKAGE_DIR/*' -DestinationPath '$ARCHIVE_NAME'"
 
 echo "✅ Done: $ARCHIVE_NAME"
