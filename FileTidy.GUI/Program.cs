@@ -16,6 +16,16 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+             .AfterSetup(_ =>
+            {
+#if MACOS
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+                {
+                    var platform = AvaloniaLocator.Current.GetService<IPlatformLifetimeEventsImpl>();
+                    platform?.SetAboutCallback(() => { });
+                }
+#endif
+            })
             .WithInterFont()
             .LogToTrace();
 }

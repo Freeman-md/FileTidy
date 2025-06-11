@@ -39,9 +39,12 @@
             {
                 desktop.MainWindow = new Views.MainView
                 {
-                    DataContext = serviceProvider.GetRequiredService<MainViewModel>()
+                    DataContext = serviceProvider.GetRequiredService<MainViewModel>(),
+                    Title = "FileTidy"
                 };
             }
+
+            Current!.Name = "FileTidy";
 
             base.OnFrameworkInitializationCompleted();
         }
