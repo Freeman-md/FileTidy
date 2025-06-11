@@ -483,9 +483,11 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-/macos-publish/universal/FileTidy
-
 /linux-publish/
 /windows-publish/
 /macos-publish/
-FileTidy-**
+
+# ignore generated bundles only
+FileTidy-*-win.zip
+FileTidy-*.dmg
+FileTidy-*-linux.tar.gz
