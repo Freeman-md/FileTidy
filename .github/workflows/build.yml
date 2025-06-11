@@ -1,0 +1,87 @@
+name: Build and Release FileTidy
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    env:
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🧰 Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: 🏗️ Restore dependencies
+        run: dotnet restore
+
+      - name: 🛠️ Extract version
+        id: version
+        run: |
+          VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' Directory.Build.props)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🖥️ Build + Package (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          chmod +x ./build-macos-universal.sh
+          ./build-macos-universal.sh
+
+      - name: 🪟 Build + Package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          bash ./build-windows.sh
+
+      - name: 📤 Upload macOS .dmg
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v3
+        with:
+          name: FileTidy-${{ steps.version.outputs.version }}-macOS
+          path: FileTidy-${{ steps.version.outputs.version }}.dmg
+
+      - name: 📤 Upload Windows .zip
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: FileTidy-${{ steps.version.outputs.version }}-Windows
+          path: FileTidy-${{ steps.version.outputs.version }}-win.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Download macOS artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: FileTidy-${{ github.ref_name }}-macOS
+          path: dist/
+
+      - name: 📥 Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: FileTidy-${{ github.ref_name }}-Windows
+          path: dist/
+
+      - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            dist/*.dmg
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
