@@ -37,6 +37,7 @@ jobs:
       - name: 🖥️ Build + Package (macOS)
         if: runner.os == 'macOS'
         run: |
+          brew install create-dmg
           chmod +x ./build-macos-universal.sh
           ./build-macos-universal.sh
 
