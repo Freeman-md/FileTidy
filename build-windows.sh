@@ -19,12 +19,13 @@ echo "▶ Cleaning previous builds..."
 rm -rf $PUBLISH_DIR $PACKAGE_DIR $ARCHIVE_NAME
 
 echo "▶ Publishing .NET app for Windows..."
-dotnet publish FileTidy.GUI/FileTidy.GUI.csproj \
+dotnet publish "FileTidy.GUI/FileTidy.GUI.csproj" \
   -c Release -r $RUNTIME \
   --self-contained true \
-  /p:PublishSingleFile=true \
-  /p:IncludeNativeLibrariesForSelfExtract=true \
+  -p:PublishSingleFile=true \
+  -p:IncludeNativeLibrariesForSelfExtract=true \
   -o $PUBLISH_DIR
+
 
 echo "▶ Creating package folder..."
 mkdir -p $PACKAGE_DIR
