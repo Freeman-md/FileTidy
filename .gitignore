@@ -489,4 +489,5 @@ Info.plist
 
 /linux-publish/
 /windows-publish/
+/macos-publish/
 FileTidy-**
