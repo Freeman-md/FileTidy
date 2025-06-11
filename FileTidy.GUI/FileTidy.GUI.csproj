@@ -74,4 +74,22 @@
       <ProjectReference Include="..\FileTidy.Core\FileTidy.Core.csproj" />
       <ProjectReference Include="..\FileTidy.Data\FileTidy.Data.csproj" />
     </ItemGroup>
+
+    <PropertyGroup>
+      <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
+      <UseAppHost>true</UseAppHost>
+      <PublishSingleFile>true</PublishSingleFile>
+      <SelfContained>true</SelfContained>
+    </PropertyGroup>
+
+
+    <PropertyGroup>
+      <CFBundleName>FileTidy</CFBundleName>
+      <CFBundleDisplayName>FileTidy</CFBundleDisplayName>
+      <CFBundleIdentifier>com.freemancodz.filetidy</CFBundleIdentifier>
+      <CFBundleVersion>1.0.0</CFBundleVersion>
+      <CFBundleShortVersionString>1.0</CFBundleShortVersionString>
+    </PropertyGroup>
+
+
 </Project>
