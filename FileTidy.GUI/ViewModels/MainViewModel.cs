@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +33,8 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty] private int _operationProgress = 0;
     [ObservableProperty] private int _filesProcessed = 0;
     [ObservableProperty] private string _elapsedTime = "0m 00s";
+    
+    public string AppVersion => $"FileTidy v{Assembly.GetExecutingAssembly().GetName().Version} | Built by Freemancodz";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]

@@ -486,3 +486,7 @@ $RECYCLE.BIN/
 Info.plist
 
 /macos-publish/universal/FileTidy
+
+/linux-publish/
+/windows-publish/
+FileTidy-**

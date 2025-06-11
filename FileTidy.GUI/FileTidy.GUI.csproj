@@ -76,7 +76,7 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
+      <RuntimeIdentifiers>osx-x64;osx-arm64;linux-x64;win-x64</RuntimeIdentifiers>
       <UseAppHost>true</UseAppHost>
       <PublishSingleFile>true</PublishSingleFile>
       <SelfContained>true</SelfContained>
@@ -90,6 +90,11 @@
       <CFBundleVersion>1.0.0</CFBundleVersion>
       <CFBundleShortVersionString>1.0</CFBundleShortVersionString>
     </PropertyGroup>
+
+    <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+      <ApplicationIcon>Assets/Icons/filetidy-icon.ico</ApplicationIcon>
+    </PropertyGroup>
+
 
 
 </Project>

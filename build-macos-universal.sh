@@ -3,7 +3,13 @@
 set -e
 
 APP_NAME="FileTidy"
-APP_VERSION="1.0.0"
+
+APP_VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' Directory.Build.props)
+if [ -z "$APP_VERSION" ]; then
+  echo "❌ Failed to read version from Directory.Build.props"
+  exit 1
+fi
+
 UNIVERSAL_DIR="macos-publish/universal"
 ARM_DIR="macos-publish/arm64"
 X64_DIR="macos-publish/x64"

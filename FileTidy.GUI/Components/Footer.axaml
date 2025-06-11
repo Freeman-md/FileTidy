@@ -2,11 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewmodel="clr-namespace:FileTidy.GUI.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileTidy.GUI.Components.Footer">
+             x:Class="FileTidy.GUI.Components.Footer"
+             x:DataType="viewmodel:MainViewModel">
     <Border Grid.Row="3" Background="{DynamicResource BackgroundBrush}" HorizontalAlignment="Stretch" Padding="5 7"
             Margin="0 5 0 0">
         <TextBlock TextAlignment="Center" FontSize="10" Foreground="{DynamicResource TextBrush}"
-                   Text="FileTidy v1.0.0 | Built by Freemancodz" />
+                   Text="{Binding AppVersion}"
+        >
+        </TextBlock>
     </Border>
 </UserControl>
