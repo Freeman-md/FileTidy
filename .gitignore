@@ -484,3 +484,5 @@ $RECYCLE.BIN/
 *.swp
 
 Info.plist
+
+/macos-publish/universal/FileTidy
