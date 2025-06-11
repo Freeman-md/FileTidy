@@ -51,15 +51,16 @@ jobs:
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
-          name: FileTidy-${{ steps.version.outputs.version || '1.0.0' }}-macOS
-          path: FileTidy-${{ steps.version.outputs.version || '1.0.0' }}.dmg
+          name: FileTidy-${{ github.ref_name }}-macOS
+          path: FileTidy-*.dmg
+
 
       - name: 📤 Upload Windows .zip
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: FileTidy-1.0.0-Windows
-          path: FileTidy-1.0.0-win.zip
+          name: FileTidy-${{ github.ref_name }}-Windows
+          path: FileTidy-*-win.zip
 
   release:
     needs: build
