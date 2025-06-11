@@ -28,7 +28,8 @@ jobs:
       - name: 🏗️ Restore dependencies
         run: dotnet restore
 
-      - name: 🛠️ Extract version
+      - name: 🛠️ Extract version (macOS)
+        if: runner.os == 'macOS'
         id: version
         run: |
           VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' Directory.Build.props)
@@ -50,15 +51,15 @@ jobs:
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
-          name: FileTidy-${{ steps.version.outputs.version }}-macOS
-          path: FileTidy-${{ steps.version.outputs.version }}.dmg
+          name: FileTidy-${{ steps.version.outputs.version || '1.0.0' }}-macOS
+          path: FileTidy-${{ steps.version.outputs.version || '1.0.0' }}.dmg
 
       - name: 📤 Upload Windows .zip
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: FileTidy-${{ steps.version.outputs.version }}-Windows
-          path: FileTidy-${{ steps.version.outputs.version }}-win.zip
+          name: FileTidy-1.0.0-Windows
+          path: FileTidy-1.0.0-win.zip
 
   release:
     needs: build
