@@ -483,8 +483,6 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-Info.plist
-
 /macos-publish/universal/FileTidy
 
 /linux-publish/
