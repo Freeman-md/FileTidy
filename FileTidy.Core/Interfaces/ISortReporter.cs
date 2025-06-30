@@ -14,4 +14,9 @@ public interface ISortReporter
     void OnBulkRevertSummary(int total, int reverted, int failed);
     void OnFileDeleted(string path);
     void OnBulkDeleteSummary(int total, int deleted, int failed);
+
+    event Action<int>? ProgressChanged;
+    event Action<string>? ElapsedChanged;
+    event Action<int>? FilesProcessedChanged;
+    event Action<string, string>? NotificationRequested;
 }

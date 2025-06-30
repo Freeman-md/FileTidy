@@ -5,7 +5,8 @@
     using FileTidy.Core.Services;
     using FileTidy.Data.Sqlite;
     using FileTidy.GUI.Contracts;
-    using FileTidy.GUI.Services;
+using FileTidy.GUI.Reporting;
+using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
     using Microsoft.Extensions.DependencyInjection;
     using MainViewModel = FileTidy.GUI.ViewModels.MainViewModel;
@@ -31,6 +32,13 @@
                 return new FileOperationLookupService(fileOperationStore);
             });
             services.AddSingleton<IFolderService, FolderService>();
+            services.AddSingleton<ISortReporter, GuiFileSortReporter>();
+            services.AddSingleton<IFileTidyingService, FileTidyingService>();
+            
+            services.AddSingleton<FolderTreeViewModel>();
+            services.AddSingleton<FileListViewModel>();
+            services.AddSingleton<SortOperationViewModel>();
+            services.AddSingleton<NotificationViewModel>();
             services.AddSingleton<MainViewModel>();
 
             var serviceProvider = services.BuildServiceProvider();

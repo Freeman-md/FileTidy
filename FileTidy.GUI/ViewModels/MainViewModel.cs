@@ -33,34 +33,31 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(
         IFolderService folderService, 
         IFileOperationStore fileOperationStore, 
-        IFileOperationLookupService fileOperationLookupService
+        IFileOperationLookupService fileOperationLookupService,
+        FolderTreeViewModel folderTreeViewModel,
+        FileListViewModel fileListViewModel,
+        SortOperationViewModel sortOperationViewModel,
+        NotificationViewModel notificationViewModel,
+        ISortReporter sortReporter,
+        IFileTidyingService fileTidyingService
     )
     {
         _folderService = folderService;
         _fileOperationStore = fileOperationStore;
         _fileOperationLookupService = fileOperationLookupService;
-        _sortReporter = new GuiFileSortReporter(
-            progress => SortOperationViewModel.OperationProgress = progress,
-            elapsed => SortOperationViewModel.ElapsedTime = elapsed,
-            filesProcessed => SortOperationViewModel.FilesProcessed = filesProcessed,
-            (title, message) => NotificationViewModel.Show(title, message)
-        );
-        _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
+        _sortReporter = sortReporter;
+        _fileTidyingService = fileTidyingService;
 
-        FolderTreeViewModel = new FolderTreeViewModel(_folderService);
-        FileListViewModel = new FileListViewModel(
-            FolderTreeViewModel, 
-            _folderService, 
-            _fileOperationLookupService, 
-            _fileTidyingService
-            );
-        SortOperationViewModel = new SortOperationViewModel(
-            FolderTreeViewModel,
-            FileListViewModel,
-            _fileTidyingService,
-            _fileOperationStore
-        );
-        NotificationViewModel = new NotificationViewModel();
+        FolderTreeViewModel = folderTreeViewModel;
+        FileListViewModel = fileListViewModel;
+        SortOperationViewModel = sortOperationViewModel;
+        NotificationViewModel = notificationViewModel;
+
+        // Subscribe to sortReporter events
+        _sortReporter.ProgressChanged += progress => SortOperationViewModel.OperationProgress = progress;
+        _sortReporter.ElapsedChanged += elapsed => SortOperationViewModel.ElapsedTime = elapsed;
+        _sortReporter.FilesProcessedChanged += count => SortOperationViewModel.FilesProcessed = count;
+        _sortReporter.NotificationRequested += (title, message) => NotificationViewModel.Show(title, message);
 
         FolderTreeViewModel.PropertyChanged += (sender, propertyChangedArgs) =>
         {
