@@ -18,7 +18,7 @@ public partial class FolderPanel : UserControl
         {
             if (DataContext is MainViewModel vm)
             {
-                vm.OpenFolderCommand.Execute(fileItem);
+                vm.FileListViewModel.OpenFolderCommand.Execute(fileItem);
             }
         }
     }

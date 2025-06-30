@@ -33,7 +33,7 @@
                 <!-- Revert -->
                 <Button Classes="btn btn-outline"
                         IsVisible="{Binding FileOperationStatus, Converter={StaticResource RevertVisibilityConverter}}"
-                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).RevertSortingCommand}"
+                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).FileListViewModel.RevertSortingCommand}"
                         CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe038;" Classes="btn-icon" />
@@ -43,7 +43,7 @@
 
                 <!-- Delete -->
                 <Button Classes="btn btn-outline"
-                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).DeleteFileCommand}"
+                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).FileListViewModel.DeleteFileCommand}"
                         CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <Label FontFamily="{StaticResource Phosphor}" Content="&#xe4A6;" Classes="btn-icon" />
@@ -124,7 +124,7 @@
                         <InlineUIContainer>
                             <TextBlock Text="&#xe390;" FontFamily="{StaticResource PhosphorFill}" Margin="0 1 0 0" />
                         </InlineUIContainer>
-                        <Run Text="{Binding ReadableFolderSize}"/>
+                        <Run Text="{Binding FileListViewModel.ReadableFolderSize}"/>
                     </TextBlock>
 
 
@@ -180,11 +180,11 @@
                             <StackPanel>
                                 <Border BorderThickness="1" Padding="5">
                                     <Grid ColumnDefinitions="*, Auto">
-                                        <CheckBox IsChecked="{Binding IsAllSelected, Mode=TwoWay}" Content="Select All" VerticalAlignment="Center"
+                                        <CheckBox IsChecked="{Binding FileListViewModel.IsAllSelected, Mode=TwoWay}" Content="Select All" VerticalAlignment="Center"
                                                   Foreground="{DynamicResource TextBrush}" />
 
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                                            <Button Classes="btn btn-outline"         Command="{Binding RevertSelectedCommand}"
+                                            <Button Classes="btn btn-outline"         Command="{Binding FileListViewModel.RevertSelectedCommand}"
                                             >
                                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                                     <Label FontFamily="{StaticResource PhosphorFill}"
@@ -192,13 +192,13 @@
                                                     <TextBlock>
                                                         <Run Text="Revert Selected" />
                                                         <Run Text=" (" />
-                                                        <Run Text="{Binding SelectedRevertableCount}" />
+                                                        <Run Text="{Binding FileListViewModel.SelectedRevertableCount}" />
                                                         <Run Text=")" />
                                                     </TextBlock>
                                                 </StackPanel>
                                             </Button>
 
-                                            <Button Classes="btn btn-outline"         Command="{Binding DeleteSelectedCommand}"
+                                            <Button Classes="btn btn-outline"         Command="{Binding FileListViewModel.DeleteSelectedCommand}"
                                             >
                                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                                     <Label FontFamily="{StaticResource Phosphor}"
@@ -207,7 +207,7 @@
                                                     <TextBlock>
                                                         <Run Text="Delete Selected" />
                                                         <Run Text=" (" />
-                                                        <Run Text="{Binding SelectedFileCount}" />
+                                                        <Run Text="{Binding FileListViewModel.SelectedFileCount}" />
                                                         <Run Text=")" />
                                                     </TextBlock>
                                                 </StackPanel>
@@ -224,7 +224,7 @@
                                        FontStyle="Italic"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       IsVisible="{Binding IsLoadingFiles}" />
+                                       IsVisible="{Binding FileListViewModel.IsLoadingFiles}" />
 
                         <TextBlock Text="Select a folder to preview files" 
                                    FontStyle="Italic"
@@ -233,7 +233,7 @@
                                    IsVisible="{Binding ShouldShowEmptyState}"
                         />
 
-                        <DataGrid  IsVisible="{Binding ShouldShowFileTable}" ItemsSource="{Binding CurrentFiles}" AutoGenerateColumns="False"
+                        <DataGrid  IsVisible="{Binding ShouldShowFileTable}" ItemsSource="{Binding FileListViewModel.CurrentFiles}" AutoGenerateColumns="False"
                                   GridLinesVisibility="All"
                                   BorderThickness="0" Margin="10 5" CanUserResizeColumns="True"
                                   CanUserSortColumns="False"

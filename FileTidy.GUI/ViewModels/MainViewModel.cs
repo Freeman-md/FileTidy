@@ -30,17 +30,13 @@ public partial class MainViewModel : ViewModelBase
     private CancellationTokenSource? _sortingCancellationTokenSource;
     
     public FolderTreeViewModel FolderTreeViewModel { get; }
+    public FileListViewModel FileListViewModel { get; }
         
     [ObservableProperty] private int _operationProgress = 0;
     [ObservableProperty] private int _filesProcessed = 0;
     [ObservableProperty] private string _elapsedTime = "0m 00s";
     
     public string AppVersion => $"FileTidy v{Assembly.GetExecutingAssembly().GetName().Version} | Built by Freemancodz";
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ShouldShowEmptyState))]
-    [NotifyPropertyChangedFor(nameof(ShouldShowFileTable))]
-    private bool _isLoadingFiles;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StopSortingCommand))]
@@ -58,30 +54,16 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RevertLastSortCommand))]
     private Guid _lastSortSessionId = Guid.Empty;
-
-    [ObservableProperty]
-    private bool _isAllSelected;
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ReadableFolderSize))]
-    private long _folderSize;
     
     [ObservableProperty] private string? _notificationTitle;
     [ObservableProperty] private string? _notificationMessage;
     [ObservableProperty] private bool _isNotificationVisible;
-
-
-    [ObservableProperty]
-    private ObservableCollection<FileItem> _currentFiles = new();
-
-    public int SelectedFileCount => CurrentFiles.Count(f => f.IsSelected);
-    public int SelectedRevertableCount => CurrentFiles.Count(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved);
-    public bool CanRevertSelected => SelectedRevertableCount > 0;
-    public bool CanDeleteSelected => SelectedFileCount > 0;
+    
     private bool CanStartTidying => FolderTreeViewModel.SelectedFolder is not null && IsSorting is false && IsReverting is false;
     private bool CanRevertLastSort() => LastSortSessionId != Guid.Empty && IsSorting == false && IsReverting == false;
     public string SelectedFolderPath => FolderTreeViewModel.SelectedFolder?.FullPath ?? string.Empty;
-    public bool ShouldShowEmptyState => !IsLoadingFiles && FolderTreeViewModel.SelectedFolder is null;
-    public bool ShouldShowFileTable => !IsLoadingFiles && FolderTreeViewModel.SelectedFolder is not null;
+    public bool ShouldShowEmptyState => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is null;
+    public bool ShouldShowFileTable => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is not null;
     public string CurrentOperationLabel
     {
         get
@@ -93,8 +75,6 @@ public partial class MainViewModel : ViewModelBase
             return "files processed";
         }
     }
-
-    public string ReadableFolderSize => FolderSize.BytesToReadableSize();
 
     public MainViewModel() { }
 
@@ -126,6 +106,7 @@ public partial class MainViewModel : ViewModelBase
         _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
 
         FolderTreeViewModel = new FolderTreeViewModel(_folderService);
+        FileListViewModel = new FileListViewModel(FolderTreeViewModel, _folderService, _fileOperationLookupService, _fileTidyingService);
 
         FolderTreeViewModel.PropertyChanged += (sender, propertyChangedArgs) =>
         {
@@ -138,42 +119,22 @@ public partial class MainViewModel : ViewModelBase
             }
         };
 
+        FileListViewModel.PropertyChanged += (sender, propertyChangedArgs) =>
+        {
+            if (propertyChangedArgs.PropertyName == nameof(FileListViewModel.IsLoadingFiles))
+            {
+                OnPropertyChanged(nameof(ShouldShowEmptyState));
+                OnPropertyChanged(nameof(ShouldShowFileTable));
+            }
+        };
+
         FolderTreeViewModel.SelectedFolderChanged += (folder) =>
         {
-            _ = LoadFilesForSelectedFolder();
+            _ = FileListViewModel.LoadFilesForSelectedFolder();
         };
 
         _ = FolderTreeViewModel.InitializeAsync();
         _ = InitializeAsync();
-    }
-    
-    private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(FileItem.IsSelected))
-        {
-            IsAllSelected = CurrentFiles.All(item => item.IsSelected);
-            OnPropertyChanged(nameof(SelectedFileCount));
-            OnPropertyChanged(nameof(SelectedRevertableCount));
-            OnPropertyChanged(nameof(CanRevertSelected));
-            OnPropertyChanged(nameof(CanDeleteSelected));
-            
-            RevertSelectedCommand.NotifyCanExecuteChanged();
-            DeleteSelectedCommand.NotifyCanExecuteChanged();
-        }
-    }
-
-    partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
-    {
-        bool userUncheckingManually = !newValue;
-        bool notAllFilesSelected = CurrentFiles.Any(file => !file.IsSelected);
-
-        if (userUncheckingManually && notAllFilesSelected)
-            return;
-
-        foreach (var file in CurrentFiles)
-        {
-            file.IsSelected = newValue;
-        }
     }
     
     private async Task InitializeAsync()
@@ -181,67 +142,6 @@ public partial class MainViewModel : ViewModelBase
         var sessionIdStr = await _fileOperationStore.GetConfigValueAsync(nameof(LastSortSessionId));
         if (Guid.TryParse(sessionIdStr, out var restoredId))
             LastSortSessionId = restoredId;
-    }
-
-    private async Task LoadFilesForSelectedFolder()
-    {
-        if (FolderTreeViewModel.SelectedFolder is null)
-        {
-            CurrentFiles = new();
-            return;
-        }
-
-        IsLoadingFiles = true;
-
-        try
-        {
-            
-            var files = await _folderService.LoadFilesAsync(FolderTreeViewModel.SelectedFolder.FullPath).ConfigureAwait(false);
-            await SetFileItemsAsync(files);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading files: {ex.Message}");
-            CurrentFiles = new();
-        }
-        finally
-        {
-            IsLoadingFiles = false;
-        }
-    }
-
-    private async Task SetFileItemsAsync(List<FileItem> files)
-    {
-        if (FolderTreeViewModel.SelectedFolder is null)
-            return;
-        
-        var observableFiles = new ObservableCollection<FileItem>(files);
-        
-        var statuses = await _fileOperationLookupService.GetFileStatusesForDirectoryAsync(FolderTreeViewModel.SelectedFolder.FullPath)
-            .ConfigureAwait(false);
-
-        foreach (var file in observableFiles)
-        {
-            file.PropertyChanged += OnFileItemPropertyChanged;
-
-            if (!string.IsNullOrEmpty(file.FullPath) && statuses.TryGetValue(file.FullPath, out var status))
-                file.FileOperationStatus = status;
-        }
-
-        FolderSize = files
-            .Where(f => !f.IsFolder)
-            .Sum(f =>
-            {
-                var path = Path.Combine(FolderTreeViewModel.SelectedFolder!.FullPath, f.Name);
-                return File.Exists(path) ? new FileInfo(path).Length : 0;
-            });
-
-        await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
-    }
-
-    private async Task RunOnUIThreadAsync(Action action)
-    {
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action);
     }
 
     // TODO: Preserve folder tree state (expanded nodes, selected folder) after sorting
@@ -274,7 +174,7 @@ public partial class MainViewModel : ViewModelBase
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
-            _ = LoadFilesForSelectedFolder();
+            _ = FileListViewModel.LoadFilesForSelectedFolder();
             // Instead of doing this, let's just update the current folder with the new structure directly
             // _ = InitializeFolderTreeAsync();
         }
@@ -304,70 +204,6 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void OpenFolder(FileItem? fileItem)
-    {
-        if (fileItem is null || fileItem.IsFolder is false) return;
-
-        FolderTreeViewModel.SelectedFolder = new FolderItem
-        {
-            Name = fileItem.Name,
-            FullPath = fileItem.FullPath!
-        };
-    }
-    
-    [RelayCommand] private async Task RevertSorting(FileItem fileItem)
-    {
-        if (fileItem?.FullPath is null)
-            return;
-        
-        await _fileTidyingService.RevertFileAsync(fileItem.FullPath);
-
-        CurrentFiles.Remove(fileItem);
-        FolderSize -= fileItem.Size;
-    }
-
-    [RelayCommand] private async Task DeleteFile(FileItem fileItem)
-    {
-        if (fileItem.IsFolder || string.IsNullOrWhiteSpace(fileItem.FullPath))
-            return;
-
-        await _fileTidyingService.DeleteFileAsync(fileItem.FullPath);
-        CurrentFiles.Remove(fileItem);
-
-        FolderSize -= fileItem.Size;
-    }
-    
-    [RelayCommand(CanExecute = nameof(CanRevertSelected))]
-    private async Task RevertSelected()
-    {
-        var filesToRevert = CurrentFiles
-            .Where(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved)
-            .ToList();
-
-        foreach (var file in filesToRevert)
-        {
-            await _fileTidyingService.RevertFileAsync(file.FullPath!);
-            CurrentFiles.Remove(file);
-            FolderSize -= file.Size;
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
-    private async Task DeleteSelected()
-    {
-        var filesToDelete = CurrentFiles
-            .Where(f => f.IsSelected && !f.IsFolder)
-            .ToList();
-
-        foreach (var file in filesToDelete)
-        {
-            await _fileTidyingService.DeleteFileAsync(file.FullPath!);
-            CurrentFiles.Remove(file);
-            FolderSize -= file.Size;
-        }
-    }
-
     [RelayCommand(CanExecute = nameof(CanRevertLastSort))]
     private async Task RevertLastSort()
     {
@@ -385,7 +221,7 @@ public partial class MainViewModel : ViewModelBase
         await _fileOperationStore.DeleteConfigValueAsync(nameof(LastSortSessionId));
 
 
-        _ = LoadFilesForSelectedFolder();
+        _ = FileListViewModel.LoadFilesForSelectedFolder();
 
         IsReverting = false;
     }
