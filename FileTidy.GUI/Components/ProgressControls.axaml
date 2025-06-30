@@ -45,10 +45,10 @@
                     <Border Background="{DynamicResource PrimaryColorDark}"
                             CornerRadius="4"
                             Padding="8"
-                            IsVisible="{Binding IsNotificationVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                            IsVisible="{Binding NotificationViewModel.IsNotificationVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel>
-                            <TextBlock Text="{Binding NotificationTitle}" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="{Binding NotificationMessage}" Foreground="White"/>
+                            <TextBlock Text="{Binding NotificationViewModel.NotificationTitle}" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding NotificationViewModel.NotificationMessage}" Foreground="White"/>
                         </StackPanel>
                     </Border>
 

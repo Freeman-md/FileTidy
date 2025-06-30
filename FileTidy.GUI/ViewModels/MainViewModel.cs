@@ -20,12 +20,10 @@ public partial class MainViewModel : ViewModelBase
     public FolderTreeViewModel FolderTreeViewModel { get; }
     public FileListViewModel FileListViewModel { get; }
     public SortOperationViewModel SortOperationViewModel { get; }
+    public NotificationViewModel NotificationViewModel { get; }
     
     public string AppVersion => $"FileTidy v{Assembly.GetExecutingAssembly().GetName().Version} | Built by Freemancodz";
     
-    [ObservableProperty] private string? _notificationTitle;
-    [ObservableProperty] private string? _notificationMessage;
-    [ObservableProperty] private bool _isNotificationVisible;
     public string SelectedFolderPath => FolderTreeViewModel.SelectedFolder?.FullPath ?? string.Empty;
     public bool ShouldShowEmptyState => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is null;
     public bool ShouldShowFileTable => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is not null;
@@ -45,17 +43,7 @@ public partial class MainViewModel : ViewModelBase
             progress => SortOperationViewModel.OperationProgress = progress,
             elapsed => SortOperationViewModel.ElapsedTime = elapsed,
             filesProcessed => SortOperationViewModel.FilesProcessed = filesProcessed,
-            (title, message) =>
-            {
-                NotificationTitle = title;
-                NotificationMessage = message;
-                IsNotificationVisible = true;
-                
-                Task.Delay(4000).ContinueWith(_ =>
-                {
-                    IsNotificationVisible = false;
-                });
-            }
+            (title, message) => NotificationViewModel.Show(title, message)
         );
         _fileTidyingService = new FileTidyingService(_fileOperationStore, _sortReporter);
 
@@ -72,6 +60,7 @@ public partial class MainViewModel : ViewModelBase
             _fileTidyingService,
             _fileOperationStore
         );
+        NotificationViewModel = new NotificationViewModel();
 
         FolderTreeViewModel.PropertyChanged += (sender, propertyChangedArgs) =>
         {
