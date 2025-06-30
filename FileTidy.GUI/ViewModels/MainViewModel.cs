@@ -131,10 +131,6 @@ public partial class MainViewModel : ViewModelBase
         {
             if (e.PropertyName == nameof(FolderTreeViewModel.SelectedFolder))
             {
-                Console.WriteLine("Selected Folder changed");
-                Console.WriteLine(FolderTreeViewModel.SelectedFolder);
-                Console.WriteLine(FolderTreeViewModel.SelectedFolder?.FullPath);
-                
                 OnPropertyChanged(nameof(SelectedFolderPath));
                 OnPropertyChanged(nameof(ShouldShowEmptyState));
                 OnPropertyChanged(nameof(ShouldShowFileTable));
