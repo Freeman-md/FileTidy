@@ -11,11 +11,8 @@ namespace FileTidy.GUI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private readonly IFolderService _folderService;
     private readonly IFileOperationStore _fileOperationStore;
-    private readonly IFileOperationLookupService _fileOperationLookupService;
     private readonly ISortReporter _sortReporter;
-    private readonly IFileTidyingService _fileTidyingService;
     
     public FolderTreeViewModel FolderTreeViewModel { get; }
     public FileListViewModel FileListViewModel { get; }
@@ -31,22 +28,16 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel() { }
 
     public MainViewModel(
-        IFolderService folderService, 
         IFileOperationStore fileOperationStore, 
-        IFileOperationLookupService fileOperationLookupService,
         FolderTreeViewModel folderTreeViewModel,
         FileListViewModel fileListViewModel,
         SortOperationViewModel sortOperationViewModel,
         NotificationViewModel notificationViewModel,
-        ISortReporter sortReporter,
-        IFileTidyingService fileTidyingService
+        ISortReporter sortReporter
     )
     {
-        _folderService = folderService;
         _fileOperationStore = fileOperationStore;
-        _fileOperationLookupService = fileOperationLookupService;
         _sortReporter = sortReporter;
-        _fileTidyingService = fileTidyingService;
 
         FolderTreeViewModel = folderTreeViewModel;
         FileListViewModel = fileListViewModel;
