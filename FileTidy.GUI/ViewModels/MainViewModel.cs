@@ -127,9 +127,9 @@ public partial class MainViewModel : ViewModelBase
 
         FolderTreeViewModel = new FolderTreeViewModel(_folderService);
 
-        FolderTreeViewModel.PropertyChanged += (s, e) =>
+        FolderTreeViewModel.PropertyChanged += (sender, propertyChangedArgs) =>
         {
-            if (e.PropertyName == nameof(FolderTreeViewModel.SelectedFolder))
+            if (propertyChangedArgs.PropertyName == nameof(FolderTreeViewModel.SelectedFolder))
             {
                 OnPropertyChanged(nameof(SelectedFolderPath));
                 OnPropertyChanged(nameof(ShouldShowEmptyState));
