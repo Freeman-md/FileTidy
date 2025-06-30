@@ -82,8 +82,8 @@
 
             <Grid ColumnDefinitions="*, Auto">
                 <StackPanel Spacing="5" Orientation="Horizontal">
-                    <ComboBox   ItemsSource="{Binding TopLevelFolders}" 
-                                SelectedItem="{Binding SelectedRootFolder, Mode=TwoWay}"  Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
+                    <ComboBox   ItemsSource="{Binding FolderTreeViewModel.TopLevelFolders}" 
+                                SelectedItem="{Binding FolderTreeViewModel.SelectedRootFolder, Mode=TwoWay}"  Width="200" PlaceholderText="Select folder to sort" MaxDropDownHeight="100">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" />
@@ -151,8 +151,8 @@
 
                         <!-- TreeView with Scroll -->
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <TreeView ItemsSource="{Binding FolderTree}"
-                                      SelectedItem="{Binding SelectedFolder, Mode=TwoWay}"
+                            <TreeView ItemsSource="{Binding FolderTreeViewModel.FolderTree}"
+                                      SelectedItem="{Binding FolderTreeViewModel.SelectedFolder, Mode=TwoWay}"
                                       AutoScrollToSelectedItem="True"
                                       Margin="0 5">
                                 <TreeView.ItemTemplate>
