@@ -44,6 +44,14 @@ public partial class MainViewModel : ViewModelBase
         SortOperationViewModel = sortOperationViewModel;
         NotificationViewModel = notificationViewModel;
 
+        SubscribeToViewModelEvents();
+
+        _ = FolderTreeViewModel.InitializeAsync();
+        _ = InitializeAsync();
+    }
+
+    private void SubscribeToViewModelEvents()
+    {
         // Subscribe to sortReporter events
         _sortReporter.ProgressChanged += progress => SortOperationViewModel.OperationProgress = progress;
         _sortReporter.ElapsedChanged += elapsed => SortOperationViewModel.ElapsedTime = elapsed;
@@ -74,9 +82,6 @@ public partial class MainViewModel : ViewModelBase
         {
             _ = FileListViewModel.LoadFilesForSelectedFolder();
         };
-
-        _ = FolderTreeViewModel.InitializeAsync();
-        _ = InitializeAsync();
     }
     
     private async Task InitializeAsync()
