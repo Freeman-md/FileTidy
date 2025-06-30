@@ -17,22 +17,22 @@
                 <StackPanel Spacing="4">
                     <TextBlock FontSize="10">
                         <Run FontWeight="Bold">Progress:</Run>
-                        <Run Text="{Binding FilesProcessed}"></Run>
-                        <Run Text="{Binding CurrentOperationLabel}" />
+                        <Run Text="{Binding SortOperationViewModel.FilesProcessed}"></Run>
+                        <Run Text="{Binding SortOperationViewModel.CurrentOperationLabel}" />
                     </TextBlock>
 
                     <ProgressBar Minimum="0"
                                  Maximum="100"
-                                 Value="{Binding OperationProgress}"
+                                 Value="{Binding SortOperationViewModel.OperationProgress}"
                                  Height="6"
                                  HorizontalAlignment="Stretch"
                                  Foreground="{DynamicResource TextBrush}"
                                  Background="{DynamicResource BorderBrush}" />
 
                     <DockPanel>
-                        <TextBlock FontSize="10" Text="{Binding OperationProgress, StringFormat='{}{0}% Complete'}" DockPanel.Dock="Right" />
+                        <TextBlock FontSize="10" Text="{Binding SortOperationViewModel.OperationProgress, StringFormat='{}{0}% Complete'}" DockPanel.Dock="Right" />
                         <TextBlock FontSize="10" Text="Elapsed: " />
-                        <TextBlock FontSize="10" Text="{Binding ElapsedTime}"></TextBlock>
+                        <TextBlock FontSize="10" Text="{Binding SortOperationViewModel.ElapsedTime}"></TextBlock>
                     </DockPanel>
 
                 </StackPanel>
