@@ -8,20 +8,16 @@ namespace FileTidy.Core.Services;
 public class FileTidyingService : IFileTidyingService
 {
     private readonly IFileOperationStore _fileOperationStore;
-    private readonly FileCategoryMapper _mapper;
+    private readonly IFileCategoryMapper _mapper;
     private readonly ISortReporter? _reporter;
-    private readonly FileManager _fileManager = new();
+    private readonly IFileManager _fileManager;
 
-    public FileTidyingService(IFileOperationStore fileOperationStore, ISortReporter? reporter = null,
-        string? dataPath = null)
+    public FileTidyingService(IFileOperationStore fileOperationStore, IFileCategoryMapper mapper, IFileManager fileManager, ISortReporter? reporter = null)
     {
         _fileOperationStore = fileOperationStore;
+        _mapper = mapper;
+        _fileManager = fileManager;
         _reporter = reporter;
-
-        string resolvedPath = dataPath ??
-                              Path.Combine(Path.GetDirectoryName(System.AppContext.BaseDirectory)!,
-                                  "Data");
-        _mapper = new FileCategoryMapper(resolvedPath);
     }
 
     public async Task<TidyingResult> SortDirectory(string directoryPath, Guid sortSessionId,
@@ -73,7 +69,7 @@ public class FileTidyingService : IFileTidyingService
         _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
         _reporter?.OnSummary(filesToProcess.Count, totalMoved, totalErrors, perCategoryCounts);
 
-        RemoveEmptyDirectories(directoryPath);
+        _fileManager.RemoveEmptyDirectories(directoryPath);
 
         return new TidyingResult
         {
@@ -159,7 +155,7 @@ public class FileTidyingService : IFileTidyingService
         
         var baseDir = Path.GetDirectoryName(operations.First().OriginalPath);
         if (!string.IsNullOrWhiteSpace(baseDir) && Directory.Exists(baseDir))
-            RemoveEmptyDirectories(baseDir);
+            _fileManager.RemoveEmptyDirectories(baseDir);
     }
 
     public async Task RevertFilesAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken = default)
@@ -285,7 +281,7 @@ public class FileTidyingService : IFileTidyingService
 
         try
         {
-            await RetryAsync(() => _fileOperationStore.LogOperationAsync(new FileOperation
+            await _fileManager.RetryAsync(() => _fileOperationStore.LogOperationAsync(new FileOperation
             {
                 Id = Guid.NewGuid(),
                 FileName = Path.GetFileName(file),

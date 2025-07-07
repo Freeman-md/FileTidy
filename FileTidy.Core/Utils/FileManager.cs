@@ -85,6 +85,45 @@ public class FileManager : IFileManager
         }, cancellationToken);
     }
 
+    public async Task RemoveEmptyDirectories(string directory)
+    {
+        foreach (var subDirectory in Directory.GetDirectories(directory))
+        {
+            await RemoveEmptyDirectories(subDirectory);
+
+            if (!Directory.EnumerateFileSystemEntries(subDirectory).Any())
+            {
+                try
+                {
+                    Directory.Delete(subDirectory);
+                }
+                catch (Exception)
+                {
+                    // Optionally log or handle error
+                }
+            }
+        }
+    }
+
+    public async Task RetryAsync(Func<Task> action, int maxRetries = 3, int delayMs = 200)
+    {
+        int attempt = 0;
+        while (true)
+        {
+            try
+            {
+                await action();
+                break;
+            }
+            catch
+            {
+                attempt++;
+                if (attempt >= maxRetries)
+                    throw;
+                await Task.Delay(delayMs);
+            }
+        }
+    }
 
     private string GetUniqueFilePath(string filePath)
     {
