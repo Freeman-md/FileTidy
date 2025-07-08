@@ -25,16 +25,18 @@ using FileTidy.GUI.Services;
             var services = new ServiceCollection();
 
             services.AddSingleton<IFileOperationStore, SqliteOperationStore>();
-            services.AddSingleton<IFileOperationLookupService>(serviceProvider =>
+            services.AddSingleton<IFileStatusService>(serviceProvider =>
             {
                 var fileOperationStore = serviceProvider.GetRequiredService<IFileOperationStore>();
                 
-                return new FileOperationLookupService(fileOperationStore);
+                return new FileStatusService(fileOperationStore);
             });
-            services.AddSingleton<IFolderService, FolderService>();
             services.AddSingleton<ISortReporter, GuiFileSortReporter>();
-            services.AddSingleton<IFileTidyingService, FileTidyingService>();
+            services.AddSingleton<IFileOperationService, FileOperationService>();
+            services.AddSingleton<IFileCategoryService, FileCategoryService>();
+            services.AddSingleton<IFileOrganizerService, FileOrganizerService>();
             
+            services.AddSingleton<IFolderService, FolderService>();
             services.AddSingleton<FolderTreeViewModel>();
             services.AddSingleton<FileListViewModel>();
             services.AddSingleton<SortOperationViewModel>();

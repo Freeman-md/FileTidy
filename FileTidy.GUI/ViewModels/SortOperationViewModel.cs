@@ -11,7 +11,7 @@ public partial class SortOperationViewModel : ViewModelBase
 {
     private readonly FolderTreeViewModel _folderTreeViewModel;
     private readonly FileListViewModel _fileListViewModel;
-    private readonly IFileTidyingService _fileTidyingService;
+    private readonly IFileOrganizerService _fileOrganizerService;
     private readonly IFileOperationStore _fileOperationStore;
     
     private CancellationTokenSource? _sortingCancellationTokenSource;
@@ -55,13 +55,13 @@ public partial class SortOperationViewModel : ViewModelBase
     public SortOperationViewModel(
         FolderTreeViewModel folderTreeViewModel,
         FileListViewModel fileListViewModel,
-        IFileTidyingService fileTidyingService,
+        IFileOrganizerService fileOrganizerService,
         IFileOperationStore fileOperationStore
         )
     {
         _folderTreeViewModel = folderTreeViewModel;
         _fileListViewModel = fileListViewModel;
-        _fileTidyingService = fileTidyingService;
+        _fileOrganizerService = fileOrganizerService;
         _fileOperationStore = fileOperationStore;
     }
     
@@ -86,7 +86,7 @@ public partial class SortOperationViewModel : ViewModelBase
             await _fileOperationStore.SaveConfigValueAsync(nameof(LastSortSessionId), LastSortSessionId.ToString());
 
             
-            var result = await _fileTidyingService.SortDirectory(_folderTreeViewModel.SelectedFolder.FullPath, LastSortSessionId, token);
+            var result = await _fileOrganizerService.SortDirectoryAsync(_folderTreeViewModel.SelectedFolder.FullPath, LastSortSessionId, token);
 
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
@@ -96,6 +96,7 @@ public partial class SortOperationViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             Console.WriteLine($"Tidying failed: {ex.Message}");
         }
         finally
@@ -131,7 +132,7 @@ public partial class SortOperationViewModel : ViewModelBase
         if (LastSortSessionId == Guid.Empty)
             return;
 
-        await _fileTidyingService.RevertSessionAsync(LastSortSessionId);
+        await _fileOrganizerService.RevertSessionAsync(LastSortSessionId);
         
         LastSortSessionId = Guid.Empty;
         await _fileOperationStore.DeleteConfigValueAsync(nameof(LastSortSessionId));

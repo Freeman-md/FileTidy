@@ -19,19 +19,19 @@ public partial class FileListViewModel : ViewModelBase
 {
     private readonly FolderTreeViewModel _folderTreeViewModel;
     private readonly IFolderService _folderService;
-    private readonly IFileOperationLookupService _fileOperationLookupService;
-    private readonly IFileTidyingService _fileTidyingService;
+    private readonly IFileStatusService _fileStatusService;
+    private readonly IFileOrganizerService _fileOrganizerService;
 
     public FileListViewModel(
         FolderTreeViewModel folderTreeViewModel,
         IFolderService folderService, 
-        IFileOperationLookupService fileOperationLookupService,
-        IFileTidyingService fileTidyingService)
+        IFileStatusService fileStatusService,
+        IFileOrganizerService fileOrganizerService)
     {
         _folderTreeViewModel = folderTreeViewModel;
         _folderService = folderService;
-        _fileOperationLookupService = fileOperationLookupService;
-        _fileTidyingService = fileTidyingService;
+        _fileStatusService = fileStatusService;
+        _fileOrganizerService = fileOrganizerService;
     }
     
     
@@ -118,7 +118,7 @@ public partial class FileListViewModel : ViewModelBase
         
         var observableFiles = new ObservableCollection<FileItem>(files);
         
-        var statuses = await _fileOperationLookupService.GetFileStatusesForDirectoryAsync(_folderTreeViewModel.SelectedFolder.FullPath)
+        var statuses = await _fileStatusService.GetFileStatusesForDirectoryAsync(_folderTreeViewModel.SelectedFolder.FullPath)
             .ConfigureAwait(false);
 
         foreach (var file in observableFiles)
@@ -162,7 +162,7 @@ public partial class FileListViewModel : ViewModelBase
         if (fileItem?.FullPath is null)
             return;
         
-        await _fileTidyingService.RevertFileAsync(fileItem.FullPath);
+        await _fileOrganizerService.RevertFileAsync(fileItem.FullPath);
 
         CurrentFiles.Remove(fileItem);
         FolderSize -= fileItem.Size;
@@ -173,7 +173,7 @@ public partial class FileListViewModel : ViewModelBase
         if (fileItem.IsFolder || string.IsNullOrWhiteSpace(fileItem.FullPath))
             return;
 
-        await _fileTidyingService.DeleteFileAsync(fileItem.FullPath);
+        await _fileOrganizerService.DeleteFileAsync(fileItem.FullPath);
         CurrentFiles.Remove(fileItem);
 
         FolderSize -= fileItem.Size;
@@ -188,7 +188,7 @@ public partial class FileListViewModel : ViewModelBase
 
         foreach (var file in filesToRevert)
         {
-            await _fileTidyingService.RevertFileAsync(file.FullPath!);
+            await _fileOrganizerService.RevertFileAsync(file.FullPath!);
             CurrentFiles.Remove(file);
             FolderSize -= file.Size;
         }
@@ -203,7 +203,7 @@ public partial class FileListViewModel : ViewModelBase
 
         foreach (var file in filesToDelete)
         {
-            await _fileTidyingService.DeleteFileAsync(file.FullPath!);
+            await _fileOrganizerService.DeleteFileAsync(file.FullPath!);
             CurrentFiles.Remove(file);
             FolderSize -= file.Size;
         }

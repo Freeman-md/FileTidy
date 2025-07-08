@@ -13,9 +13,11 @@ public static class SortingHandler
         {
             var reporter = new ConsoleSortReporter();
             var store = new SqliteOperationStore();
-            var service = new FileTidyingService(store, reporter);
+            var fileOperationService = new FileOperationService();
+            var fileCategoryService = new FileCategoryService();
+            var service = new FileOrganizerService(store, fileCategoryService, fileOperationService, reporter);
             Guid sortSessionId = Guid.NewGuid();
-            await service.SortDirectory(directoryToSort, sortSessionId);
+            await service.SortDirectoryAsync(directoryToSort, sortSessionId);
         }
     }
 

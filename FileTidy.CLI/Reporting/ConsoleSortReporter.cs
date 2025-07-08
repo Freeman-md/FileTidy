@@ -83,6 +83,11 @@ public class ConsoleSortReporter : ISortReporter
         Console.WriteLine($"❌ Failed: {failed}");
     }
 
+    public event Action<int>? ProgressChanged;
+    public event Action<string>? ElapsedChanged;
+    public event Action<int>? FilesProcessedChanged;
+    public event Action<string, string>? NotificationRequested;
+
     private void DisplayProgressBar(int current, int total)
     {
         int barWidth = 50;
