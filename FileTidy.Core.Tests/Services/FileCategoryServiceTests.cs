@@ -86,6 +86,93 @@ public class FileCategoryServiceTests : IDisposable
         
         Assert.Equal(2, result.Count());
     }
+    
+    [Fact]
+    public void Constructor_MissingExtensionsFile_ThrowsFileNotFoundException()
+    {
+        var dataDir = Path.Combine(_tempRoot, Guid.NewGuid().ToString(), "Data");
+        Directory.CreateDirectory(dataDir);
+        _tempDirs.Add(Path.GetDirectoryName(dataDir)!);
+
+        var categories = new List<Category>
+        {
+            new() { Id = 1, Name = "Documents" }
+        };
+
+        File.WriteAllText(Path.Combine(dataDir, "categories.json"), JsonSerializer.Serialize(categories));
+
+        Assert.Throws<FileNotFoundException>(() => new FileCategoryService(dataDir));
+    }
+
+    [Fact]
+    public void Constructor_MissingCategoriesFile_ThrowsFileNotFoundException()
+    {
+        var dataDir = Path.Combine(_tempRoot, Guid.NewGuid().ToString(), "Data");
+        Directory.CreateDirectory(dataDir);
+        _tempDirs.Add(Path.GetDirectoryName(dataDir)!);
+
+        var extensions = new List<Extension>
+        {
+            new() { Name = ".txt", CategoryId = 1 }
+        };
+
+        File.WriteAllText(Path.Combine(dataDir, "extensions.json"), JsonSerializer.Serialize(extensions));
+
+        Assert.Throws<FileNotFoundException>(() => new FileCategoryService(dataDir));
+    }
+    
+    [Fact]
+    public void Constructor_InvalidExtensionsJson_ThrowsException()
+    {
+        var dataDir = Path.Combine(_tempRoot, Guid.NewGuid().ToString(), "Data");
+        Directory.CreateDirectory(dataDir);
+        _tempDirs.Add(Path.GetDirectoryName(dataDir)!);
+
+        File.WriteAllText(Path.Combine(dataDir, "extensions.json"), "INVALID_JSON");
+        File.WriteAllText(Path.Combine(dataDir, "categories.json"), "[]");
+
+        Assert.ThrowsAny<JsonException>(() => new FileCategoryService(dataDir));
+    }
+
+    [Fact]
+    public void Constructor_InvalidCategoriesJson_ThrowsException()
+    {
+        var dataDir = Path.Combine(_tempRoot, Guid.NewGuid().ToString(), "Data");
+        Directory.CreateDirectory(dataDir);
+        _tempDirs.Add(Path.GetDirectoryName(dataDir)!);
+
+        File.WriteAllText(Path.Combine(dataDir, "extensions.json"), "[]");
+        File.WriteAllText(Path.Combine(dataDir, "categories.json"), "INVALID_JSON");
+
+        Assert.ThrowsAny<JsonException>(() => new FileCategoryService(dataDir));
+    }
+    
+    [Fact]
+    public void GetCategory_CategoryIdWithoutName_ReturnsOthers()
+    {
+        var extensions = new Dictionary<string, int> { { ".png", 99 } }; // category ID 99 doesn't exist
+        var categories = new Dictionary<int, string> { { 1, "Images" } };
+
+        var service = CreateService(extensions, categories);
+
+        var result = service.GetCategory(".png");
+
+        Assert.Equal("Others", result);
+    }
+
+    [Fact]
+    public void GetCategory_ExtensionWithEmptyCategoryName_ReturnsOthers()
+    {
+        var extensions = new Dictionary<string, int> { { ".tmp", 1 } };
+        var categories = new Dictionary<int, string> { { 1, "" } };
+
+        var service = CreateService(extensions, categories);
+
+        var result = service.GetCategory(".tmp");
+
+        Assert.Equal("Others", result);
+    }
+
 
     public void Dispose()
     {
