@@ -31,6 +31,9 @@ jobs:
       - name: 🏗️ Restore dependencies
         run: dotnet restore
 
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
       - name: 🛠️ Extract version (macOS)
         if: runner.os == 'macOS'
         id: version
