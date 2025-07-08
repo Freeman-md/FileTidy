@@ -51,4 +51,61 @@ public class FileOperationServiceTests : IDisposable
         Assert.True(File.Exists(result.NewPath));
         Assert.Contains(category, result.NewPath);
     }
+    
+    [Fact]
+    public async Task MoveFileAsync_FileIsAlreadyInTarget_ReturnsSkipped()
+    {
+        // Arrange
+        var category = "Images";
+        var filePath = CreateTestFile(Path.Combine(category, "photo.jpg"));
+
+        // Act
+        var result = await _service.MoveFileAsync(filePath, category, _testRoot);
+
+        // Assert
+        Assert.Equal(FileOperationStatus.Skipped, result.Status);
+        Assert.True(File.Exists(filePath));
+        Assert.Equal(filePath, result.NewPath);
+    }
+    
+    [Fact]
+    public async Task MoveFileAsync_WhenFileAlreadyExists_AppendsUniqueSuffix()
+    {
+        // Arrange
+        var original = CreateTestFile("Downloads/report.txt");
+        var category = "Docs";
+
+        // Create destination file with same name
+        var destinationFolder = Path.Combine(_testRoot, category, "Downloads");
+        Directory.CreateDirectory(destinationFolder);
+        var existingPath = Path.Combine(destinationFolder, "report.txt");
+        File.WriteAllText(existingPath, "existing content");
+
+        // Act
+        var result = await _service.MoveFileAsync(original, category, _testRoot);
+
+        // Assert
+        Assert.Equal(FileOperationStatus.Moved, result.Status);
+        Assert.True(File.Exists(result.NewPath));
+        Assert.NotEqual(existingPath, result.NewPath); // Unique path should be different
+        Assert.True(result.NewPath.Contains("report"));
+    }
+
+    [Fact]
+    public async Task MoveFileAsync_WhenFileDoesNotExist_ReturnsFailed()
+    {
+        // Arrange
+        var nonExistentFile = Path.Combine(_testRoot, "Missing/file.txt");
+        var category = "Invalid";
+
+        // Act
+        var result = await _service.MoveFileAsync(nonExistentFile, category, _testRoot);
+
+        // Assert
+        Assert.Equal(FileOperationStatus.Failed, result.Status);
+        Assert.NotNull(result.Error);
+        Assert.Contains("Could not find", result.Error.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+
 }
