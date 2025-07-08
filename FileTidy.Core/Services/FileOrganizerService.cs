@@ -78,7 +78,7 @@ public class FileOrganizerService : IFileOrganizerService
         _reporter?.OnElapsedTimeReported(stopwatch.Elapsed);
         _reporter?.OnSummary(filesToProcess.Count, totalMoved, totalErrors, perCategoryCounts);
 
-        _fileOperationService.RemoveEmptyDirectoriesAsync(directoryPath);
+        _ = _fileOperationService.RemoveEmptyDirectoriesAsync(directoryPath);
 
         return new TidyingResult
         {
