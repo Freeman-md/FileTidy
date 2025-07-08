@@ -106,6 +106,92 @@ public class FileOperationServiceTests : IDisposable
         Assert.NotNull(result.Error);
         Assert.Contains("Could not find", result.Error.Message, StringComparison.OrdinalIgnoreCase);
     }
+    
+    [Fact]
+    public async Task RevertFileAsync_MovesFileBackToOriginalLocation()
+    {
+        // Arrange
+        var originalPath = CreateTestFile("original/file.txt");
+        var newPath = Path.Combine(_testRoot, "moved", "file.txt");
+
+        Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
+        File.Move(originalPath, newPath);
+
+        // Act
+        await _service.RevertFileAsync(newPath, originalPath);
+
+        // Assert
+        Assert.True(File.Exists(originalPath));
+        Assert.False(File.Exists(newPath));
+    }
+    
+    [Fact]
+    public async Task RevertFileAsync_DeletesConflictingFileBeforeReverting()
+    {
+        // Arrange
+        var originalPath = CreateTestFile("original/file.txt", "original content");
+        var newPath = Path.Combine(_testRoot, "moved", "file.txt");
+
+        Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
+        File.WriteAllText(newPath, "new version");
+
+        // Create conflicting file at original path
+        File.WriteAllText(originalPath, "conflict");
+
+        // Act
+        await _service.RevertFileAsync(newPath, originalPath);
+
+        // Assert
+        Assert.True(File.Exists(originalPath));
+        Assert.False(File.Exists(newPath));
+        Assert.Equal("new version", File.ReadAllText(originalPath));
+    }
+
+    [Fact]
+    public async Task DeleteFileAsync_DeletesFileSuccessfully()
+    {
+        // Arrange
+        var filePath = CreateTestFile("trash/me.txt");
+        Assert.True(File.Exists(filePath));
+
+        // Act
+        await _service.DeleteFileAsync(filePath);
+
+        // Assert
+        Assert.False(File.Exists(filePath));
+    }
+
+    [Fact]
+    public async Task RemoveEmptyDirectoriesAsync_RemovesNestedEmptyDirs()
+    {
+        // Arrange
+        var nestedDir = Path.Combine(_testRoot, "A/B/C");
+        Directory.CreateDirectory(nestedDir);
+        Assert.True(Directory.Exists(nestedDir));
+
+        // Act
+        await _service.RemoveEmptyDirectoriesAsync(_testRoot);
+
+        // Assert
+        Assert.False(Directory.Exists(nestedDir));
+        Assert.False(Directory.Exists(Path.Combine(_testRoot, "A")));
+    }
+
+    [Fact]
+    public async Task RemoveEmptyDirectoriesAsync_LeavesNonEmptyDirs()
+    {
+        // Arrange
+        var nestedDir = Path.Combine(_testRoot, "X/Y/Z");
+        Directory.CreateDirectory(nestedDir);
+        File.WriteAllText(Path.Combine(nestedDir, "keep.txt"), "not empty");
+
+        // Act
+        await _service.RemoveEmptyDirectoriesAsync(_testRoot);
+
+        // Assert
+        Assert.True(Directory.Exists(nestedDir)); // Still exists because it had a file
+    }
+
 
 
 }
