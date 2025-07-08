@@ -10,14 +10,16 @@ namespace FileTidy.Core.Services;
 public class FileCategoryService : IFileCategoryService
 {
     private readonly string _dataDirectory;
-    private Dictionary<string, string>? _fileCategories;
-    private bool _isLoaded = false;
+    private readonly Dictionary<string, string>? _fileCategories;
+    private readonly List<Category>? _allCategories;
+
 
     public FileCategoryService(string? dataDirectory = null)
     {
         _dataDirectory = dataDirectory ?? Path.Combine(AppContext.BaseDirectory, "Data");
         
         _fileCategories = new Dictionary<string, string>();
+        _allCategories = new List<Category>();
         
         LoadCategories();
     }
@@ -46,6 +48,8 @@ public class FileCategoryService : IFileCategoryService
 
         List<Category>? categories = JsonSerializer.Deserialize<List<Category>>(categoriesJson, options)
                                      ?? throw new InvalidOperationException("Deserialization of categories.json returned null");
+        
+        _allCategories!.AddRange(categories);
 
         Dictionary<int, string> categoryLookUp = categories.ToDictionary(category => category.Id, category => category.Name);
 
@@ -55,7 +59,7 @@ public class FileCategoryService : IFileCategoryService
             {
                 if (!string.IsNullOrEmpty(categoryName))
                 {
-                    _fileCategories[extension.Name.ToLower()] = categoryName;
+                    if (_fileCategories != null) _fileCategories[extension.Name.ToLower()] = categoryName;
                 }
             }
         }
@@ -67,6 +71,11 @@ public class FileCategoryService : IFileCategoryService
     }
 
     public IEnumerable<string> GetAllCategoryNames()
+    {
+        return _allCategories!.Select(c => c.Name).Distinct();
+    }
+
+    public IEnumerable<string> GetMappedCategoryNames()
     {
         return _fileCategories!.Values.Distinct();
     }

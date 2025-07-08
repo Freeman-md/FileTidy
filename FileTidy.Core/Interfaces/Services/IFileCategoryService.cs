@@ -6,4 +6,6 @@ public interface IFileCategoryService
 {
     string GetCategory(string extension);
     IEnumerable<string> GetAllCategoryNames();
+
+    IEnumerable<string> GetMappedCategoryNames();
 } 

@@ -38,6 +38,54 @@ public class FileCategoryServiceTests : IDisposable
 
         return dataDir;
     }
+    
+    [Fact]
+    public void GetCategory_KnownExtension_ReturnsCorrectCategory()
+    {
+        // Arrange
+        var extensions = new Dictionary<string, int> { { ".txt", 1 }, { ".pdf", 1 } };
+        var categories = new Dictionary<int, string> { { 1, "Documents" } };
+
+        var service = CreateService(extensions, categories);
+
+        // Act
+        var result = service.GetCategory(".pdf");
+
+        // Assert
+        Assert.Equal("Documents", result);
+    }
+    
+    [Fact]
+    public void GetCategory_UnknownExtension_ReturnsOthers()
+    {
+        var extensions = new Dictionary<string, int> { { ".mp3", 2 } };
+        var categories = new Dictionary<int, string> { { 2, "Audio" } };
+
+        var service = CreateService(extensions, categories);
+
+        var result = service.GetCategory(".zip");
+
+        Assert.Equal("Others", result);
+    }
+
+    [Fact]
+    public void GetAllCategoryNames_ReturnsDistinctCategoryNames()
+    {
+        var extensions = new Dictionary<string, int> { { ".mp3", 2 } };
+        var categories = new Dictionary<int, string>
+        {
+            { 1, "Images" },
+            { 2, "Audio" },
+            { 3, "Images" },
+            
+        };
+        
+        var service = CreateService(extensions, categories);
+        
+        var result = service.GetAllCategoryNames();
+        
+        Assert.Equal(2, result.Count());
+    }
 
     public void Dispose()
     {
