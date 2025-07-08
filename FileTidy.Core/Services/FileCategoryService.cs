@@ -13,9 +13,9 @@ public class FileCategoryService : IFileCategoryService
     private Dictionary<string, string>? _fileCategories;
     private bool _isLoaded = false;
 
-    public FileCategoryService()
+    public FileCategoryService(string? dataDirectory = null)
     {
-        _dataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+        _dataDirectory = dataDirectory ?? Path.Combine(AppContext.BaseDirectory, "Data");
         
         _fileCategories = new Dictionary<string, string>();
         
