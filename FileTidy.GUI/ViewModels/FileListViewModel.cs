@@ -21,17 +21,22 @@ public partial class FileListViewModel : ViewModelBase
     private readonly IFolderService _folderService;
     private readonly IFileStatusService _fileStatusService;
     private readonly IFileOrganizerService _fileOrganizerService;
+    private readonly Action<Action> _uiInvoker;
 
     public FileListViewModel(
         FolderTreeViewModel folderTreeViewModel,
         IFolderService folderService, 
         IFileStatusService fileStatusService,
-        IFileOrganizerService fileOrganizerService)
+        IFileOrganizerService fileOrganizerService,
+        Action<Action>? uiInvoker = null
+        )
     {
         _folderTreeViewModel = folderTreeViewModel;
         _folderService = folderService;
         _fileStatusService = fileStatusService;
         _fileOrganizerService = fileOrganizerService;
+        
+        _uiInvoker = uiInvoker ?? (action => { Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action); });
     }
     
     
@@ -140,9 +145,10 @@ public partial class FileListViewModel : ViewModelBase
         await RunOnUIThreadAsync(() => CurrentFiles = observableFiles);
     }
     
-    private async Task RunOnUIThreadAsync(Action action)
+    private Task RunOnUIThreadAsync(Action action)
     {
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action);
+        _uiInvoker(action);
+        return Task.CompletedTask;
     }
     
     [RelayCommand]
