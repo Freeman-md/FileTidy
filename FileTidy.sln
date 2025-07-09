@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.Data.Tests", "File
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.Core.Tests", "FileTidy.Core.Tests\FileTidy.Core.Tests.csproj", "{73A8CC22-A2A3-4D76-B071-308C66CC1F09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.Gui.Tests", "FileTidy.Gui.Tests\FileTidy.Gui.Tests.csproj", "{4CBFCA47-838F-4614-B393-35B428D16DF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTidy.GUI.Tests", "FileTidy.GUI.Tests\FileTidy.GUI.Tests.csproj", "{4CBFCA47-838F-4614-B393-35B428D16DF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

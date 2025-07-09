@@ -11,12 +11,15 @@ namespace FileTidy.GUI.ViewModels;
 public partial class FolderTreeViewModel : ViewModelBase
 {
     private readonly IFolderService _folderService;
+    private readonly Action<Action> _uiInvoker;
+
 
     public event Action<FolderItem?>? SelectedFolderChanged;
 
-    public FolderTreeViewModel(IFolderService folderService)
+    public FolderTreeViewModel(IFolderService folderService, Action<Action>? uiInvoker = null)
     {
         _folderService = folderService;
+        _uiInvoker = uiInvoker ?? (action => Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action));
     } 
     
     [ObservableProperty]
@@ -89,8 +92,9 @@ public partial class FolderTreeViewModel : ViewModelBase
             SelectedFolder = value;
     }
     
-    private async Task RunOnUIThreadAsync(Action action)
+    private Task RunOnUIThreadAsync(Action action)
     {
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(action);
+        _uiInvoker(action);
+        return Task.CompletedTask;
     }
 }
