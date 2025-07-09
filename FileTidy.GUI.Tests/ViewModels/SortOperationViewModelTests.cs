@@ -111,6 +111,41 @@ public class SortOperationViewModelTests
         Assert.False(_viewModel.IsSorting);
     }
 
+    [Fact]
+    public void StopSorting_WhenSortingIsActive_CancelsTokenAndUpdatesState()
+    {
+        // Arrange
+        _viewModel.IsSorting = true;
+
+        var cts = new CancellationTokenSource();
+        typeof(SortOperationViewModel)
+            .GetField("_sortingCancellationTokenSource", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .SetValue(_viewModel, cts);
+
+        // Act
+        _viewModel.StopSortingCommand.Execute(null);
+
+        // Assert
+        Assert.True(cts.IsCancellationRequested);
+        Assert.False(_viewModel.IsSorting);
+        Assert.True(_viewModel.WasCancelled);
+    }
+    
+    [Fact]
+    public void StopSorting_WhenNoSortingInProgress_DoesNothing()
+    {
+        // Arrange
+        _viewModel.IsSorting = false;
+
+        // Act
+        _viewModel.StopSortingCommand.Execute(null);
+
+        // Assert
+        Assert.False(_viewModel.IsSorting);
+        Assert.Null(typeof(SortOperationViewModel)
+            .GetField("_sortingCancellationTokenSource", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .GetValue(_viewModel));
+    }
 
 
 }
