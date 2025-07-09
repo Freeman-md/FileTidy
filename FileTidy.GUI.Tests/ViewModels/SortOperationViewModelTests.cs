@@ -147,5 +147,47 @@ public class SortOperationViewModelTests
             .GetValue(_viewModel));
     }
 
+    [Fact]
+    public async Task RevertLastSort_WhenSessionExists_CallsRevertAndClearsState()
+    {
+        // Arrange
+        var testSessionId = Guid.NewGuid();
+        _viewModel.LastSortSessionId = testSessionId;
+
+        _organizerServiceMock
+            .Setup(s => s.RevertSessionAsync(testSessionId, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _operationStoreMock
+            .Setup(s => s.DeleteConfigValueAsync(nameof(_viewModel.LastSortSessionId)))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _viewModel.RevertLastSortCommand.ExecuteAsync(null);
+
+        // Assert
+        _organizerServiceMock.Verify(s => s.RevertSessionAsync(testSessionId, default), Times.Once);
+        _operationStoreMock.Verify(s => s.DeleteConfigValueAsync(nameof(_viewModel.LastSortSessionId)), Times.Once);
+        Assert.Equal(Guid.Empty, _viewModel.LastSortSessionId);
+        Assert.False(_viewModel.IsReverting);
+    }
+    
+    [Fact]
+    public async Task RevertLastSort_WhenSessionIdIsEmpty_DoesNothing()
+    {
+        // Arrange
+        _viewModel.LastSortSessionId = Guid.Empty;
+
+        // Act
+        await _viewModel.RevertLastSortCommand.ExecuteAsync(null);
+
+        // Assert
+        _organizerServiceMock.Verify(s => s.RevertSessionAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _operationStoreMock.Verify(s => s.DeleteConfigValueAsync(It.IsAny<string>()), Times.Never);
+        Assert.Equal(Guid.Empty, _viewModel.LastSortSessionId);
+        Assert.False(_viewModel.IsReverting);
+    }
+
+
 
 }
