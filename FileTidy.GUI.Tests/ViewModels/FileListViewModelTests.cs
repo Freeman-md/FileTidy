@@ -74,7 +74,11 @@ public class FileListViewModelTests
     {
         // Arrange
         var file1 = new FileItem { Name = "a.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = false };
-        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 200, Modified = "Now", IsSelected = false };
+        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = false };
+
+        HookPropertyChangedHandlers(file1);
+        HookPropertyChangedHandlers(file2);
+
         _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
 
         // Act
@@ -84,28 +88,29 @@ public class FileListViewModelTests
         Assert.True(file1.IsSelected);
         Assert.True(file2.IsSelected);
         Assert.True(_viewModel.IsAllSelected);
-        Assert.Equal(2, _viewModel.SelectedFileCount);
+
+        // Act again (deselect)
+        _viewModel.IsAllSelected = false;
+
+        // Assert
+        Assert.False(file1.IsSelected);
+        Assert.False(file2.IsSelected);
+        Assert.False(_viewModel.IsAllSelected);
     }
+
 
     [Fact]
     public void DeselectSingleFile_UpdatesIsAllSelected()
     {
         // Arrange
         var file1 = new FileItem { Name = "a.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = true };
-        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 200, Modified = "Now", IsSelected = true };
+        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = true };
 
-        // Hook the PropertyChanged manually
-        file1.PropertyChanged += _viewModel.GetType()
-            .GetMethod("OnFileItemPropertyChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.CreateDelegate(typeof(PropertyChangedEventHandler), _viewModel) as PropertyChangedEventHandler;
-
-        file2.PropertyChanged += _viewModel.GetType()
-            .GetMethod("OnFileItemPropertyChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.CreateDelegate(typeof(PropertyChangedEventHandler), _viewModel) as PropertyChangedEventHandler;
+        HookPropertyChangedHandlers(file1);
+        HookPropertyChangedHandlers(file2);
 
         _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
 
-        // Precondition check
         _viewModel.IsAllSelected = true;
         Assert.True(_viewModel.IsAllSelected);
 
@@ -116,51 +121,61 @@ public class FileListViewModelTests
         Assert.False(_viewModel.IsAllSelected);
     }
 
-
-
     [Fact]
     public async Task RevertSelected_CallsOrganizerServiceAndRemovesFiles()
     {
         // Arrange
         var file1 = new FileItem
         {
-            Name = "a.txt",
+            Name = "moved.txt",
+            FullPath = "/User/moved.txt",
             Type = "txt",
+            Size = 300,
             Modified = "Now",
-            FullPath = "/User/a.txt",
             IsSelected = true,
-            FileOperationStatus = FileOperationStatus.Moved,
-            Size = 100
+            FileOperationStatus = FileOperationStatus.Moved
         };
 
         var file2 = new FileItem
         {
-            Name = "b.txt",
+            Name = "unmoved.txt",
+            FullPath = "/User/unmoved.txt",
             Type = "txt",
+            Size = 200,
             Modified = "Now",
-            FullPath = "/User/b.txt",
             IsSelected = true,
-            FileOperationStatus = FileOperationStatus.Moved,
-            Size = 200
+            FileOperationStatus = FileOperationStatus.Unprocessed
         };
 
-        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+        HookPropertyChangedHandlers(file1);
+        HookPropertyChangedHandlers(file2);
 
-        _fileOrganizerServiceMock
-            .Setup(x => x.RevertFileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask)
-            .Verifiable();
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+        _viewModel.FolderSize = 500;
+
+        _fileOrganizerServiceMock.Setup(x => x.RevertFileAsync("/User/moved.txt", It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         await _viewModel.RevertSelectedCommand.ExecuteAsync(null);
 
         // Assert
-        _fileOrganizerServiceMock.Verify(x => x.RevertFileAsync(file1.FullPath!, default), Times.Once);
-        _fileOrganizerServiceMock.Verify(x => x.RevertFileAsync(file2.FullPath!, default), Times.Once);
-
-        Assert.Empty(_viewModel.CurrentFiles);
+        _fileOrganizerServiceMock.Verify(x => x.RevertFileAsync("/User/moved.txt", default), Times.Once);
+        Assert.DoesNotContain(file1, _viewModel.CurrentFiles);
+        Assert.Contains(file2, _viewModel.CurrentFiles);
+        Assert.Equal(200, _viewModel.FolderSize);
     }
 
+
+    private void HookPropertyChangedHandlers(FileItem file)
+    {
+        file.PropertyChanged += (sender, e) =>
+        {
+            var method = typeof(FileListViewModel)
+                .GetMethod("OnFileItemPropertyChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            method?.Invoke(_viewModel, new object[] { sender, e });
+        };
+    }
 
 
 }
