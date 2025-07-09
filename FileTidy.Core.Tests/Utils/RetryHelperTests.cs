@@ -18,7 +18,7 @@ public class RetryHelperTests
         }
 
         // Act
-        await RetryHelper.RetryAsync(Action);
+        await RetryHelper.RetryAsync(Action, delay: _ => Task.CompletedTask);
 
         // Assert
         Assert.Equal(1, attempts);
@@ -38,7 +38,7 @@ public class RetryHelperTests
         }
 
         // Act
-        await RetryHelper.RetryAsync(Action);
+        await RetryHelper.RetryAsync(Action, delay: _ => Task.CompletedTask);
 
         // Assert
         Assert.Equal(3, attempts);
@@ -58,7 +58,7 @@ public class RetryHelperTests
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<Exception>(() =>
-            RetryHelper.RetryAsync(Action, maxRetries: 3, delayMs: 10));
+            RetryHelper.RetryAsync(Action, maxRetries: 3, delayMs: 10, delay: _ => Task.CompletedTask));
 
         Assert.Equal(3, attempts);
         Assert.Equal("Always fail", ex.Message);
