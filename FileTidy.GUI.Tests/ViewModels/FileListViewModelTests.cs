@@ -20,14 +20,14 @@ public class FileListViewModelTests
     public FileListViewModelTests()
     {
         var dummyFolderService = new Mock<IFolderService>().Object;
-        _folderTreeViewModel = new FolderTreeViewModel(dummyFolderService, _ => { });
+        _folderTreeViewModel = new FolderTreeViewModel(dummyFolderService, action => action());
 
         _viewModel = new FileListViewModel(
             _folderTreeViewModel,
             _folderServiceMock.Object,
             _fileStatusServiceMock.Object,
             _fileOrganizerServiceMock.Object,
-            _ => { }
+            action => action()
         );
     }
 
@@ -163,6 +163,155 @@ public class FileListViewModelTests
         Assert.DoesNotContain(file1, _viewModel.CurrentFiles);
         Assert.Contains(file2, _viewModel.CurrentFiles);
         Assert.Equal(200, _viewModel.FolderSize);
+    }
+    
+    [Fact]
+    public async Task DeleteSelected_CallsOrganizerServiceAndRemovesFiles()
+    {
+        // Arrange
+        var file1 = new FileItem
+        {
+            Name = "delete1.txt",
+            FullPath = "/User/delete1.txt",
+            Type = "txt",
+            Size = 100,
+            Modified = "Now",
+            IsSelected = true
+        };
+
+        var file2 = new FileItem
+        {
+            Name = "delete2.txt",
+            FullPath = "/User/delete2.txt",
+            Type = "txt",
+            Size = 200,
+            Modified = "Now",
+            IsSelected = true
+        };
+
+        HookPropertyChangedHandlers(file1);
+        HookPropertyChangedHandlers(file2);
+
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+        _viewModel.FolderSize = 300;
+
+        _fileOrganizerServiceMock.Setup(x => x.DeleteFileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _viewModel.DeleteSelectedCommand.ExecuteAsync(null);
+
+        // Assert
+        _fileOrganizerServiceMock.Verify(x => x.DeleteFileAsync(file1.FullPath!, default), Times.Once);
+        _fileOrganizerServiceMock.Verify(x => x.DeleteFileAsync(file2.FullPath!, default), Times.Once);
+        Assert.Empty(_viewModel.CurrentFiles);
+        Assert.Equal(0, _viewModel.FolderSize);
+    }
+
+    [Fact]
+    public async Task DeleteSelected_SkipsFolders()
+    {
+        // Arrange
+        var folderItem = new FileItem
+        {
+            Name = "Folder1",
+            FullPath = "/User/Folder1",
+            Type = "FOLDER",
+            Size = 0,
+            Modified = "Now",
+            IsSelected = true
+        };
+
+        var fileItem = new FileItem
+        {
+            Name = "file.txt",
+            FullPath = "/User/file.txt",
+            Type = "txt",
+            Size = 100,
+            Modified = "Now",
+            IsSelected = true
+        };
+
+        HookPropertyChangedHandlers(folderItem);
+        HookPropertyChangedHandlers(fileItem);
+
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { folderItem, fileItem };
+        _viewModel.FolderSize = 100;
+
+        _fileOrganizerServiceMock.Setup(x => x.DeleteFileAsync(fileItem.FullPath!, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _viewModel.DeleteSelectedCommand.ExecuteAsync(null);
+
+        // Assert
+        _fileOrganizerServiceMock.Verify(x => x.DeleteFileAsync(fileItem.FullPath!, default), Times.Once);
+        _fileOrganizerServiceMock.Verify(x => x.DeleteFileAsync(It.Is<string>(s => s.Contains("Folder1")), default), Times.Never);
+
+        Assert.DoesNotContain(fileItem, _viewModel.CurrentFiles);
+        Assert.Contains(folderItem, _viewModel.CurrentFiles);
+        Assert.Equal(0, _viewModel.FolderSize);
+    }
+
+    [Fact]
+    public async Task LoadFilesForSelectedFolder_DoesNothing_WhenNoFolderSelected()
+    {
+        // Arrange
+        _folderTreeViewModel.SelectedFolder = null;
+
+        // Act
+        await _viewModel.LoadFilesForSelectedFolder();
+
+        // Assert
+        Assert.Empty(_viewModel.CurrentFiles);
+    }
+
+    [Fact]
+    public async Task SetFileItemsAsync_AppliesCorrectFileStatuses()
+    {
+        // Arrange
+        var file1 = new FileItem
+        {
+            Name = "alpha.txt",
+            FullPath = "/User/alpha.txt",
+            Type = "txt",
+            Size = 123,
+            Modified = "Now"
+        };
+
+        var file2 = new FileItem
+        {
+            Name = "beta.txt",
+            FullPath = "/User/beta.txt",
+            Type = "txt",
+            Size = 456,
+            Modified = "Now"
+        };
+
+        _folderTreeViewModel.SelectedFolder = new FolderItem
+        {
+            Name = "User",
+            FullPath = "/User"
+        };
+
+        var fileList = new List<FileItem> { file1, file2 };
+
+        _folderServiceMock.Setup(x => x.LoadFilesAsync("/User"))
+            .ReturnsAsync(fileList);
+
+        _fileStatusServiceMock.Setup(x => x.GetFileStatusesForDirectoryAsync("/User"))
+            .ReturnsAsync(new Dictionary<string, FileOperationStatus>
+            {
+                { "/User/alpha.txt", FileOperationStatus.Moved },
+                { "/User/beta.txt", FileOperationStatus.Unprocessed }
+            });
+
+        // Act
+        await _viewModel.LoadFilesForSelectedFolder();
+
+        // Assert
+        Assert.Equal(FileOperationStatus.Moved, _viewModel.CurrentFiles[0].FileOperationStatus);
+        Assert.Equal(FileOperationStatus.Unprocessed, _viewModel.CurrentFiles[1].FileOperationStatus);
     }
 
 
