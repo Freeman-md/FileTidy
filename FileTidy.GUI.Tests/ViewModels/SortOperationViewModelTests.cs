@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Models;
 using FileTidy.GUI.ViewModels;
 using Moq;
 using Xunit;
@@ -39,5 +40,77 @@ public class SortOperationViewModelTests
         );
     }
 
-    // Individual tests go here
+    [Fact]
+    public async Task StartTidying_NoFolderSelected_DoesNothing()
+    {
+        // Arrange
+        _folderTreeViewModel.SelectedFolder = null;
+
+        // Act
+        await _viewModel.StartTidyingCommand.ExecuteAsync(null);
+
+        // Assert
+        _organizerServiceMock.Verify(x => x.SortDirectoryAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        Assert.False(_viewModel.IsSorting);
+    }
+    
+    [Fact]
+    public async Task StartTidying_WithSelectedFolder_CallsOrganizerServiceAndUpdatesState()
+    {
+        // Arrange
+        var folder = new FolderItem
+        {
+            Name = "Documents",
+            FullPath = "/User/Documents"
+        };
+        _folderTreeViewModel.SelectedFolder = folder;
+
+        var result = new TidyingResult
+        {
+            TotalMoved = 5,
+            TotalErrors = 0
+        };
+
+        _organizerServiceMock
+            .Setup(x => x.SortDirectoryAsync("/User/Documents", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(result);
+
+        _operationStoreMock
+            .Setup(x => x.SaveConfigValueAsync(nameof(_viewModel.LastSortSessionId), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _viewModel.StartTidyingCommand.ExecuteAsync(null);
+
+        // Assert
+        _organizerServiceMock.Verify(x => x.SortDirectoryAsync("/User/Documents", It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        _operationStoreMock.Verify(x => x.SaveConfigValueAsync(nameof(_viewModel.LastSortSessionId), It.IsAny<string>()), Times.Once);
+        Assert.False(_viewModel.IsSorting);
+        Assert.NotEqual(Guid.Empty, _viewModel.LastSortSessionId);
+    }
+    
+    [Fact]
+    public async Task StartTidying_WhenExceptionOccurs_SetsIsSortingToFalse()
+    {
+        // Arrange
+        var folder = new FolderItem
+        {
+            Name = "Documents",
+            FullPath = "/User/Documents"
+        };
+        _folderTreeViewModel.SelectedFolder = folder;
+
+        _organizerServiceMock
+            .Setup(x => x.SortDirectoryAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Failure"));
+
+        // Act
+        await _viewModel.StartTidyingCommand.ExecuteAsync(null);
+
+        // Assert
+        Assert.False(_viewModel.IsSorting);
+    }
+
+
+
 }
