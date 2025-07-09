@@ -124,16 +124,13 @@ public partial class SortOperationViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRevertLastSort))]
     private async Task RevertLastSort()
     {
+        if (LastSortSessionId == Guid.Empty)
+            return;
+        
         IsReverting = true;
         OperationProgress = 0;
         FilesProcessed = 0;
         ElapsedTime = "0m 00s";
-
-        if (LastSortSessionId == Guid.Empty)
-        {
-            IsReverting = false;
-            return;
-        }
 
         await _fileOrganizerService.RevertSessionAsync(LastSortSessionId);
         
