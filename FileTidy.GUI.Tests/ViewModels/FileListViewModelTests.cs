@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 using FileTidy.GUI.Contracts;
@@ -15,7 +16,7 @@ public class FileListViewModelTests
     private readonly Mock<IFileOrganizerService> _fileOrganizerServiceMock = new();
     private readonly FolderTreeViewModel _folderTreeViewModel;
     private readonly FileListViewModel _viewModel;
-    
+
     public FileListViewModelTests()
     {
         var dummyFolderService = new Mock<IFolderService>().Object;
@@ -29,7 +30,7 @@ public class FileListViewModelTests
             _ => { }
         );
     }
-    
+
     [Fact]
     public void SelectingFile_UpdatesSelectionStateAndTriggersComputedProperties()
     {
@@ -68,5 +69,98 @@ public class FileListViewModelTests
         Assert.False(_viewModel.CanRevertSelected); // none is Moved
     }
 
-    
+    [Fact]
+    public void SelectAll_TogglesAllFilesCorrectly()
+    {
+        // Arrange
+        var file1 = new FileItem { Name = "a.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = false };
+        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 200, Modified = "Now", IsSelected = false };
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+
+        // Act
+        _viewModel.IsAllSelected = true;
+
+        // Assert
+        Assert.True(file1.IsSelected);
+        Assert.True(file2.IsSelected);
+        Assert.True(_viewModel.IsAllSelected);
+        Assert.Equal(2, _viewModel.SelectedFileCount);
+    }
+
+    [Fact]
+    public void DeselectSingleFile_UpdatesIsAllSelected()
+    {
+        // Arrange
+        var file1 = new FileItem { Name = "a.txt", Type = "txt", Size = 100, Modified = "Now", IsSelected = true };
+        var file2 = new FileItem { Name = "b.txt", Type = "txt", Size = 200, Modified = "Now", IsSelected = true };
+
+        // Hook the PropertyChanged manually
+        file1.PropertyChanged += _viewModel.GetType()
+            .GetMethod("OnFileItemPropertyChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.CreateDelegate(typeof(PropertyChangedEventHandler), _viewModel) as PropertyChangedEventHandler;
+
+        file2.PropertyChanged += _viewModel.GetType()
+            .GetMethod("OnFileItemPropertyChanged", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.CreateDelegate(typeof(PropertyChangedEventHandler), _viewModel) as PropertyChangedEventHandler;
+
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+
+        // Precondition check
+        _viewModel.IsAllSelected = true;
+        Assert.True(_viewModel.IsAllSelected);
+
+        // Act
+        file1.IsSelected = false;
+
+        // Assert
+        Assert.False(_viewModel.IsAllSelected);
+    }
+
+
+
+    [Fact]
+    public async Task RevertSelected_CallsOrganizerServiceAndRemovesFiles()
+    {
+        // Arrange
+        var file1 = new FileItem
+        {
+            Name = "a.txt",
+            Type = "txt",
+            Modified = "Now",
+            FullPath = "/User/a.txt",
+            IsSelected = true,
+            FileOperationStatus = FileOperationStatus.Moved,
+            Size = 100
+        };
+
+        var file2 = new FileItem
+        {
+            Name = "b.txt",
+            Type = "txt",
+            Modified = "Now",
+            FullPath = "/User/b.txt",
+            IsSelected = true,
+            FileOperationStatus = FileOperationStatus.Moved,
+            Size = 200
+        };
+
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem> { file1, file2 };
+
+        _fileOrganizerServiceMock
+            .Setup(x => x.RevertFileAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        // Act
+        await _viewModel.RevertSelectedCommand.ExecuteAsync(null);
+
+        // Assert
+        _fileOrganizerServiceMock.Verify(x => x.RevertFileAsync(file1.FullPath!, default), Times.Once);
+        _fileOrganizerServiceMock.Verify(x => x.RevertFileAsync(file2.FullPath!, default), Times.Once);
+
+        Assert.Empty(_viewModel.CurrentFiles);
+    }
+
+
+
 }
