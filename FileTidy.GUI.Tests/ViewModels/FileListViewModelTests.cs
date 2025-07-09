@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
 using FileTidy.Core.Interfaces;
+using FileTidy.Core.Models;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Models;
 using FileTidy.GUI.ViewModels;
 using Moq;
 
@@ -26,4 +29,44 @@ public class FileListViewModelTests
             _ => { }
         );
     }
+    
+    [Fact]
+    public void SelectingFile_UpdatesSelectionStateAndTriggersComputedProperties()
+    {
+        // Arrange
+        var file1 = new FileItem
+        {
+            Name = "test.txt",
+            FullPath = "/User/test.txt",
+            Type = "txt",
+            Size = 100,
+            Modified = "Now",
+            IsSelected = false,
+            FileOperationStatus = FileOperationStatus.Unprocessed
+        };
+
+        var file2 = new FileItem
+        {
+            Name = "doc.pdf",
+            FullPath = "/User/doc.pdf",
+            Type = "pdf",
+            Size = 200,
+            Modified = "Now",
+            IsSelected = false,
+            FileOperationStatus = FileOperationStatus.Unprocessed
+        };
+
+        _viewModel.CurrentFiles = new ObservableCollection<FileItem>(new List<FileItem> { file1, file2 });
+
+        // Act
+        file1.IsSelected = true;
+
+        // Assert
+        Assert.True(file1.IsSelected);
+        Assert.Equal(1, _viewModel.SelectedFileCount);
+        Assert.True(_viewModel.CanDeleteSelected);
+        Assert.False(_viewModel.CanRevertSelected); // none is Moved
+    }
+
+    
 }
