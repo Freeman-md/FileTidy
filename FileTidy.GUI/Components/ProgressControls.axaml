@@ -6,10 +6,10 @@
              xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.ProgressControls"
-             x:DataType="vm:MainViewModel"
+             x:DataType="vm:HomeViewModel"
              >
     
-    <Design.DataContext><vm:MainViewModel></vm:MainViewModel></Design.DataContext>
+    <Design.DataContext><vm:HomeViewModel></vm:HomeViewModel></Design.DataContext>
     
     <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Padding="10" Margin="10 5"
             CornerRadius="5">

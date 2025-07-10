@@ -16,7 +16,7 @@ public partial class FolderPanel : UserControl
     {
         if (sender is TextBlock { DataContext: FileItem { IsFolder: true } fileItem })
         {
-            if (DataContext is MainViewModel vm)
+            if (DataContext is HomeViewModel vm)
             {
                 vm.FileListViewModel.OpenFolderCommand.Execute(fileItem);
             }

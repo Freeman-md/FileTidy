@@ -12,7 +12,7 @@ using Xunit;
 
 namespace FileTidy.Gui.Tests.ViewModels;
 
-public class MainViewModelTests
+public class HomeViewModelTests
 {
     private readonly Mock<IFileOperationStore> _operationStoreMock = new();
     private readonly Mock<ISortReporter> _sortReporterMock = new();
@@ -20,9 +20,9 @@ public class MainViewModelTests
     private readonly FileListViewModel _fileListViewModel;
     private readonly SortOperationViewModel _sortOperationViewModel;
     private readonly NotificationViewModel _notificationViewModel;
-    private readonly MainViewModel _viewModel;
+    private readonly HomeViewModel _viewModel;
 
-    public MainViewModelTests()
+    public HomeViewModelTests()
     {
         _folderTreeViewModel = new FolderTreeViewModel(Mock.Of<IFolderService>(), _ => { });
         _fileListViewModel = new FileListViewModel(
@@ -42,7 +42,7 @@ public class MainViewModelTests
 
         _notificationViewModel = new NotificationViewModel();
 
-        _viewModel = new MainViewModel(
+        _viewModel = new HomeViewModel(
             _operationStoreMock.Object,
             _folderTreeViewModel,
             _fileListViewModel,
@@ -90,7 +90,7 @@ public class MainViewModelTests
         _operationStoreMock.Setup(x => x.GetConfigValueAsync(nameof(SortOperationViewModel.LastSortSessionId)))
             .ReturnsAsync(sessionId.ToString());
 
-        var viewModel = new MainViewModel(
+        var viewModel = new HomeViewModel(
             _operationStoreMock.Object,
             _folderTreeViewModel,
             _fileListViewModel,
@@ -112,9 +112,9 @@ public class MainViewModelTests
 
         _viewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(MainViewModel.ShouldShowEmptyState))
+            if (e.PropertyName == nameof(HomeViewModel.ShouldShowEmptyState))
                 emptyStateChanged = true;
-            if (e.PropertyName == nameof(MainViewModel.ShouldShowFileTable))
+            if (e.PropertyName == nameof(HomeViewModel.ShouldShowFileTable))
                 fileTableChanged = true;
         };
 

@@ -8,8 +8,8 @@
 using FileTidy.GUI.Reporting;
 using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
+    using FileTidy.GUI.Views;
     using Microsoft.Extensions.DependencyInjection;
-    using MainViewModel = FileTidy.GUI.ViewModels.MainViewModel;
 
     namespace FileTidy.GUI;
 
@@ -41,15 +41,19 @@ using FileTidy.GUI.Services;
             services.AddSingleton<FileListViewModel>();
             services.AddSingleton<SortOperationViewModel>();
             services.AddSingleton<NotificationViewModel>();
-            services.AddSingleton<MainViewModel>();
+            services.AddSingleton<HomeViewModel>();
 
             var serviceProvider = services.BuildServiceProvider();
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new Views.MainView
+                var homeViewModel = serviceProvider.GetRequiredService<HomeViewModel>();
+                
+                var rootViewModel = new RootViewModel(homeViewModel);
+                
+                desktop.MainWindow = new RootView
                 {
-                    DataContext = serviceProvider.GetRequiredService<MainViewModel>(),
+                    DataContext = rootViewModel,
                     Title = "FileTidy"
                 };
             }

@@ -9,7 +9,7 @@ using FileTidy.GUI.Reporting;
 
 namespace FileTidy.GUI.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class HomeViewModel : ViewModelBase
 {
     private readonly IFileOperationStore _fileOperationStore;
     private readonly ISortReporter _sortReporter;
@@ -25,9 +25,9 @@ public partial class MainViewModel : ViewModelBase
     public bool ShouldShowEmptyState => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is null;
     public bool ShouldShowFileTable => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is not null;
 
-    public MainViewModel() { }
+    public HomeViewModel() { }
 
-    public MainViewModel(
+    public HomeViewModel(
         IFileOperationStore fileOperationStore, 
         FolderTreeViewModel folderTreeViewModel,
         FileListViewModel fileListViewModel,

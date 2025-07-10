@@ -1,19 +1,16 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:FileTidy.GUI.Components"
         xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="FileTidy.GUI.Views.MainView"
-        x:DataType="viewModels:MainViewModel"
-        Background="#f2f2f2"
-        MinWidth="1300"
-        MinHeight="600"
-        Title="FileTidy">
+        x:Class="FileTidy.GUI.Views.HomeView"
+        x:DataType="viewModels:HomeViewModel"
+        Background="#f2f2f2">
 
     <Design.DataContext>
-        <viewModels:MainViewModel></viewModels:MainViewModel>
+        <viewModels:HomeViewModel></viewModels:HomeViewModel>
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto, *, Auto, Auto">
@@ -28,4 +25,4 @@
 
     </Grid>
 
-</Window>
+</UserControl>

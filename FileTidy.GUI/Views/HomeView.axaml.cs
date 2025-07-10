@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace FileTidy.GUI.Views;
 
-public partial class MainView : Window
+public partial class HomeView : UserControl
 {
-    public MainView()
+    public HomeView()
     {
         InitializeComponent();
     }

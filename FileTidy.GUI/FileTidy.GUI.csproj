@@ -64,7 +64,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\MainView.axaml.cs">
+      <Compile Update="Views\HomeView.axaml.cs">
         <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

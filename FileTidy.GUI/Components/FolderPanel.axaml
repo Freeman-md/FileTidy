@@ -9,7 +9,7 @@
              xmlns:models="clr-namespace:FileTidy.GUI.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.FolderPanel"
-             x:DataType="viewModels:MainViewModel"
+             x:DataType="viewModels:HomeViewModel"
              x:Name="RootPanel"
              >
     
@@ -33,7 +33,7 @@
                 <!-- Revert -->
                 <Button Classes="btn btn-outline"
                         IsVisible="{Binding FileOperationStatus, Converter={StaticResource RevertVisibilityConverter}}"
-                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).FileListViewModel.RevertSortingCommand}"
+                        Command="{Binding #RootPanel.((vm:HomeViewModel)DataContext).FileListViewModel.RevertSortingCommand}"
                         CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe038;" Classes="btn-icon" />
@@ -43,7 +43,7 @@
 
                 <!-- Delete -->
                 <Button Classes="btn btn-outline"
-                        Command="{Binding #RootPanel.((vm:MainViewModel)DataContext).FileListViewModel.DeleteFileCommand}"
+                        Command="{Binding #RootPanel.((vm:HomeViewModel)DataContext).FileListViewModel.DeleteFileCommand}"
                         CommandParameter="{Binding}">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <Label FontFamily="{StaticResource Phosphor}" Content="&#xe4A6;" Classes="btn-icon" />
@@ -74,7 +74,7 @@
 
 
     <Design.DataContext>
-        <vm:MainViewModel></vm:MainViewModel>
+        <vm:HomeViewModel></vm:HomeViewModel>
     </Design.DataContext>
 
     <Border Grid.Row="1" Margin="0 5" Padding="10">
