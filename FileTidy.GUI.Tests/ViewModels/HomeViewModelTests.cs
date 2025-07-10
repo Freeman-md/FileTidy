@@ -126,15 +126,6 @@ public class HomeViewModelTests
     }
 
     [Fact]
-    public void AppVersion_ContainsVersionAndAuthor()
-    {
-        var version = Assembly.GetExecutingAssembly().GetName().Version;
-        var expected = $"FileTidy v{version} | Built by Freemancodz";
-
-        Assert.Equal(expected, _viewModel.AppVersion);
-    }
-
-    [Fact]
     public void NotificationRequested_ShowsNotification()
     {
         _sortReporterMock.Raise(

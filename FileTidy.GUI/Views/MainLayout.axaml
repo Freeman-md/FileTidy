@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="clr-namespace:FileTidy.GUI.Components"
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
+             x:DataType="vm:MainLayoutViewModel"
+             x:Class="FileTidy.GUI.Views.MainLayout"
+             Background="#f2f2f2">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <components:Navbar Grid.Row="0"/>
+        <ContentPresenter Grid.Row="1" Content="{Binding Content}"/>
+        <components:Footer Grid.Row="2"/>
+    </Grid>
+</UserControl> 

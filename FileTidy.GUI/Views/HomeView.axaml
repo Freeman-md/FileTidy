@@ -15,13 +15,9 @@
 
     <Grid RowDefinitions="Auto, *, Auto, Auto">
 
-        <components:Navbar></components:Navbar>
-
         <components:FolderPanel Grid.Row="1"></components:FolderPanel>
 
         <components:ProgressControls Grid.Row="2"></components:ProgressControls>
-
-        <components:Footer Grid.Row="3"></components:Footer>
 
     </Grid>
 
