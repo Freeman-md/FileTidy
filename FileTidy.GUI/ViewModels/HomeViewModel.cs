@@ -25,7 +25,9 @@ public partial class HomeViewModel : ViewModelBase
     public bool ShouldShowEmptyState => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is null;
     public bool ShouldShowFileTable => !FileListViewModel.IsLoadingFiles && FolderTreeViewModel.SelectedFolder is not null;
 
-    public HomeViewModel() { }
+    public HomeViewModel()
+    {
+    }
 
     public HomeViewModel(
         IFileOperationStore fileOperationStore, 

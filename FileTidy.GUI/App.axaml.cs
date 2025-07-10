@@ -1,3 +1,4 @@
+    using System;
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
@@ -5,8 +6,8 @@
     using FileTidy.Core.Services;
     using FileTidy.Data.Sqlite;
     using FileTidy.GUI.Contracts;
-using FileTidy.GUI.Reporting;
-using FileTidy.GUI.Services;
+    using FileTidy.GUI.Reporting;
+    using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
     using FileTidy.GUI.Views;
     using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,8 @@ using FileTidy.GUI.Services;
 
     public partial class App : Application
     {
+        public static IServiceProvider? Services { get; private set; }
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -42,18 +45,40 @@ using FileTidy.GUI.Services;
             services.AddSingleton<SortOperationViewModel>();
             services.AddSingleton<NotificationViewModel>();
             services.AddSingleton<HomeViewModel>();
-
-            var serviceProvider = services.BuildServiceProvider();
-            
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            services.AddSingleton<RootViewModel>(serviceProvider =>
             {
                 var homeViewModel = serviceProvider.GetRequiredService<HomeViewModel>();
                 
-                var rootViewModel = new RootViewModel(homeViewModel);
+                return new RootViewModel(homeViewModel);
+            });
+            services.AddSingleton<INavigationService>(serviceProvider =>
+            {
+                var rootViewModel = serviceProvider.GetRequiredService<RootViewModel>();
                 
+                return new NavigationService(rootViewModel);
+            });
+            services.AddSingleton<SettingsViewModel>(serviceProvider => 
+            {
+                var navigationService = serviceProvider.GetRequiredService<INavigationService>();
+                var homeViewModel = serviceProvider.GetRequiredService<HomeViewModel>();
+                
+                return new SettingsViewModel(navigationService, homeViewModel);
+            });
+            services.AddSingleton<HelpViewModel>(serviceProvider => 
+            {
+                var navigationService = serviceProvider.GetRequiredService<INavigationService>();
+                var homeViewModel = serviceProvider.GetRequiredService<HomeViewModel>();
+                
+                return new HelpViewModel(navigationService, homeViewModel);
+            });
+            
+            Services = services.BuildServiceProvider();
+            
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
                 desktop.MainWindow = new RootView
                 {
-                    DataContext = rootViewModel,
+                    DataContext = Services.GetRequiredService<RootViewModel>(),
                     Title = "FileTidy"
                 };
             }
