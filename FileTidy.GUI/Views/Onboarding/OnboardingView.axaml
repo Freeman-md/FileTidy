@@ -45,17 +45,21 @@
             Margin="0, 40, 0, 0">
 
             <Button
+                Classes="btn btn-primary"
                 Content="Previous"
                 Command="{Binding PreviousStepCommand}"
                 IsVisible="{Binding ShowPreviousButton}">
             </Button>
 
             <Button
+                Classes="btn btn-primary"
                 Content="{Binding PrimaryButtonText}"
-                Command="{Binding PrimaryActionCommand}">
+                Command="{Binding PrimaryActionCommand}"
+                IsVisible="{Binding ShowPrimaryButton}">
             </Button>
 
             <Button
+                Classes="btn btn-primary"
                 Content="Skip"
                 Command="{Binding SkipStepCommand}"
                 IsVisible="{Binding ShowSkipButton}">

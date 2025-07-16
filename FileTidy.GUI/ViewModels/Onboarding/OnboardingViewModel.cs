@@ -13,15 +13,19 @@ public partial class OnboardingViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPreviousButton))]
     [NotifyPropertyChangedFor(nameof(ShowSkipButton))]
+    [NotifyPropertyChangedFor(nameof(ShowPrimaryButton))]
     [NotifyPropertyChangedFor(nameof(CurrentStepView))]
     [NotifyPropertyChangedFor(nameof(PrimaryButtonText))]
+    [NotifyPropertyChangedFor(nameof(StepTitle))]
     [NotifyCanExecuteChangedFor(nameof(PreviousStepCommand))]
     [NotifyCanExecuteChangedFor(nameof(SkipStepCommand))]
     [NotifyCanExecuteChangedFor(nameof(NextStepCommand))]
+    [NotifyCanExecuteChangedFor(nameof(PrimaryActionCommand))]
     private int _currentStepIndex;
 
     public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1;
     public bool ShowSkipButton => CurrentStepIndex == 2;
+    public bool ShowPrimaryButton => CurrentStepIndex != _steps.Count - 1;
     
     public string PrimaryButtonText => CurrentStepIndex switch
     {
