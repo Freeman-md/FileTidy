@@ -5,6 +5,63 @@
              xmlns:onboarding="clr-namespace:FileTidy.GUI.ViewModels.Onboarding"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Views.Onboarding.OnboardingView"
-             x:DataType="onboarding:OnboardingViewModel">
+             x:DataType="onboarding:OnboardingViewModel"
+             Background="#f2f2f2">
     
+    <Design.DataContext>
+        <onboarding:OnboardingViewModel></onboarding:OnboardingViewModel>
+    </Design.DataContext>
+    
+    <Grid
+        RowDefinitions="*, Auto, Auto"
+        ColumnDefinitions="1*, 2*, 1*"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Stretch"
+        Margin="40">
+        <StackPanel
+            Grid.Column="1"
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="16">
+
+            <TextBlock
+                Text="{Binding StepTitle}"
+                FontSize="24"
+                FontWeight="Bold"
+                HorizontalAlignment="Center"
+                Margin="0, 0, 0, 16">
+            </TextBlock>
+
+            <ContentControl Content="{Binding CurrentStepView}"></ContentControl>
+        </StackPanel>
+
+        <StackPanel
+            Grid.Column="1"
+            Grid.Row="2"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Spacing="20"
+            Margin="0, 40, 0, 0">
+
+            <Button
+                Content="Previous"
+                Command="{Binding PreviousCommand}"
+                IsVisible="{Binding ShowPrevious}">
+            </Button>
+
+            <Button
+                Content="{Binding PrimaryButtonText}"
+                Command="{Binding PrimaryCommand}">
+            </Button>
+
+            <Button
+                Content="Skip"
+                Command="{Binding SkipCommand}"
+                IsVisible="{Binding ShowSkip}">
+
+            </Button>
+
+        </StackPanel>
+    </Grid>
 </UserControl>
