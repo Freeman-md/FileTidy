@@ -10,6 +10,7 @@
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
     using FileTidy.GUI.ViewModels.Home;
+    using FileTidy.GUI.ViewModels.Onboarding;
     using FileTidy.GUI.Views;
     using Microsoft.Extensions.DependencyInjection;
     using FileListViewModel = FileTidy.GUI.ViewModels.Home.FileListViewModel;
@@ -45,16 +46,19 @@
             services.AddSingleton<IFileOrganizerService, FileOrganizerService>();
             
             services.AddSingleton<IFolderService, FolderService>();
+            
             services.AddSingleton<FolderTreeViewModel>();
             services.AddSingleton<FileListViewModel>();
             services.AddSingleton<SortOperationViewModel>();
             services.AddSingleton<NotificationViewModel>();
+            
             services.AddSingleton<HomeViewModel>();
+            services.AddSingleton<OnboardingViewModel>();
             services.AddSingleton<RootViewModel>(serviceProvider =>
             {
-                var homeViewModel = serviceProvider.GetRequiredService<HomeViewModel>();
+                var onboardingViewModel = serviceProvider.GetRequiredService<OnboardingViewModel>();
                 
-                return new RootViewModel(homeViewModel);
+                return new RootViewModel(onboardingViewModel);
             });
             services.AddSingleton<INavigationService>(serviceProvider =>
             {
