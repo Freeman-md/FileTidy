@@ -4,6 +4,7 @@ using Avalonia.Input;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.ViewModels;
 using FileTidy.GUI.Services;
+using FileTidy.GUI.ViewModels.Home;
 
 namespace FileTidy.GUI.Components;
 

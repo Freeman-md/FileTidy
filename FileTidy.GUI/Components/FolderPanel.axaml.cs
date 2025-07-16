@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using FileTidy.GUI.Models;
 using FileTidy.GUI.ViewModels;
+using FileTidy.GUI.ViewModels.Home;
 
 namespace FileTidy.GUI.Components;
 

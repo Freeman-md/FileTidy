@@ -13,7 +13,7 @@ using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
 using FileTidy.GUI.Models;
 
-namespace FileTidy.GUI.ViewModels;
+namespace FileTidy.GUI.ViewModels.Home;
 
 public partial class FileListViewModel : ViewModelBase
 {
@@ -53,18 +53,18 @@ public partial class FileListViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<FileItem> _currentFiles = new();
     
-    public int SelectedFileCount => CurrentFiles.Count(f => f.IsSelected);
-    public int SelectedRevertableCount => CurrentFiles.Count(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved);
+    public int SelectedFileCount => Enumerable.Count<FileItem>(CurrentFiles, f => f.IsSelected);
+    public int SelectedRevertableCount => Enumerable.Count<FileItem>(CurrentFiles, f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved);
     public bool CanRevertSelected => SelectedRevertableCount > 0;
     public bool CanDeleteSelected => SelectedFileCount > 0;
     
-    public string ReadableFolderSize => FolderSize.BytesToReadableSize();
+    public string ReadableFolderSize => FileSizeExtensions.BytesToReadableSize(FolderSize);
     
     private void OnFileItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(FileItem.IsSelected))
         {
-            IsAllSelected = CurrentFiles.All(item => item.IsSelected);
+            IsAllSelected = Enumerable.All<FileItem>(CurrentFiles, item => item.IsSelected);
             OnPropertyChanged(nameof(SelectedFileCount));
             OnPropertyChanged(nameof(SelectedRevertableCount));
             OnPropertyChanged(nameof(CanRevertSelected));
@@ -78,7 +78,7 @@ public partial class FileListViewModel : ViewModelBase
     partial void OnIsAllSelectedChanged(bool oldValue, bool newValue)
     {
         bool userUncheckingManually = !newValue;
-        bool notAllFilesSelected = CurrentFiles.Any(file => !file.IsSelected);
+        bool notAllFilesSelected = Enumerable.Any<FileItem>(CurrentFiles, file => !file.IsSelected);
 
         if (userUncheckingManually && notAllFilesSelected)
             return;
@@ -188,8 +188,8 @@ public partial class FileListViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRevertSelected))]
     private async Task RevertSelected()
     {
-        var filesToRevert = CurrentFiles
-            .Where(f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved)
+        var filesToRevert = Enumerable
+            .Where<FileItem>(CurrentFiles, f => f.IsSelected && f.FileOperationStatus == FileOperationStatus.Moved)
             .ToList();
 
         foreach (var file in filesToRevert)
@@ -203,8 +203,8 @@ public partial class FileListViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
     private async Task DeleteSelected()
     {
-        var filesToDelete = CurrentFiles
-            .Where(f => f.IsSelected && !f.IsFolder)
+        var filesToDelete = Enumerable
+            .Where<FileItem>(CurrentFiles, f => f.IsSelected && !f.IsFolder)
             .ToList();
 
         foreach (var file in filesToDelete)

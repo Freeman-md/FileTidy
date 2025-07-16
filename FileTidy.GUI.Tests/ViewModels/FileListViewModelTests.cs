@@ -5,6 +5,7 @@ using FileTidy.Core.Models;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Models;
 using FileTidy.GUI.ViewModels;
+using FileTidy.GUI.ViewModels.Home;
 using Moq;
 
 namespace FileTidy.Gui.Tests.ViewModels;

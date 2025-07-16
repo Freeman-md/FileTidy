@@ -7,6 +7,7 @@ using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Models;
 using FileTidy.GUI.Reporting;
 using FileTidy.GUI.ViewModels;
+using FileTidy.GUI.ViewModels.Home;
 using Moq;
 using Xunit;
 

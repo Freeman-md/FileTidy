@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileTidy.GUI.ViewModels;
+namespace FileTidy.GUI.ViewModels.Home;
 
 public partial class NotificationViewModel : ViewModelBase
 {

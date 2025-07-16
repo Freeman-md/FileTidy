@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 
-namespace FileTidy.GUI.ViewModels;
+namespace FileTidy.GUI.ViewModels.Home;
 
 public partial class SortOperationViewModel : ViewModelBase
 {
@@ -136,7 +136,6 @@ public partial class SortOperationViewModel : ViewModelBase
         
         LastSortSessionId = Guid.Empty;
         await _fileOperationStore.DeleteConfigValueAsync(nameof(LastSortSessionId));
-
 
         _ = _fileListViewModel.LoadFilesForSelectedFolder();
 

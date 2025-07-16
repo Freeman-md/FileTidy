@@ -9,8 +9,13 @@
     using FileTidy.GUI.Reporting;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels;
+    using FileTidy.GUI.ViewModels.Home;
     using FileTidy.GUI.Views;
     using Microsoft.Extensions.DependencyInjection;
+    using FileListViewModel = FileTidy.GUI.ViewModels.Home.FileListViewModel;
+    using FolderTreeViewModel = FileTidy.GUI.ViewModels.Home.FolderTreeViewModel;
+    using NotificationViewModel = FileTidy.GUI.ViewModels.Home.NotificationViewModel;
+    using SortOperationViewModel = FileTidy.GUI.ViewModels.Home.SortOperationViewModel;
 
     namespace FileTidy.GUI;
 

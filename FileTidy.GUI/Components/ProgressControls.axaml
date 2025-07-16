@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
              xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
+             xmlns:home="clr-namespace:FileTidy.GUI.ViewModels.Home"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.ProgressControls"
-             x:DataType="vm:HomeViewModel"
+             x:DataType="home:HomeViewModel"
              >
     
-    <Design.DataContext><vm:HomeViewModel></vm:HomeViewModel></Design.DataContext>
+    <Design.DataContext><home:HomeViewModel></home:HomeViewModel></Design.DataContext>
     
     <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Padding="10" Margin="10 5"
             CornerRadius="5">

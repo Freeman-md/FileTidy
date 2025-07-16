@@ -1,12 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using FileTidy.GUI.Models;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Models;
 
-namespace FileTidy.GUI.ViewModels;
+namespace FileTidy.GUI.ViewModels.Home;
 
 public partial class FolderTreeViewModel : ViewModelBase
 {

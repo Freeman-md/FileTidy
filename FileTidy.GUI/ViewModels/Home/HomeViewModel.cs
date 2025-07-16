@@ -1,13 +1,9 @@
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
 using FileTidy.Core.Interfaces;
-using FileTidy.Core.Services;
 using FileTidy.GUI.Contracts;
-using FileTidy.GUI.Reporting;
 
-namespace FileTidy.GUI.ViewModels;
+namespace FileTidy.GUI.ViewModels.Home;
 
 public partial class HomeViewModel : ViewModelBase, IUseMainLayout
 {

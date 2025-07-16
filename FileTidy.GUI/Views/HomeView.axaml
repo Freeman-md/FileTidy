@@ -4,13 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:components="clr-namespace:FileTidy.GUI.Components"
         xmlns:viewModels="clr-namespace:FileTidy.GUI.ViewModels"
+        xmlns:home="clr-namespace:FileTidy.GUI.ViewModels.Home"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="FileTidy.GUI.Views.HomeView"
-        x:DataType="viewModels:HomeViewModel"
+        x:DataType="home:HomeViewModel"
         Background="#f2f2f2">
 
     <Design.DataContext>
-        <viewModels:HomeViewModel></viewModels:HomeViewModel>
+        <home:HomeViewModel></home:HomeViewModel>
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto, *, Auto, Auto">

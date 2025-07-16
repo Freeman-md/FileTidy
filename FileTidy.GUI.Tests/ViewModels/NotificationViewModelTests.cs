@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FileTidy.GUI.ViewModels;
+using FileTidy.GUI.ViewModels.Home;
 using Xunit;
 
 namespace FileTidy.Gui.Tests.ViewModels;
