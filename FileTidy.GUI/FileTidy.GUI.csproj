@@ -69,6 +69,21 @@
       <ProjectReference Include="..\FileTidy.Data\FileTidy.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Views\Onboarding\FolderSelectionStepView.axaml.cs">
+        <DependentUpon>FolderSelectionStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Onboarding\CompletionStepView.axaml.cs">
+        <DependentUpon>CompletionStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Onboarding\PreferencesStepView.axaml.cs">
+        <DependentUpon>PreferencesStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
     <PropertyGroup>
       <RuntimeIdentifiers>osx-x64;osx-arm64;linux-x64;win-x64</RuntimeIdentifiers>
       <UseAppHost>true</UseAppHost>

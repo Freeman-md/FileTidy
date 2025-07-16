@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FileTidy.GUI.Views;
+namespace FileTidy.GUI.Views.Onboarding;
 
 public partial class FolderSelectionStepView : UserControl
 {

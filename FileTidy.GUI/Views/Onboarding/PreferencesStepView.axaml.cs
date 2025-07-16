@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace FileTidy.GUI.Views;
+namespace FileTidy.GUI.Views.Onboarding;
 
 public partial class PreferencesStepView : UserControl
 {
