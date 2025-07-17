@@ -38,7 +38,7 @@ public partial class OnboardingViewModel : ViewModelBase
     public string StepTitle => CurrentStepIndex switch
     {
         0 => "Welcome to FileTidy",
-        1 => "Choose which folders to organize",
+        1 => "Select folders to organize:",
         2 => "Customize your experience",
         3 => "You're all set",
         _ => ""
@@ -49,7 +49,10 @@ public partial class OnboardingViewModel : ViewModelBase
     private readonly List<UserControl> _steps =
     [
         new WelcomeStepView(),
-        new FolderSelectionStepView(),
+        new FolderSelectionStepView()
+        {
+            DataContext = new FolderSelectionStepViewModel()
+        },
         new PreferencesStepView(),
         new CompletionStepView()
     ];

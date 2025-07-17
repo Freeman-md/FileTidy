@@ -3,10 +3,58 @@
              x:Class="FileTidy.GUI.Views.Onboarding.FolderSelectionStepView"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <TextBlock Text="[Folder selection UI goes here]"
-                   FontSize="14"
-                   HorizontalAlignment="Center"/>
-    </StackPanel>
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Onboarding"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:FolderSelectionStepViewModel">
+    <Grid>
+        <StackPanel 
+            Spacing="16"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="400"
+            >
+            
+            <ItemsControl ItemsSource="{Binding Folders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="Transparent"
+                                CornerRadius="6"
+                                Padding="4"
+                                Classes="clickable">
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  VerticalAlignment="Center"
+                                  Margin="0,4">
+                                <!-- Folder Icon -->
+                                <Border Width="32" Height="32"
+                                        Background="{DynamicResource SystemAccentBrushDark}"
+                                        CornerRadius="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="&#xe24a;" 
+                                               FontFamily="{StaticResource PhosphorLight}" 
+                                               FontSize="18" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center" />
+                                </Border>
+
+                                <!-- Folder Name -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"
+                                           Margin="12,0" />
+
+                                <!-- Checkbox -->
+                                <CheckBox Grid.Column="2"
+                                          IsChecked="{Binding IsSelected}" 
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            
+        </StackPanel>
+    </Grid>
 </UserControl>
