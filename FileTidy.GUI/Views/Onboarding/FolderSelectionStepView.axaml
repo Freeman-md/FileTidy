@@ -20,7 +20,8 @@
                         <Border Background="Transparent"
                                 CornerRadius="6"
                                 Padding="4"
-                                Classes="clickable">
+                                Cursor="Hand"
+                                PointerPressed="FolderItem_OnPointerPressed">
                             <Grid ColumnDefinitions="Auto,*,Auto"
                                   VerticalAlignment="Center"
                                   Margin="0,4">
