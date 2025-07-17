@@ -5,72 +5,73 @@
              x:Class="FileTidy.GUI.Views.Onboarding.WelcomeStepView"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
     <Grid>
-    <StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Width="500"
-                Spacing="24">
-        
-        <StackPanel>
-        <TextBlock Text="Let's get your folders clean and organized."
-                   FontSize="16"
-                   Foreground="Gray"
-                   HorizontalAlignment="Center" />
-      </StackPanel>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="500"
+                    Spacing="24">
 
-      <!-- Checklist Section -->
-      <StackPanel Spacing="16">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-          <Border Width="28" Height="28"
-                  Background="{DynamicResource SystemAccentBrushDark}"
-                  CornerRadius="6"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-            <TextBlock Text="✓"
+            <!-- Subtitle -->
+            <TextBlock Text="Let's get your folders clean and organized."
                        FontSize="16"
-                       FontWeight="Bold"
+                       Foreground="Gray"
                        HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-          </Border>
-          <TextBlock Text="Sort cluttered files"
-                     VerticalAlignment="Center"
-                     FontSize="14" />
-        </StackPanel>
+                       TextAlignment="Center"
+                       Margin="0,0,0,8" />
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-          <Border Width="28" Height="28"
-                  Background="{DynamicResource SystemAccentBrushDark}"
-                  CornerRadius="6"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-            <TextBlock Text="✓"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-          </Border>
-          <TextBlock Text="Automate your cleanup"
-                     VerticalAlignment="Center"
-                     FontSize="14" />
-        </StackPanel>
+            <!-- Checklist Section -->
+            <StackPanel Spacing="16">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Border Width="28" Height="28"
+                            Background="{DynamicResource SystemAccentBrushDark}"
+                            CornerRadius="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="✓"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="Sort cluttered files"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-          <Border Width="28" Height="28"
-                  Background="{DynamicResource SystemAccentBrushDark}"
-                  CornerRadius="6"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-            <TextBlock Text="✓"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-          </Border>
-          <TextBlock Text="Stay organized"
-                     VerticalAlignment="Center"
-                     FontSize="14" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Border Width="28" Height="28"
+                            Background="{DynamicResource SystemAccentBrushDark}"
+                            CornerRadius="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="✓"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="Automate your cleanup"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Border Width="28" Height="28"
+                            Background="{DynamicResource SystemAccentBrushDark}"
+                            CornerRadius="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="✓"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="Stay organized"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
-      </StackPanel>
-    </StackPanel>
-  </Grid>
-    
+    </Grid>
+
 </UserControl>
