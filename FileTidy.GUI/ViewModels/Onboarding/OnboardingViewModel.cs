@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.Core.Interfaces;
+using FileTidy.Core.Models;
 using FileTidy.GUI.Views;
 using FileTidy.GUI.Views.Onboarding;
 
@@ -10,6 +13,9 @@ namespace FileTidy.GUI.ViewModels.Onboarding;
 
 public partial class OnboardingViewModel : ViewModelBase
 {
+    private readonly IFileOperationStore _fileOperationStore;
+    public FolderSelectionStepViewModel FolderSelectionStepViewModel { get; } = new();
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPreviousButton))]
     [NotifyPropertyChangedFor(nameof(ShowSkipButton))]
@@ -46,19 +52,28 @@ public partial class OnboardingViewModel : ViewModelBase
     
     public UserControl CurrentStepView => _steps[CurrentStepIndex];
     
-    private readonly List<UserControl> _steps =
-    [
-        new WelcomeStepView(),
-        new FolderSelectionStepView()
-        {
-            DataContext = new FolderSelectionStepViewModel()
-        },
-        new PreferencesStepView(),
-        new CompletionStepView()
-    ];
+    private readonly List<UserControl> _steps;
+    
+    
+    public OnboardingViewModel(IFileOperationStore fileOperationStore)
+    {
+        _fileOperationStore = fileOperationStore;
+
+        _steps =
+        [
+            new WelcomeStepView(),
+            new FolderSelectionStepView
+            {
+                DataContext = FolderSelectionStepViewModel
+            },
+
+            new PreferencesStepView(),
+            new CompletionStepView()
+        ];
+    }
 
     [RelayCommand]
-    private void PrimaryAction()
+    private async Task PrimaryAction()
     {
         switch (CurrentStepIndex)
         {
@@ -68,6 +83,7 @@ public partial class OnboardingViewModel : ViewModelBase
                 break;
             case 2: // Finish Setup
                 // SaveUserPreferences();
+                await SaveSelectedFoldersAsync();
                 NextStep(); // to Completion
                 break;
         }
@@ -106,4 +122,21 @@ public partial class OnboardingViewModel : ViewModelBase
         
         // trigger app view transition
     }
+    
+    private async Task SaveSelectedFoldersAsync()
+    {
+        var selected = FolderSelectionStepViewModel.Folders
+            .Where(f => f.IsSelected)
+            .Select(f => f.Name)
+            .ToList();
+
+        if (selected.Any())
+        {
+            var serialized = string.Join(",", selected);
+            await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.SelectedFolders, serialized);
+        }
+
+        await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.OnboardingCompleted, "true");
+    }
+
 }
