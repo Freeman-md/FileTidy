@@ -23,14 +23,14 @@
             Grid.Row="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Spacing="16">
+            Spacing="6">
 
             <TextBlock
                 Text="{Binding StepTitle}"
-                FontSize="24"
+                FontSize="28"
                 FontWeight="Bold"
                 HorizontalAlignment="Center"
-                Margin="0, 0, 0, 16">
+                Margin="0, 0, 0, 6">
             </TextBlock>
 
             <ContentControl Content="{Binding CurrentStepView}"></ContentControl>
@@ -45,21 +45,21 @@
             Margin="0, 40, 0, 0">
 
             <Button
-                Classes="btn btn-primary"
+                Classes="btn btn-xl btn-primary"
                 Content="Previous"
                 Command="{Binding PreviousStepCommand}"
                 IsVisible="{Binding ShowPreviousButton}">
             </Button>
 
             <Button
-                Classes="btn btn-primary"
+                Classes="btn btn-xl btn-primary"
                 Content="{Binding PrimaryButtonText}"
                 Command="{Binding PrimaryActionCommand}"
                 IsVisible="{Binding ShowPrimaryButton}">
             </Button>
 
             <Button
-                Classes="btn btn-primary"
+                Classes="btn btn-xl btn-primary"
                 Content="Skip"
                 Command="{Binding SkipStepCommand}"
                 IsVisible="{Binding ShowSkipButton}">
