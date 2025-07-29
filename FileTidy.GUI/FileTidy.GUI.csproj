@@ -70,16 +70,36 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\Onboarding\FolderSelectionStepView.axaml.cs">
-        <DependentUpon>FolderSelectionStepView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Onboarding\CompletionStepView.axaml.cs">
+      <Compile Update="Views\Onboarding\Steps\CompletionStepView.axaml.cs">
         <DependentUpon>CompletionStepView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\Onboarding\PreferencesStepView.axaml.cs">
+      <Compile Update="Views\Onboarding\Steps\FolderSelectionStepView.axaml.cs">
+        <DependentUpon>FolderSelectionStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Onboarding\Steps\PreferencesStepView.axaml.cs">
         <DependentUpon>PreferencesStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Onboarding\Steps\WelcomeStepView.axaml.cs">
+        <DependentUpon>WelcomeStepView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\HomeView.axaml.cs">
+        <DependentUpon>HomeView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\HelpView.axaml.cs">
+        <DependentUpon>HelpView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Pages\SettingsView.axaml.cs">
+        <DependentUpon>SettingsView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Layouts\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>

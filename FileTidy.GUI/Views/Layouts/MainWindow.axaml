@@ -6,8 +6,12 @@
              x:Class="FileTidy.GUI.Views.MainWindow"
              Background="#f2f2f2">
     <Grid RowDefinitions="Auto,*,Auto">
-        <components:Navbar Grid.Row="0"/>
+        
+        <components:Navbar Grid.Row="0" DataContext="{Binding}"/>
+        
         <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+        
         <components:Footer Grid.Row="2"/>
+        
     </Grid>
 </Window> 

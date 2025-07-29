@@ -12,14 +12,14 @@ using Xunit;
 
 namespace FileTidy.Gui.Tests.ViewModels;
 
-public class MainLayoutViewModelTests
+public class MainWindowViewModelTests
 {
-    private readonly MainLayoutViewModel _viewModel;
+    private readonly MainWindowViewModel _viewModel;
 
-    public MainLayoutViewModelTests()
+    public MainWindowViewModelTests()
     {
     
-        _viewModel = new MainLayoutViewModel();
+        _viewModel = new MainWindowViewModel();
     }
 
     [Fact]

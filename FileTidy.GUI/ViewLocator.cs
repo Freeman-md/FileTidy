@@ -8,30 +8,28 @@ namespace FileTidy.GUI;
 
 public class ViewLocator : IDataTemplate
 {
-    public Control? Build(object? data)
+    public Control? Build(object? param)
     {
-        if (data == null) return null;
+        if (param is null)
+            return null;
+        
+        var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
+        var type = Type.GetType(name);
+        
+        Console.WriteLine(type);
+        Console.WriteLine(name);
+        Console.WriteLine(param);
 
-        var viewModelType = data.GetType();
-        var viewName = viewModelType.FullName!.Replace("ViewModel", "View");
-        var viewNameType = Type.GetType(viewName);
-
-        if (data is IUseMainLayout)
+        if (type != null)
         {
-            var layout = new Views.MainLayout();
-            layout.DataContext = new MainLayoutViewModel(new Views.HomeView { DataContext = data });
-            return layout;
+            return (Control)Activator.CreateInstance(type)!;
         }
-
-        if (viewNameType != null)
-        {
-            var view = (Control)Activator.CreateInstance(viewNameType)!;
-            view.DataContext = data;
-            return view;
-        }
-
-        return new TextBlock { Text = "Not Found: " + viewName };
+        
+        return new TextBlock { Text = "Not Found: " + name };
     }
 
-    public bool Match(object? data) => data is ViewModels.ViewModelBase;
+    public bool Match(object? data)
+    {
+        return data is ViewModelBase;
+    }
 }

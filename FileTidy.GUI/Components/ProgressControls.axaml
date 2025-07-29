@@ -2,15 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels"
-             xmlns:converters="clr-namespace:FileTidy.GUI.Converters"
-             xmlns:home="clr-namespace:FileTidy.GUI.ViewModels.Home"
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Components.ProgressControls"
-             x:DataType="home:HomeViewModel"
+             x:DataType="vm:HomeViewModel"
              >
     
-    <Design.DataContext><home:HomeViewModel></home:HomeViewModel></Design.DataContext>
+    <Design.DataContext><vm:HomeViewModel></vm:HomeViewModel></Design.DataContext>
     
     <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Padding="10" Margin="10 5"
             CornerRadius="5">

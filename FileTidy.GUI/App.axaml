@@ -4,6 +4,10 @@
              xmlns:gui="clr-namespace:FileTidy.GUI"
              x:Class="FileTidy.GUI.App"
              RequestedThemeVariant="Default">
+    
+    <Application.DataTemplates>
+        <gui:ViewLocator/>
+    </Application.DataTemplates>
 
     <Application.Styles>
         <FluentTheme />

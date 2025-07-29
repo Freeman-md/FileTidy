@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:onboarding="clr-namespace:FileTidy.GUI.ViewModels.Onboarding"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileTidy.GUI.Views.Onboarding.OnboardingView"
+             x:Class="FileTidy.GUI.Views.Onboarding.OnboardingWindow"
              x:DataType="onboarding:OnboardingViewModel"
              Background="#f2f2f2">
     

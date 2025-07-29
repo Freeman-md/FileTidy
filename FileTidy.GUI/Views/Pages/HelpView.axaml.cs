@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FileTidy.GUI.Views;
+namespace FileTidy.GUI.Views.Pages;
 
 public partial class HelpView : UserControl
 {
