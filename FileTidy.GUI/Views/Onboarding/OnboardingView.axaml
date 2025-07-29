@@ -23,7 +23,7 @@
             Grid.Row="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Spacing="6">
+            Spacing="12">
 
             <TextBlock
                 Text="{Binding StepTitle}"

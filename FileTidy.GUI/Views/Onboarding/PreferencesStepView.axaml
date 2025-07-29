@@ -3,11 +3,41 @@
              x:Class="FileTidy.GUI.Views.Onboarding.PreferencesStepView"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <TextBlock Text="[Preferences toggle UI goes here]"
-                   FontSize="14"
-                   HorizontalAlignment="Center"/>
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Onboarding"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:PreferencesStepViewModel">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="24" Width="500">
+
+        <!-- Ask Before Sorting -->
+        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Ask before sorting" FontSize="14"/>
+                <TextBlock Text="Get a confirmation prompt before sorting files" 
+                           FontSize="12" Foreground="Gray"/>
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding AskBeforeSorting}" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Dark Mode -->
+        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Enable dark mode" FontSize="14"/>
+                <TextBlock Text="Switch to a dark theme for low-light environments"
+                           FontSize="12" Foreground="Gray"/>
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding DarkModeEnabled}" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Sort by Category -->
+        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Sort by file category" FontSize="14"/>
+                <TextBlock Text="Organize files into categories like documents, images, etc." 
+                           FontSize="12" Foreground="Gray"/>
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding SortByCategory}" VerticalAlignment="Center"/>
+        </Grid>
+
     </StackPanel>
 </UserControl>
 

@@ -15,6 +15,7 @@ public partial class OnboardingViewModel : ViewModelBase
 {
     private readonly IFileOperationStore _fileOperationStore;
     public FolderSelectionStepViewModel FolderSelectionStepViewModel { get; } = new();
+    public PreferencesStepViewModel PreferencesStepViewModel { get; } = new();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPreviousButton))]
@@ -67,7 +68,10 @@ public partial class OnboardingViewModel : ViewModelBase
                 DataContext = FolderSelectionStepViewModel
             },
 
-            new PreferencesStepView(),
+            new PreferencesStepView()
+            {
+                DataContext = PreferencesStepViewModel
+            },
             new CompletionStepView()
         ];
     }
