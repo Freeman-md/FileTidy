@@ -5,7 +5,7 @@ using FileTidy.GUI.Contracts;
 
 namespace FileTidy.GUI.ViewModels.Home;
 
-public partial class HomeViewModel : ViewModelBase, IUseMainLayout
+public partial class HomeViewModel : ViewModelBase
 {
     private readonly IFileOperationStore _fileOperationStore;
     private readonly ISortReporter _sortReporter;
