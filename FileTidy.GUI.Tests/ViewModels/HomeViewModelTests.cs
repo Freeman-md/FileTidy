@@ -1,13 +1,8 @@
-using System;
-using System.ComponentModel;
-using System.Reflection;
-using System.Threading.Tasks;
 using FileTidy.Core.Interfaces;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Models;
-using FileTidy.GUI.Reporting;
-using FileTidy.GUI.ViewModels;
 using FileTidy.GUI.ViewModels.Home;
+using FileTidy.GUI.ViewModels.Pages;
 using Moq;
 using Xunit;
 

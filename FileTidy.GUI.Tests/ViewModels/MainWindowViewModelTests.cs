@@ -7,6 +7,7 @@ using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Models;
 using FileTidy.GUI.Reporting;
 using FileTidy.GUI.ViewModels;
+using FileTidy.GUI.ViewModels.Layouts;
 using Moq;
 using Xunit;
 
@@ -15,11 +16,12 @@ namespace FileTidy.Gui.Tests.ViewModels;
 public class MainWindowViewModelTests
 {
     private readonly MainWindowViewModel _viewModel;
+    private readonly Mock<IServiceProvider> _services;
 
     public MainWindowViewModelTests()
     {
-    
-        _viewModel = new MainWindowViewModel();
+        _services = new Mock<IServiceProvider>();
+        _viewModel = new MainWindowViewModel(_services.Object);
     }
 
     [Fact]
