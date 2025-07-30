@@ -15,10 +15,6 @@ public class ViewLocator : IDataTemplate
         
         var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
         var type = Type.GetType(name);
-        
-        Console.WriteLine(type);
-        Console.WriteLine(name);
-        Console.WriteLine(param);
 
         if (type != null)
         {
