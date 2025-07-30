@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace FileTidy.GUI.Views.Onboarding;
 
-public partial class OnboardingWindow : UserControl
+public partial class OnboardingWindow : Window
 {
     public OnboardingWindow()
     {

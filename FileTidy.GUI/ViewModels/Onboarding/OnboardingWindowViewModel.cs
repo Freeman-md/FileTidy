@@ -11,7 +11,7 @@ using FileTidy.GUI.Views.Onboarding;
 
 namespace FileTidy.GUI.ViewModels.Onboarding;
 
-public partial class OnboardingViewModel : ViewModelBase
+public partial class OnboardingWindowViewModel : ViewModelBase
 {
     private readonly IFileOperationStore _fileOperationStore;
     public FolderSelectionStepViewModel FolderSelectionStepViewModel { get; } = new();
@@ -56,7 +56,7 @@ public partial class OnboardingViewModel : ViewModelBase
     private readonly List<UserControl> _steps;
     
     
-    public OnboardingViewModel(IFileOperationStore fileOperationStore)
+    public OnboardingWindowViewModel(IFileOperationStore fileOperationStore)
     {
         _fileOperationStore = fileOperationStore;
 
@@ -140,7 +140,7 @@ public partial class OnboardingViewModel : ViewModelBase
             await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.SelectedFolders, serialized);
         }
 
-        await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.OnboardingCompleted, "true");
+        await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.HasCompletedOnboarding, "true");
     }
 
 }

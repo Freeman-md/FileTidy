@@ -1,10 +1,14 @@
 
+    using System.Threading.Tasks;
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
+    using FileTidy.GUI.Contracts;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels.Layouts;
+    using FileTidy.GUI.ViewModels.Onboarding;
     using FileTidy.GUI.Views;
+    using FileTidy.GUI.Views.Onboarding;
     using Microsoft.Extensions.DependencyInjection;
 
     namespace FileTidy.GUI;
@@ -20,6 +24,9 @@
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var config = Services.GetRequiredService<IAppConfigService>();
+            bool hasCompletedOnboarding = config.GetHasCompletedOnboardingAsync().GetAwaiter().GetResult();
+            
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow
@@ -27,6 +34,17 @@
                     DataContext = Services.GetRequiredService<MainWindowViewModel>(),
                     Title = "FileTidy"
                 };
+                
+                desktop.MainWindow = hasCompletedOnboarding
+                    ? new MainWindow
+                    {
+                        DataContext = Services.GetRequiredService<MainWindowViewModel>(),
+                        Title = "FileTidy"
+                    }
+                    : new OnboardingWindow
+                    {
+                        DataContext = Services.GetRequiredService<OnboardingWindowViewModel>()
+                    };
             }
 
             Current!.Name = "FileTidy";

@@ -17,7 +17,9 @@ public class Bootstrapper
     {
         var services = new ServiceCollection();
 
-        // Shared Services
+        // Shared 
+        services.AddSingleton<IAppConfigService, AppConfigService>();
+
         services.AddSingleton<IFileOperationStore, SqliteOperationStore>();
         services.AddSingleton<IFileStatusService>(serviceProvider =>
         {
@@ -34,7 +36,7 @@ public class Bootstrapper
         
         // Layout + Pages
         services.AddSingleton<MainWindowViewModel>();
-        services.AddSingleton<OnboardingViewModel>();
+        services.AddSingleton<OnboardingWindowViewModel>();
         
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<SettingsViewModel>();
