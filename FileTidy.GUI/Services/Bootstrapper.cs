@@ -5,9 +5,9 @@ using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Reporting;
 using FileTidy.GUI.ViewModels.Home;
 using FileTidy.GUI.ViewModels.Layouts;
-using FileTidy.GUI.ViewModels.Onboarding;
 using FileTidy.GUI.ViewModels.Pages;
 using Microsoft.Extensions.DependencyInjection;
+using OnboardingWindowViewModel = FileTidy.GUI.ViewModels.Layouts.OnboardingWindowViewModel;
 
 namespace FileTidy.GUI.Services;
 

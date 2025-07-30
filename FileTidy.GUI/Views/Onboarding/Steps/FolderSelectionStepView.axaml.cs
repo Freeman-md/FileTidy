@@ -1,9 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using FileTidy.GUI.Models;
-using FileTidy.GUI.ViewModels.Onboarding;
 
-namespace FileTidy.GUI.Views.Onboarding;
+namespace FileTidy.GUI.Views.Onboarding.Steps;
 
 public partial class FolderSelectionStepView : UserControl
 {

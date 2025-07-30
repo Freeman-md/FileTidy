@@ -6,10 +6,10 @@
     using FileTidy.GUI.Contracts;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels.Layouts;
-    using FileTidy.GUI.ViewModels.Onboarding;
     using FileTidy.GUI.Views;
     using FileTidy.GUI.Views.Onboarding;
     using Microsoft.Extensions.DependencyInjection;
+    using OnboardingWindowViewModel = FileTidy.GUI.ViewModels.Layouts.OnboardingWindowViewModel;
 
     namespace FileTidy.GUI;
 

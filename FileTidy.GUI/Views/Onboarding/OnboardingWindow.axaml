@@ -1,71 +1,98 @@
 <Window xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:onboarding="clr-namespace:FileTidy.GUI.ViewModels.Onboarding"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FileTidy.GUI.Views.Onboarding.OnboardingWindow"
-             x:DataType="onboarding:OnboardingWindowViewModel"
-             Background="#f2f2f2">
-    
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Layouts"
+        xmlns:layouts="clr-namespace:FileTidy.GUI.ViewModels.Layouts"
+        x:Class="FileTidy.GUI.Views.Onboarding.OnboardingWindow"
+        x:DataType="layouts:OnboardingWindowViewModel"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="48"
+        SystemDecorations="Full"
+        CanResize="False"
+        Background="{StaticResource BackgroundBrush}"
+        Title="Welcome to FileTidy">
+
     <Design.DataContext>
-        <onboarding:OnboardingWindowViewModel></onboarding:OnboardingWindowViewModel>
+        <vm:OnboardingWindowViewModel />
     </Design.DataContext>
-    
-    <Grid
-        RowDefinitions="*, Auto, Auto"
-        ColumnDefinitions="1*, 2*, 1*"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Stretch"
-        Margin="40">
-        <StackPanel
-            Grid.Column="1"
-            Grid.Row="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="12">
 
-            <TextBlock
-                Text="{Binding StepTitle}"
-                FontSize="28"
-                FontWeight="Bold"
-                HorizontalAlignment="Center"
-                Margin="0, 0, 0, 6">
-            </TextBlock>
+    <DockPanel>
 
-            <ContentControl Content="{Binding CurrentStepView}"></ContentControl>
-        </StackPanel>
+        <!-- 🔷 Custom Title Bar with native macOS buttons support -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource PanelBrush}"
+                Height="48"
+                Classes="TitleBar"
+                IsHitTestVisible="True">
 
-        <StackPanel
-            Grid.Column="1"
-            Grid.Row="2"
-            Orientation="Horizontal"
-            HorizontalAlignment="Center"
-            Spacing="20"
-            Margin="0, 40, 0, 0">
+            <Grid ColumnDefinitions="48,*,48"
+                  VerticalAlignment="Center"
+                  Margin="12,0">
 
-            <Button
-                Classes="btn btn-xl btn-primary"
-                Content="Previous"
-                Command="{Binding PreviousStepCommand}"
-                IsVisible="{Binding ShowPreviousButton}">
-            </Button>
+                <!-- macOS system buttons will be injected into this space -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Spacing="8" />
 
-            <Button
-                Classes="btn btn-xl btn-primary"
-                Content="{Binding PrimaryButtonText}"
-                Command="{Binding PrimaryActionCommand}"
-                IsVisible="{Binding ShowPrimaryButton}">
-            </Button>
+                <!-- Centered logo  -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="8">
+                    <Image Name="LogoImage"
+                           Source="{SvgImage /Assets/Images/logo.svg}"
+                           Width="100"
+                           Height="100"
+                           Cursor="Hand"/>
+                </StackPanel>
 
-            <Button
-                Classes="btn btn-xl btn-primary"
-                Content="Skip"
-                Command="{Binding SkipStepCommand}"
-                IsVisible="{Binding ShowSkipButton}">
+                <!-- Optional right-side controls -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Spacing="8" />
+            </Grid>
+        </Border>
 
-            </Button>
+        <!-- 🔸 Thin Progress Bar -->
+        <Border DockPanel.Dock="Top"
+                Height="2"
+                Background="{StaticResource BorderBrush}">
+            <ProgressBar Minimum="0"
+                         Maximum="3"
+                         Value="{Binding CurrentStepIndex}"
+                         Background="{x:Null}"
+                         Foreground="{StaticResource PrimaryBrush}" />
+        </Border>
 
-        </StackPanel>
-    </Grid>
+        <!-- 🔹 Main Step View Content -->
+        <Grid Margin="40">
+            <ContentControl Content="{Binding CurrentStepView}" />
+        </Grid>
+
+        <!-- 🔻 Bottom Action Buttons -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource PanelBrush}"
+                Padding="24"
+                BorderThickness="0,-1,0,0"
+                BorderBrush="{StaticResource BorderBrush}">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="12">
+                <Button Content="Back"
+                        Command="{Binding PreviousStepCommand}"
+                        IsVisible="{Binding ShowPreviousButton}" />
+                <Button Content="{Binding PrimaryButtonText}"
+                        Command="{Binding PrimaryActionCommand}"
+                        IsVisible="{Binding ShowPrimaryButton}" />
+                <Button Content="Skip"
+                        Command="{Binding SkipStepCommand}"
+                        IsVisible="{Binding ShowSkipButton}" />
+            </StackPanel>
+        </Border>
+
+    </DockPanel>
 </Window>
