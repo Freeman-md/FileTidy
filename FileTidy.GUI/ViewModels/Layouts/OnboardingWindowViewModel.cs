@@ -6,16 +6,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
-using FileTidy.GUI.Views;
+using FileTidy.GUI.ViewModels.Onboarding;
 using FileTidy.GUI.Views.Onboarding;
 
-namespace FileTidy.GUI.ViewModels.Onboarding;
+namespace FileTidy.GUI.ViewModels.Layouts;
 
 public partial class OnboardingWindowViewModel : ViewModelBase
 {
     private readonly IFileOperationStore _fileOperationStore;
     public FolderSelectionStepViewModel FolderSelectionStepViewModel { get; } = new();
-    public PreferencesStepViewModel PreferencesStepViewModel { get; } = new();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPreviousButton))]
@@ -24,10 +23,10 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(CurrentStepView))]
     [NotifyPropertyChangedFor(nameof(PrimaryButtonText))]
     [NotifyPropertyChangedFor(nameof(StepTitle))]
-    [NotifyCanExecuteChangedFor(nameof(PreviousStepCommand))]
-    [NotifyCanExecuteChangedFor(nameof(SkipStepCommand))]
-    [NotifyCanExecuteChangedFor(nameof(NextStepCommand))]
-    [NotifyCanExecuteChangedFor(nameof(PrimaryActionCommand))]
+    [NotifyCanExecuteChangedFor(nameof(Onboarding.OnboardingWindowViewModel.PreviousStepCommand))]
+    [NotifyCanExecuteChangedFor(nameof(Onboarding.OnboardingWindowViewModel.SkipStepCommand))]
+    [NotifyCanExecuteChangedFor(nameof(Onboarding.OnboardingWindowViewModel.NextStepCommand))]
+    [NotifyCanExecuteChangedFor(nameof(Onboarding.OnboardingWindowViewModel.PrimaryActionCommand))]
     private int _currentStepIndex;
 
     public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1;
@@ -65,12 +64,12 @@ public partial class OnboardingWindowViewModel : ViewModelBase
             new WelcomeStepView(),
             new FolderSelectionStepView
             {
-                DataContext = FolderSelectionStepViewModel
+                DataContext = this
             },
 
             new PreferencesStepView()
             {
-                DataContext = PreferencesStepViewModel
+                DataContext = this
             },
             new CompletionStepView()
         ];
