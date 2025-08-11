@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
@@ -12,6 +14,31 @@ namespace FileTidy.GUI.Services;
 
 public class FolderService : IFolderService
 {
+    public async Task<bool> CanAccessAsync(string path)
+    {
+        return await Task.Run(() =>
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+                    return false;
+
+                // Try to list just one entry to test access
+                var _ = Directory.EnumerateFileSystemEntries(path).FirstOrDefault();
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking access to {path}: {ex.Message}");
+                return false;
+            }
+        });
+    }
+    
     public async Task<List<FolderItem>> GetTopLevelFoldersAsync()
     {
         return await Task.Run(() =>
@@ -96,6 +123,87 @@ public class FolderService : IFolderService
                 });
             
             return folderItems.Concat(fileItems).ToList();
+        });
+    }
+
+    public async Task OpenFolderAsync(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+
+        await Task.Run(() =>
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "open",
+                        Arguments = $"\"{path}\"",
+                        UseShellExecute = false
+                    });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "explorer",
+                        Arguments = $"\"{path}\"",
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    // Linux and others
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "xdg-open",
+                        Arguments = $"\"{path}\"",
+                        UseShellExecute = false
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to open folder {path}: {ex.Message}");
+            }
+        });
+    }
+
+    public async Task OpenSystemFilesAndFoldersSettingsAsync()
+    {
+        await Task.Run(() =>
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    // Open macOS System Settings at Privacy > Files and Folders
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "open",
+                        Arguments = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders",
+                        UseShellExecute = false
+                    });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    // No exact equivalent; open Settings home or a helpful URL
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "ms-settings:privacy",
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    // Linux: generic settings not standardized; no-op
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to open system Files & Folders settings: {ex.Message}");
+            }
         });
     }
 

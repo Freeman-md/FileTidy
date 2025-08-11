@@ -5,8 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <TextBlock Text="Launching the app..."
-                   FontSize="14"
-                   HorizontalAlignment="Center"/>
+        <TextBlock Text="You’re ready" FontSize="24" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+        <TextBlock Text="You can change folders or preferences anytime in Settings."
+                   FontSize="13" Opacity="0.85" HorizontalAlignment="Center"/>
     </StackPanel>
+
 </UserControl>

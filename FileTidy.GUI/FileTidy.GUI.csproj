@@ -62,6 +62,13 @@
       <AvaloniaResource Include="Assets\Fonts\Phosphor\Regular.ttf" />
       <None Remove="Assets\Fonts\Phosphor\Thin.ttf" />
       <AvaloniaResource Include="Assets\Fonts\Phosphor\Thin.ttf" />
+      <None Remove="Assets\Images\onboarding-background.png" />
+      <None Remove="Assets\Images\onboarding\background.png" />
+      <AvaloniaResource Include="Assets\Images\onboarding\background.png" />
+      <None Remove="Assets\Images\onboarding\grant-access.png" />
+      <AvaloniaResource Include="Assets\Images\onboarding\grant-access.png" />
+      <None Remove="Assets\Images\onboarding\welcome.png" />
+      <AvaloniaResource Include="Assets\Images\onboarding\welcome.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,14 +79,6 @@
     <ItemGroup>
       <Compile Update="Views\Onboarding\Steps\CompletionStepView.axaml.cs">
         <DependentUpon>CompletionStepView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Onboarding\Steps\FolderSelectionStepView.axaml.cs">
-        <DependentUpon>FolderSelectionStepView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\Onboarding\Steps\PreferencesStepView.axaml.cs">
-        <DependentUpon>PreferencesStepView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Views\Onboarding\Steps\WelcomeStepView.axaml.cs">

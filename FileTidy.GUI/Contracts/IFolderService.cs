@@ -12,4 +12,10 @@ public interface IFolderService
     Task<List<FolderItem>> GetFolderTreeAsync();
 
     Task<List<FileItem>> LoadFilesAsync(string folderPath);
+    
+    Task<bool> CanAccessAsync(string path);
+
+    Task OpenFolderAsync(string path);
+    Task OpenSystemFilesAndFoldersSettingsAsync();
+
 }

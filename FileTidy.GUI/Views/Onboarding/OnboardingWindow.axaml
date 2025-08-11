@@ -12,6 +12,15 @@
         CanResize="False"
         Background="{StaticResource BackgroundBrush}"
         Title="Welcome to FileTidy">
+    
+    <Window.DataTemplates>
+        <DataTemplate x:DataType="x:String">
+            <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="16">
+                <Image Source="{Binding}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </DataTemplate>
+    </Window.DataTemplates>
+
 
     <Design.DataContext>
         <vm:OnboardingWindowViewModel />
@@ -68,31 +77,54 @@
                          Foreground="{StaticResource PrimaryBrush}" />
         </Border>
 
-        <!-- 🔹 Main Step View Content -->
-        <Grid Margin="40">
-            <ContentControl Content="{Binding CurrentStepView}" />
+        <!-- 🔹 Main Area with layered background -->
+        <Grid>
+            <!-- 🌫️ Background watermark image -->
+            <Image Source="/Assets/Images/onboarding/background.png"
+                   Stretch="UniformToFill"
+                   IsHitTestVisible="False"
+                   Opacity="0.15"
+                   ZIndex="0"/>
+
+            <!-- Main content on top of watermark -->
+            <Grid ZIndex="1" Margin="40" ColumnDefinitions="*,420">
+                <!-- LEFT: step content + actions -->
+                <StackPanel Spacing="20" Margin="0,0,24,0">
+                    <!-- Step view -->
+                    <TransitioningContentControl Content="{Binding CurrentStepView}">
+                        <TransitioningContentControl.PageTransition>
+                            <CrossFade Duration="0:0:0.15"/>
+                        </TransitioningContentControl.PageTransition>
+                    </TransitioningContentControl>
+
+                    <!-- Actions under the step view -->
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Margin="0,24,0,0"
+                                Spacing="12">
+                        <Button Classes="btn btn-outline btn-md"
+                                Command="{Binding PreviousStepCommand}"
+                                IsVisible="{Binding ShowPreviousButton}">
+                            <Label>Back</Label>
+                        </Button>
+                        <Button Classes="btn btn-primary btn-md"
+                                Content="{Binding PrimaryButtonText}"
+                                Command="{Binding PrimaryActionCommand}"
+                                IsVisible="{Binding ShowPrimaryButton}" />
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Right column -->
+                <TransitioningContentControl Grid.Column="1" Content="{Binding StepPreviewSource}">
+                    <TransitioningContentControl.PageTransition>
+                        <CrossFade Duration="0:0:0.18"/>
+                    </TransitioningContentControl.PageTransition>
+                </TransitioningContentControl>
+            </Grid>
         </Grid>
 
-        <!-- 🔻 Bottom Action Buttons -->
-        <Border DockPanel.Dock="Bottom"
-                Background="{StaticResource PanelBrush}"
-                Padding="24"
-                BorderThickness="0,-1,0,0"
-                BorderBrush="{StaticResource BorderBrush}">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="12">
-                <Button Content="Back"
-                        Command="{Binding PreviousStepCommand}"
-                        IsVisible="{Binding ShowPreviousButton}" />
-                <Button Content="{Binding PrimaryButtonText}"
-                        Command="{Binding PrimaryActionCommand}"
-                        IsVisible="{Binding ShowPrimaryButton}" />
-                <Button Content="Skip"
-                        Command="{Binding SkipStepCommand}"
-                        IsVisible="{Binding ShowSkipButton}" />
-            </StackPanel>
-        </Border>
 
     </DockPanel>
 </Window>

@@ -5,17 +5,14 @@
              x:Class="FileTidy.GUI.Views.Onboarding.Steps.WelcomeStepView"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
     <Grid>
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Width="500"
+        <StackPanel
+                    VerticalAlignment="Top"
                     Spacing="24">
 
             <!-- Subtitle -->
             <TextBlock Text="Let's get your folders clean and organized."
                        FontSize="16"
                        Foreground="Gray"
-                       HorizontalAlignment="Center"
-                       TextAlignment="Center"
                        Margin="0,0,0,8" />
 
             <!-- Checklist Section -->
