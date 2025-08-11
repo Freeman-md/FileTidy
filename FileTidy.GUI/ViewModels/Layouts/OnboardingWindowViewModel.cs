@@ -31,7 +31,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StepPreviewSource))]
     private int _currentStepIndex;
 
-    // Access statuses
+    // Access statuses (kept for later steps)
     [ObservableProperty] private bool _desktopGranted;
     [ObservableProperty] private bool _downloadsGranted;
     [ObservableProperty] private bool _documentsGranted;
@@ -41,34 +41,28 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1;
     public bool ShowPrimaryButton => true;
 
-    private readonly string[] _stepPreviewImages =
-    {
-        "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png",
-        "avares://FileTidy.GUI/Assets/Images/onboarding/access.png",
-        "avares://FileTidy.GUI/Assets/Images/onboarding/background.png",
-    };
+    // Steps and preview assets
+    private readonly List<UserControl> _steps;
+
+    public int StepsCount => _steps.Count;
+    public int StepsCountMinusOne => Math.Max(0, StepsCount - 1);
 
     public string StepPreviewSource =>
-        _stepPreviewImages[Math.Clamp(CurrentStepIndex, 0, _stepPreviewImages.Length - 1)];
+        "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png";
 
     public string PrimaryButtonText => CurrentStepIndex switch
     {
         0 => "Get Started",
-        1 => AtLeastOneGranted ? "Continue" : "Grant Access",
-        2 => "Start FileTidy",
         _ => ""
     };
 
     public string StepTitle => CurrentStepIndex switch
     {
         0 => "Welcome to FileTidy",
-        1 => "Grant Folder Access",
-        2 => "You're all set",
         _ => ""
     };
 
     public UserControl CurrentStepView => _steps[CurrentStepIndex];
-    private readonly List<UserControl> _steps;
 
     public OnboardingWindowViewModel(
         IFileOperationStore fileOperationStore,
@@ -79,11 +73,10 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         _folderService = folderService;
         _appConfig = appConfig;
 
+        // For now, only the initial Hello step is enabled to stabilize the shell
         _steps =
         [
-            new WelcomeStepView(),
-            new AccessStepView { DataContext = this },
-            new CompletionStepView()
+            new WelcomeStepView()
         ];
 
         _ = ProbeAllAsync();
@@ -105,34 +98,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         switch (CurrentStepIndex)
         {
             case 0:
+                // Next steps will be added gradually; no-op for now
                 NextStep();
-                break;
-
-            case 1:
-                // If none granted, try probe again to trigger OS prompt
-                if (!AtLeastOneGranted)
-                {
-                    await ProbeAllAsync();
-                    return;
-                }
-
-                // Persist granted folders (comma list or keys)
-                var granted = new List<string>();
-                if (DesktopGranted) granted.Add("Desktop");
-                if (DownloadsGranted) granted.Add("Downloads");
-                if (DocumentsGranted) granted.Add("Documents");
-
-                if (granted.Count > 0)
-                    await _fileOperationStore.SaveConfigValueAsync(AppConfigKeys.SelectedFolders, string.Join(",", granted));
-
-                await _appConfig.SetHasCompletedOnboardingAsync(true);
-                NextStep();
-                break;
-
-            case 2:
-                // trigger main app transition
-                await Task.Delay(300);
-                // close onboarding / open MainWindow (handled outside or via event)
                 break;
         }
     }

@@ -13,13 +13,7 @@
         Background="{StaticResource BackgroundBrush}"
         Title="Welcome to FileTidy">
     
-    <Window.DataTemplates>
-        <DataTemplate x:DataType="x:String">
-            <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="16">
-                <Image Source="{Binding}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-        </DataTemplate>
-    </Window.DataTemplates>
+
 
 
     <Design.DataContext>
@@ -71,7 +65,7 @@
                 Height="2"
                 Background="{StaticResource BorderBrush}">
             <ProgressBar Minimum="0"
-                         Maximum="3"
+                         Maximum="{Binding StepsCountMinusOne}"
                          Value="{Binding CurrentStepIndex}"
                          Background="{x:Null}"
                          Foreground="{StaticResource PrimaryBrush}" />
@@ -87,41 +81,49 @@
                    ZIndex="0"/>
 
             <!-- Main content on top of watermark -->
-            <Grid ZIndex="1" Margin="40" ColumnDefinitions="*,420">
+            <Grid ZIndex="1" Margin="40" ColumnDefinitions="*,*" RowDefinitions="*">
                 <!-- LEFT: step content + actions -->
-                <StackPanel Spacing="20" Margin="0,0,24,0">
+                <StackPanel Margin="12 0" Spacing="20" VerticalAlignment="Center">
                     <!-- Step view -->
-                    <TransitioningContentControl Content="{Binding CurrentStepView}">
+                    <TransitioningContentControl Grid.Row="0" Content="{Binding CurrentStepView}">
                         <TransitioningContentControl.PageTransition>
                             <CrossFade Duration="0:0:0.15"/>
                         </TransitioningContentControl.PageTransition>
                     </TransitioningContentControl>
 
                     <!-- Actions under the step view -->
-                    <StackPanel Grid.Row="1"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Left"
-                                Margin="0,24,0,0"
-                                Spacing="12">
-                        <Button Classes="btn btn-outline btn-md"
-                                Command="{Binding PreviousStepCommand}"
-                                IsVisible="{Binding ShowPreviousButton}">
-                            <Label>Back</Label>
-                        </Button>
-                        <Button Classes="btn btn-primary btn-md"
-                                Content="{Binding PrimaryButtonText}"
-                                Command="{Binding PrimaryActionCommand}"
-                                IsVisible="{Binding ShowPrimaryButton}" />
-                    </StackPanel>
-
+                        <StackPanel Grid.Row="1"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    Margin="0,24,0,0"
+                                    Spacing="12">
+                            <Button Classes="btn btn-outline btn-md"
+                                    Command="{Binding PreviousStepCommand}"
+                                    IsVisible="{Binding ShowPreviousButton}">
+                                    <Label Classes="btn-text">Back</Label>
+                            </Button>
+                            <Button Classes="btn btn-primary btn-md"
+                                    Command="{Binding PrimaryActionCommand}"
+                                    IsVisible="{Binding ShowPrimaryButton}">
+                                <Label Classes="btn-text" Content="{Binding PrimaryButtonText}"/>
+                            </Button>
+                        </StackPanel>
                 </StackPanel>
 
                 <!-- Right column -->
-                <TransitioningContentControl Grid.Column="1" Content="{Binding StepPreviewSource}">
-                    <TransitioningContentControl.PageTransition>
-                        <CrossFade Duration="0:0:0.18"/>
-                    </TransitioningContentControl.PageTransition>
-                </TransitioningContentControl>
+                <Border Grid.Column="1"
+                        Background="{StaticResource PanelBrush}"
+                        CornerRadius="16"
+                        Padding="16"
+                        ClipToBounds="True"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center">
+                    <TransitioningContentControl Content="{Binding StepPreviewSource}">
+                        <TransitioningContentControl.PageTransition>
+                            <CrossFade Duration="0:0:0.18"/>
+                        </TransitioningContentControl.PageTransition>
+                    </TransitioningContentControl>
+                </Border>
             </Grid>
         </Grid>
 

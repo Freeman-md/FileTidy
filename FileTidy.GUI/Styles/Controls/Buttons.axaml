@@ -27,7 +27,6 @@
     <Style Selector="Button.btn">
         <Setter Property="FontWeight" Value="Light" />
         <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="Padding" Value="6 3" />
     </Style>
     
     <Style Selector="Button.btn /template/ ContentPresenter">
@@ -78,6 +77,17 @@
     <Style Selector="Button.btn.btn-primary:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource PrimaryBrushDark}" />
     </Style>
+    
+    <Style Selector="Button.btn Label.btn-text">
+        <Setter Property="FontFamily" Value="{DynamicResource Roboto}"/>
+    </Style>
+    <Style Selector="Button.btn.btn-outline Label.btn-text">
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+    </Style>
+    <Style Selector="Button.btn.btn-primary Label.btn-text">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
 
 
     <Style Selector="Button.btn Label.btn-icon">
