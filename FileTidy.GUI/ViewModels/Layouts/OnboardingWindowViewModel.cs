@@ -45,7 +45,9 @@ public partial class OnboardingWindowViewModel : ViewModelBase
 
     public bool AtLeastOneGranted => DesktopGranted || DownloadsGranted || DocumentsGranted;
 
-    public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1;
+    // public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1; // we have two steps for now but the 2nd step is not the last step so we comment this for now and use the one below
+
+    public bool ShowPreviousButton => CurrentStepIndex > 0;
     public bool ShowPrimaryButton => true;
 
     // Steps and preview assets
@@ -53,9 +55,18 @@ public partial class OnboardingWindowViewModel : ViewModelBase
 
     public int StepsCount => _steps.Count;
     public int StepsCountMinusOne => Math.Max(0, StepsCount - 1);
+    
+    private readonly string[] _previewFiles =
+    [
+        "welcome.png",
+        "welcome.png",
+        "security.png",
+        "access.png",
+        "completion.png"
+    ];
 
     public string StepPreviewSource =>
-        "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png";
+        $"avares://FileTidy.GUI/Assets/Images/onboarding/{_previewFiles[Math.Clamp(CurrentStepIndex, 0, _previewFiles.Length - 1)]}";
     
     public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource));
     
@@ -68,13 +79,21 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public string PrimaryButtonText => CurrentStepIndex switch
     {
         0 => "Get Started",
-        _ => ""
+        1 => "Next",
+        2 => "Next",
+        3 => "Continue",
+        4 => "Restart Application",
+        _ => "Next"
     };
 
     public string StepTitle => CurrentStepIndex switch
     {
         0 => "Welcome to FileTidy",
-        _ => ""
+        1 => "Our Pledge to Privacy",
+        2 => "Data Security & Encryption",
+        3 => "Folder Access Permissions",
+        4 => "You're Ready",
+        _ => string.Empty
     };
 
     public UserControl CurrentStepView => _steps[CurrentStepIndex];
@@ -91,7 +110,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         // For now, only the initial Hello step is enabled to stabilize the shell
         _steps =
         [
-            new WelcomeStepView()
+            new WelcomeStepView(),
+            new PledgeStepView(),
         ];
 
         _ = ProbeAllAsync();

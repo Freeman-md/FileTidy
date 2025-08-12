@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FileTidy.GUI.Views.Onboarding.Steps.PledgeStepView">
+    <Grid>
+        <StackPanel Spacing="16" HorizontalAlignment="Left">
+            <TextBlock Text="Our pledge to your privacy" FontSize="35" FontWeight="SemiBold"/>
+            <TextBlock Text="FileTidy runs locally. We don’t upload, read, or share your files. Your selections stay on your device."
+                       FontSize="18"
+                       Opacity="0.88"
+                       TextWrapping="Wrap"
+                       MaxWidth="520"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

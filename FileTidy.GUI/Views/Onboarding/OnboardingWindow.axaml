@@ -95,11 +95,12 @@
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Left"
                                 Margin="0,24,0,0"
-                                Spacing="12">
+                                 Spacing="15"
+                                >
                         <Button Classes="btn btn-outline btn-md"
                                 Command="{Binding PreviousStepCommand}"
                                 IsVisible="{Binding ShowPreviousButton}">
-                                <Label Classes="btn-text">Back</Label>
+                                <Label Classes="btn-text" Content="Back" />
                         </Button>
                         <Button Classes="btn btn-primary btn-md"
                                 Command="{Binding PrimaryActionCommand}"
