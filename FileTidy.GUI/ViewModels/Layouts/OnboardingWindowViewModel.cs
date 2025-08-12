@@ -5,11 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Helpers;
 using FileTidy.GUI.Models;
 using FileTidy.GUI.Views.Onboarding.Steps;
 
@@ -29,6 +31,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(PrimaryButtonText))]
     [NotifyPropertyChangedFor(nameof(StepTitle))]
     [NotifyPropertyChangedFor(nameof(StepPreviewSource))]
+    [NotifyPropertyChangedFor(nameof(StepPreviewBinding))]
     private int _currentStepIndex;
 
     // Access statuses (kept for later steps)
@@ -49,6 +52,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
 
     public string StepPreviewSource =>
         "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png";
+    
+    public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource)); 
 
     public string PrimaryButtonText => CurrentStepIndex switch
     {

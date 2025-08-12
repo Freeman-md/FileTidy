@@ -118,11 +118,8 @@
                         ClipToBounds="True"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
-                    <TransitioningContentControl Content="{Binding StepPreviewSource}">
-                        <TransitioningContentControl.PageTransition>
-                            <CrossFade Duration="0:0:0.18"/>
-                        </TransitioningContentControl.PageTransition>
-                    </TransitioningContentControl>
+                    
+                    <Image Source="{Binding StepPreviewBinding}" />
                 </Border>
             </Grid>
         </Grid>
