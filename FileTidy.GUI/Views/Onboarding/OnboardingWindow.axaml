@@ -20,13 +20,12 @@
         <vm:OnboardingWindowViewModel />
     </Design.DataContext>
 
-    <DockPanel>
+    <DockPanel>   
 
         <!-- 🔷 Custom Title Bar with native macOS buttons support -->
         <Border DockPanel.Dock="Top"
                 Background="{StaticResource PanelBrush}"
                 Height="48"
-                Classes="TitleBar"
                 IsHitTestVisible="True">
 
             <Grid ColumnDefinitions="48,*,48"
@@ -70,56 +69,57 @@
                          Background="{x:Null}"
                          Foreground="{StaticResource PrimaryBrush}" />
         </Border>
-
-        <!-- 🔹 Main Area with layered background -->
+        
         <Grid>
-            <!-- 🌫️ Background watermark image -->
             <Image Source="/Assets/Images/onboarding/background.png"
                    Stretch="UniformToFill"
                    IsHitTestVisible="False"
                    Opacity="0.15"
                    ZIndex="0"/>
-
-            <!-- Main content on top of watermark -->
-            <Grid ZIndex="1" Margin="40" ColumnDefinitions="*,*" RowDefinitions="*">
-                <!-- LEFT: step content + actions -->
+            
+            <Border Background="{StaticResource OverlayFaintBrush}"
+                    ZIndex="1" 
+                    IsHitTestVisible="False"/>
+            
+            <Grid ZIndex="2" Margin="80 40" ColumnDefinitions="*,*" RowDefinitions="*">
+                
                 <StackPanel Margin="12 0" Spacing="20" VerticalAlignment="Center">
-                    <!-- Step view -->
+                    
                     <TransitioningContentControl Grid.Row="0" Content="{Binding CurrentStepView}">
                         <TransitioningContentControl.PageTransition>
                             <CrossFade Duration="0:0:0.15"/>
                         </TransitioningContentControl.PageTransition>
                     </TransitioningContentControl>
-
-                    <!-- Actions under the step view -->
-                        <StackPanel Grid.Row="1"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Left"
-                                    Margin="0,24,0,0"
-                                    Spacing="12">
-                            <Button Classes="btn btn-outline btn-md"
-                                    Command="{Binding PreviousStepCommand}"
-                                    IsVisible="{Binding ShowPreviousButton}">
-                                    <Label Classes="btn-text">Back</Label>
-                            </Button>
-                            <Button Classes="btn btn-primary btn-md"
-                                    Command="{Binding PrimaryActionCommand}"
-                                    IsVisible="{Binding ShowPrimaryButton}">
-                                <Label Classes="btn-text" Content="{Binding PrimaryButtonText}"/>
-                            </Button>
-                        </StackPanel>
+                    
+                    <StackPanel Grid.Row="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Margin="0,24,0,0"
+                                Spacing="12">
+                        <Button Classes="btn btn-outline btn-md"
+                                Command="{Binding PreviousStepCommand}"
+                                IsVisible="{Binding ShowPreviousButton}">
+                                <Label Classes="btn-text">Back</Label>
+                        </Button>
+                        <Button Classes="btn btn-primary btn-md"
+                                Command="{Binding PrimaryActionCommand}"
+                                IsVisible="{Binding ShowPrimaryButton}">
+                            <Label Classes="btn-text" Content="{Binding PrimaryButtonText}"/>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-
-                <!-- Right column -->
+                
                 <Border Grid.Column="1"
-                        Background="{StaticResource PanelBrush}"
-                        CornerRadius="16"
                         Padding="16"
                         ClipToBounds="True"
+                        Margin="{Binding PreviewContainerMargin}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
                     
-                    <Image Source="{Binding StepPreviewBinding}" />
+                    <Image 
+                        Source="{Binding StepPreviewBinding}" 
+                        Height="{Binding $parent[Window].Bounds.Height, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.66}"
+                    />
                 </Border>
             </Grid>
         </Grid>

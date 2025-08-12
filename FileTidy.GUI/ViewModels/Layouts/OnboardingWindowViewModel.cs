@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -32,6 +34,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StepTitle))]
     [NotifyPropertyChangedFor(nameof(StepPreviewSource))]
     [NotifyPropertyChangedFor(nameof(StepPreviewBinding))]
+    [NotifyPropertyChangedFor(nameof(PreviewImageHorizontalAlignment))]
+    [NotifyPropertyChangedFor(nameof(PreviewContainerMargin))]
     private int _currentStepIndex;
 
     // Access statuses (kept for later steps)
@@ -53,7 +57,13 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public string StepPreviewSource =>
         "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png";
     
-    public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource)); 
+    public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource));
+    
+    public HorizontalAlignment PreviewImageHorizontalAlignment =>
+        CurrentStepIndex is 0 or 1 ? HorizontalAlignment.Right : HorizontalAlignment.Center;
+
+    public Thickness PreviewContainerMargin =>
+        CurrentStepIndex is 0 or 1 ? new Thickness(24, 0, -200, 0) : new Thickness(0);
 
     public string PrimaryButtonText => CurrentStepIndex switch
     {
@@ -79,6 +89,16 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         _appConfig = appConfig;
 
         // For now, only the initial Hello step is enabled to stabilize the shell
+        _steps =
+        [
+            new WelcomeStepView()
+        ];
+
+        _ = ProbeAllAsync();
+    }
+
+    public OnboardingWindowViewModel()
+    {
         _steps =
         [
             new WelcomeStepView()

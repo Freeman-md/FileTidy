@@ -42,6 +42,9 @@
     <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource Gray200}" />
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Gray300}" />
     <SolidColorBrush x:Key="TextBrush" Color="{StaticResource Gray700}" />
+    <SolidColorBrush x:Key="OverlayFaintBrush" 
+                     Color="{StaticResource Gray300}" 
+                     Opacity="0.5" /> 
     
     <!-- Custom overrides for TreeViewItem visuals -->
     <SolidColorBrush x:Key="TreeViewItemForeground" Color="{StaticResource Gray700}" />

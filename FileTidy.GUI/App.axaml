@@ -25,6 +25,7 @@
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:MultiplyConverter x:Key="MultiplyConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
