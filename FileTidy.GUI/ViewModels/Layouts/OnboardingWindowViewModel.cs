@@ -60,7 +60,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [
         "welcome.png",
         "welcome.png",
-        "security.png",
+        "welcome.png",
         "access.png",
         "completion.png"
     ];
@@ -112,6 +112,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         [
             new WelcomeStepView(),
             new PledgeStepView(),
+            new SecurityStepView(),
         ];
 
         _ = ProbeAllAsync();
@@ -143,7 +144,10 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         switch (CurrentStepIndex)
         {
             case 0:
-                // Next steps will be added gradually; no-op for now
+            case 1:
+                NextStep();
+                break;
+            default:
                 NextStep();
                 break;
         }
