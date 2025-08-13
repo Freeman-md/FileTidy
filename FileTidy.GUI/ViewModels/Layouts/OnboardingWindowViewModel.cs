@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,7 +14,9 @@ using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Helpers;
+using FileTidy.GUI.Views;
 using FileTidy.GUI.Views.Onboarding.Steps;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FileTidy.GUI.ViewModels.Layouts;
 
@@ -76,7 +79,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     // =========================
     // View Bindings
     // =========================
-    public bool ShowPreviousButton => CurrentStepIndex > 0;
+    public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1;
     public bool CanGoNext => CurrentStepIndex is not 3 || AtLeastOneGranted;
 
     public UserControl CurrentStepView => _steps[CurrentStepIndex];
@@ -104,7 +107,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         1 => "Next",
         2 => "Next",
         3 => "Continue",
-        4 => "Restart Application",
+        4 => "Open FileTidy",
         _ => "Next"
     };
 
@@ -135,7 +138,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
             new WelcomeStepView(),
             new PledgeStepView(),
             new SecurityStepView(),
-            new AccessStepView()
+            new AccessStepView(),
+            new CompletionStepView(),
         ];
 
         _ = ProbeAllAsync();
@@ -164,7 +168,22 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanGoNext))]
-    private void PrimaryAction() => NextStep();
+    private async Task PrimaryActionAsync()
+    {
+        if (CurrentStepIndex == StepsCountMinusOne)
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = App.Services.GetRequiredService<MainWindowViewModel>()
+                };
+            }
+            return;
+        }
+
+        NextStep();
+    }
 
     [RelayCommand]
     private void NextStep()
@@ -173,6 +192,11 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         {
             CurrentStepIndex++;
             OnStepChanged();
+            
+            if (CurrentStepIndex == _steps.Count - 1)
+            {
+                CompleteOnboarding();
+            }
         }
     }
 
@@ -253,4 +277,37 @@ public partial class OnboardingWindowViewModel : ViewModelBase
             _accessStepCts?.Cancel();
         }
     }
+    
+    private async Task CompleteOnboarding()
+    {
+        _ = _appConfig.SetHasCompletedOnboardingAsync(true);
+
+        var deviceId = await _appConfig.GetDeviceIdAsync();
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            deviceId = Guid.NewGuid().ToString();
+            await _appConfig.SetDeviceIdAsync(deviceId);
+        }
+
+        // Send to server asynchronously
+        // _ = Task.Run(async () =>
+        // {
+        //     try
+        //     {
+        //         using var client = new HttpClient();
+        //         var payload = new { deviceId };
+        //         var content = new StringContent(
+        //             System.Text.Json.JsonSerializer.Serialize(payload),
+        //             System.Text.Encoding.UTF8,
+        //             "application/json");
+        //
+        //         await client.PostAsync("https://your-server.com/api/link-device", content);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"[Onboarding] Failed to send device ID: {ex.Message}");
+        //     }
+        // });
+    }
+
 }

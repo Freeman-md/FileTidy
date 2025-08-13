@@ -1,4 +1,5 @@
 
+    using System;
     using System.Threading.Tasks;
     using Avalonia;
     using Avalonia.Controls.ApplicationLifetimes;
@@ -29,12 +30,6 @@
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = Services.GetRequiredService<MainWindowViewModel>(),
-                    Title = "FileTidy"
-                };
-                
                 desktop.MainWindow = hasCompletedOnboarding
                     ? new MainWindow
                     {

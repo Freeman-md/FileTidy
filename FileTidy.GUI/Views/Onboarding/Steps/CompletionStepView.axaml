@@ -3,11 +3,18 @@
              x:Class="FileTidy.GUI.Views.Onboarding.Steps.CompletionStepView"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
-        <TextBlock Text="You’re ready" FontSize="24" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-        <TextBlock Text="You can change folders or preferences anytime in Settings."
-                   FontSize="13" Opacity="0.85" HorizontalAlignment="Center"/>
-    </StackPanel>
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Layouts"
+             x:DataType="vm:OnboardingWindowViewModel">
+    <Grid>
+        <StackPanel Spacing="16" HorizontalAlignment="Left">
+            <TextBlock Text="All Set!" FontSize="35" FontWeight="SemiBold"/>
+            <TextBlock Text="You’re ready to start using FileTidy."
+                       FontSize="18"
+                       Opacity="0.88"
+                       TextWrapping="Wrap"
+                       MaxWidth="520"/>
+        </StackPanel>
+    </Grid>
 
 </UserControl>
