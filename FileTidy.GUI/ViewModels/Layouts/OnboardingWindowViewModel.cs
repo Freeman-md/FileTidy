@@ -71,10 +71,15 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource));
     
     public HorizontalAlignment PreviewImageHorizontalAlignment =>
-        CurrentStepIndex is 0 or 1 ? HorizontalAlignment.Right : HorizontalAlignment.Center;
+        CurrentStepIndex is 0 or 1 or 2
+            ? HorizontalAlignment.Right
+            : HorizontalAlignment.Center;
 
     public Thickness PreviewContainerMargin =>
-        CurrentStepIndex is 0 or 1 ? new Thickness(24, 0, -200, 0) : new Thickness(0);
+        CurrentStepIndex is 0 or 1 or 2
+            ? new Thickness(24, 0, -200, 0)
+            : new Thickness(0);
+
 
     public string PrimaryButtonText => CurrentStepIndex switch
     {
