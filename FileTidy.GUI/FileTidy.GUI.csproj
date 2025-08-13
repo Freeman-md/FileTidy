@@ -62,11 +62,10 @@
       <AvaloniaResource Include="Assets\Fonts\Phosphor\Regular.ttf" />
       <None Remove="Assets\Fonts\Phosphor\Thin.ttf" />
       <AvaloniaResource Include="Assets\Fonts\Phosphor\Thin.ttf" />
-      <None Remove="Assets\Images\onboarding-background.png" />
       <None Remove="Assets\Images\onboarding\background.png" />
       <AvaloniaResource Include="Assets\Images\onboarding\background.png" />
-      <None Remove="Assets\Images\onboarding\grant-access.png" />
-      <AvaloniaResource Include="Assets\Images\onboarding\grant-access.png" />
+      <None Remove="Assets\Images\onboarding\access-macos.png" />
+      <AvaloniaResource Include="Assets\Images\onboarding\access-macos.png" />
       <None Remove="Assets\Images\onboarding\welcome.png" />
       <AvaloniaResource Include="Assets\Images\onboarding\welcome.png" />
     </ItemGroup>

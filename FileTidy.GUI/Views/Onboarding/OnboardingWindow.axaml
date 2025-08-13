@@ -104,10 +104,29 @@
                         </Button>
                         <Button Classes="btn btn-primary btn-md"
                                 Command="{Binding PrimaryActionCommand}"
-                                IsVisible="{Binding ShowPrimaryButton}">
+                                IsEnabled="{Binding CanGoNext}">
                             <Label Classes="btn-text" Content="{Binding PrimaryButtonText}"/>
                         </Button>
                     </StackPanel>
+                    
+                    <StackPanel Grid.Row="3"
+                                Margin="0,24,0,0"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding CanGoNext, Converter={StaticResource InverseBoolConverter}}">
+    
+                        <!-- Info icon -->
+                        <Label FontFamily="{StaticResource PhosphorFill}"
+                               FontSize="16"
+                               Content="&#xE2CE;" />
+    
+                        <!-- Tip text -->
+                        <TextBlock FontSize="14"
+                                   TextWrapping="Wrap"
+                                   Text="You can only continue after granting access to at least one folder." />
+                    </StackPanel>
+
                 </StackPanel>
                 
                 <Border Grid.Column="1"

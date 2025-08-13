@@ -2,83 +2,83 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Layouts"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FileTidy.GUI.Views.Onboarding.Steps.AccessStepView"
-             xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Layouts"
              x:DataType="vm:OnboardingWindowViewModel">
-    <Grid>
-    <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center" Width="520">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+        
+        <!-- Title -->
+        <TextBlock Text="Folder access permissions" FontSize="35" FontWeight="SemiBold"/>
 
-      <TextBlock Text="Give FileTidy permission to read common folders."
-                 FontSize="20" FontWeight="SemiBold" Margin="0,0,0,4"/>
-      <TextBlock Text="We only read file names and metadata to organize locally. Nothing leaves your device."
-                 FontSize="13" Opacity="0.85" Margin="0,0,0,16"/>
+        <!-- Copy + link -->
+        <StackPanel Grid.Row="1" Spacing="10" Margin="0,16,0,0">
+            <TextBlock Text="FileTidy needs read access to Desktop, Downloads and Documents to work reliably."
+                       FontSize="18" Opacity="0.88" TextWrapping="Wrap"/>
+            <Button Classes="btn btn-outline btn-sm"
+                    Command="{Binding OpenOsSettingsCommand}">
+                <Label Classes="btn-text" Content="Open System Settings" />
+            </Button>
+        </StackPanel>
 
-      <!-- Desktop -->
-      <Border Background="{DynamicResource PanelBrush}" CornerRadius="10" Padding="12">
-        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-          <Border Width="32" Height="32" CornerRadius="8"
-                  Background="{DynamicResource SystemAccentBrushDark}">
-            <TextBlock Text="&#xe24a;" FontFamily="{StaticResource PhosphorLight}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
-          </Border>
+        <!-- Read-only indicators -->
+        <StackPanel Grid.Row="2" Spacing="10" Margin="0,20,0,0">
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource SuccessColor}"
+                       Content="&#xE184;"
+                       IsVisible="{Binding DesktopGranted}" />
+                
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource ErrorColor}"
+                       Content="&#xE4F8;"
+                       IsVisible="{Binding DesktopGranted, Converter={StaticResource InverseBoolConverter}}" />
 
-          <StackPanel Grid.Column="1" Margin="12,0">
-            <TextBlock Text="Desktop" FontSize="15" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding DesktopGranted, StringFormat={}{0:Granted;Granted;Need access}}"
-                       FontSize="12" Opacity="0.8"/>
-          </StackPanel>
+                <TextBlock Text="Desktop" VerticalAlignment="Center"/>
+            </StackPanel>
 
-          <Button Grid.Column="2" Classes="btn btn-outline btn-sm"
-                  Content="Check Access"
-                  Command="{Binding ProbeAllCommand}"/>
-        </Grid>
-      </Border>
 
-      <!-- Downloads -->
-      <Border Background="{DynamicResource PanelBrush}" CornerRadius="10" Padding="12">
-        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-          <Border Width="32" Height="32" CornerRadius="8"
-                  Background="{DynamicResource SystemAccentBrushDark}">
-            <TextBlock Text="&#xe24a;" FontFamily="{StaticResource PhosphorLight}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
-          </Border>
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource SuccessColor}"
+                       Content="&#xE184;"
+                       IsVisible="{Binding DownloadsGranted}" />
 
-          <StackPanel Grid.Column="1" Margin="12,0">
-            <TextBlock Text="Downloads" FontSize="15" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding DownloadsGranted, StringFormat={}{0:Granted;Granted;Need access}}"
-                       FontSize="12" Opacity="0.8"/>
-          </StackPanel>
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource ErrorColor}"
+                       Content="&#xE4F8;"
+                       IsVisible="{Binding DownloadsGranted, Converter={StaticResource InverseBoolConverter}}" />
 
-          <Button Grid.Column="2" Classes="btn btn-outline btn-sm"
-                  Content="Check Access"
-                  Command="{Binding ProbeAllCommand}"/>
-        </Grid>
-      </Border>
+                <TextBlock Text="Downloads" VerticalAlignment="Center"/>
+            </StackPanel>
 
-      <!-- Documents -->
-      <Border Background="{DynamicResource PanelBrush}" CornerRadius="10" Padding="12">
-        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-          <Border Width="32" Height="32" CornerRadius="8"
-                  Background="{DynamicResource SystemAccentBrushDark}">
-            <TextBlock Text="&#xe24a;" FontFamily="{StaticResource PhosphorLight}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
-          </Border>
 
-          <StackPanel Grid.Column="1" Margin="12,0">
-            <TextBlock Text="Documents" FontSize="15" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding DocumentsGranted, StringFormat={}{0:Granted;Granted;Need access}}"
-                       FontSize="12" Opacity="0.8"/>
-          </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource SuccessColor}"
+                       Content="&#xE184;"
+                       IsVisible="{Binding DocumentsGranted}" />
 
-          <Button Grid.Column="2" Classes="btn btn-outline btn-sm"
-                  Content="Check Access"
-                  Command="{Binding ProbeAllCommand}"/>
-        </Grid>
-      </Border>
+                <Label FontFamily="{StaticResource PhosphorFill}"
+                       Classes="btn-icon"
+                       FontSize="20"
+                       Foreground="{StaticResource ErrorColor}"
+                       Content="&#xE4F8;"
+                       IsVisible="{Binding DocumentsGranted, Converter={StaticResource InverseBoolConverter}}" />
 
-      <TextBlock Text="Tip: macOS may show a permission prompt the first time we test a folder."
-                 FontSize="12" Opacity="0.75" Margin="0,8,0,0"/>
-    </StackPanel>
-  </Grid>
+                <TextBlock Text="Documents" VerticalAlignment="Center"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
 </UserControl>

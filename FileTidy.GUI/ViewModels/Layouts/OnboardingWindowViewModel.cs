@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -24,11 +25,14 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     private readonly IFileOperationStore _fileOperationStore;
     private readonly IFolderService _folderService;
     private readonly IAppConfigService _appConfig;
+    
+    public string DesktopPath  => Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+    public string DocumentsPath => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    public string DownloadsPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
     // Current step
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowPreviousButton))]
-    [NotifyPropertyChangedFor(nameof(ShowPrimaryButton))]
     [NotifyPropertyChangedFor(nameof(CurrentStepView))]
     [NotifyPropertyChangedFor(nameof(PrimaryButtonText))]
     [NotifyPropertyChangedFor(nameof(StepTitle))]
@@ -36,19 +40,31 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StepPreviewBinding))]
     [NotifyPropertyChangedFor(nameof(PreviewImageHorizontalAlignment))]
     [NotifyPropertyChangedFor(nameof(PreviewContainerMargin))]
+    [NotifyPropertyChangedFor(nameof(CanGoNext))]
     private int _currentStepIndex;
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AtLeastOneGranted))]
+    [NotifyPropertyChangedFor(nameof(CanGoNext))]
+    private bool _desktopGranted;
 
-    // Access statuses (kept for later steps)
-    [ObservableProperty] private bool _desktopGranted;
-    [ObservableProperty] private bool _downloadsGranted;
-    [ObservableProperty] private bool _documentsGranted;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AtLeastOneGranted))]
+    [NotifyPropertyChangedFor(nameof(CanGoNext))]
+    private bool _downloadsGranted;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AtLeastOneGranted))]
+    [NotifyPropertyChangedFor(nameof(CanGoNext))]
+    private bool _documentsGranted;
+
+    public ObservableCollection<string> SelectedFolders { get; } = new();
 
     public bool AtLeastOneGranted => DesktopGranted || DownloadsGranted || DocumentsGranted;
 
     // public bool ShowPreviousButton => CurrentStepIndex > 0 && CurrentStepIndex < _steps.Count - 1; // we have two steps for now but the 2nd step is not the last step so we comment this for now and use the one below
 
     public bool ShowPreviousButton => CurrentStepIndex > 0;
-    public bool ShowPrimaryButton => true;
 
     // Steps and preview assets
     private readonly List<UserControl> _steps;
@@ -56,17 +72,30 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public int StepsCount => _steps.Count;
     public int StepsCountMinusOne => Math.Max(0, StepsCount - 1);
     
-    private readonly string[] _previewFiles =
-    [
-        "welcome.png",
-        "welcome.png",
-        "welcome.png",
-        "access.png",
-        "completion.png"
-    ];
+    private string GetAccessImageByOs()
+    {
+        if (OperatingSystem.IsMacOS())   return "access-macos.png";
+        if (OperatingSystem.IsWindows()) return "access-windows.png";
+        return "access-linux.png";
+    }
 
-    public string StepPreviewSource =>
-        $"avares://FileTidy.GUI/Assets/Images/onboarding/{_previewFiles[Math.Clamp(CurrentStepIndex, 0, _previewFiles.Length - 1)]}";
+    public string StepPreviewSource
+    {
+        get
+        {
+            // 0,1,2 share the same image:
+            if (CurrentStepIndex is 0 or 1 or 2)
+                return "avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png";
+
+            // 3 = Access (OS-specific)
+            if (CurrentStepIndex == 3)
+                return $"avares://FileTidy.GUI/Assets/Images/onboarding/{GetAccessImageByOs()}";
+
+            // 4 = Completion
+            return "avares://FileTidy.GUI/Assets/Images/onboarding/completion.png";
+        }
+    }
+
     
     public Bitmap StepPreviewBinding => ImageHelper.LoadFromResource(new Uri(StepPreviewSource));
     
@@ -102,6 +131,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     };
 
     public UserControl CurrentStepView => _steps[CurrentStepIndex];
+    
+    public bool CanGoNext => CurrentStepIndex is not 3 || AtLeastOneGranted;
 
     public OnboardingWindowViewModel(
         IFileOperationStore fileOperationStore,
@@ -118,6 +149,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
             new WelcomeStepView(),
             new PledgeStepView(),
             new SecurityStepView(),
+            new AccessStepView(),
         ];
 
         _ = ProbeAllAsync();
@@ -136,14 +168,17 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task ProbeAllAsync()
     {
-        DesktopGranted   = await _folderService.CanAccessAsync(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-        DownloadsGranted = await _folderService.CanAccessAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"));
-        DocumentsGranted = await _folderService.CanAccessAsync(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-        OnPropertyChanged(nameof(AtLeastOneGranted));
-        OnPropertyChanged(nameof(PrimaryButtonText));
+        DesktopGranted   = await _folderService.CanAccessAsync(DesktopPath);
+        DownloadsGranted = await _folderService.CanAccessAsync(DownloadsPath);
+        DocumentsGranted = await _folderService.CanAccessAsync(DocumentsPath);
+        
+        SelectedFolders.Clear();
+        if (DesktopGranted)  SelectedFolders.Add(DesktopPath);
+        if (DownloadsGranted) SelectedFolders.Add(DownloadsPath);
+        if (DocumentsGranted) SelectedFolders.Add(DocumentsPath);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanGoNext))]
     private async Task PrimaryActionAsync()
     {
         switch (CurrentStepIndex)
@@ -162,7 +197,10 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     private void NextStep()
     {
         if (CurrentStepIndex < _steps.Count - 1)
+        {
             CurrentStepIndex++;
+            OnStepChanged();
+        }
     }
 
     [RelayCommand]
@@ -171,4 +209,81 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         if (CurrentStepIndex > 0)
             CurrentStepIndex--;
     }
+
+    [RelayCommand]
+    private async Task OpenOsSettingsAsync()
+    {
+        try
+        {
+            using var process = new System.Diagnostics.Process();
+            process.StartInfo.UseShellExecute = true;
+
+            if (OperatingSystem.IsMacOS())
+            {
+                process.StartInfo.FileName =
+                    "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders";
+            }
+            else if (OperatingSystem.IsWindows())
+            {
+                process.StartInfo.FileName = "ms-settings:privacy-broadfilesystemaccess";
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                process.StartInfo.FileName = "xdg-open";
+                process.StartInfo.Arguments = "https://wiki.gnome.org/Design/OS/Privacy";
+                process.StartInfo.UseShellExecute = false;
+            }
+
+            process.Start();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        await ProbeAllAsync();
+    }
+    
+    private CancellationTokenSource? _accessStepCts;
+
+    private async Task MonitorAccessStepAsync()
+    {
+        Console.WriteLine("[MonitorAccessStep] Started");
+        _accessStepCts?.Cancel();
+        _accessStepCts = new CancellationTokenSource();
+        var token = _accessStepCts.Token;
+
+        try
+        {
+            while (!token.IsCancellationRequested && CurrentStepIndex == 3)
+            {
+                Console.WriteLine(CanGoNext);
+                
+                await ProbeAllAsync();
+                Console.WriteLine($"[MonitorAccessStep] Granted: {AtLeastOneGranted}");
+
+                await Task.Delay(1500, token);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            Console.WriteLine("[MonitorAccessStep] Cancelled");
+        }
+    }
+
+    
+    private void OnStepChanged()
+    {
+        if (CurrentStepIndex == 3)
+        {
+            _ = ProbeAllAsync();
+            _ = MonitorAccessStepAsync();
+        }
+        else
+        {
+            _accessStepCts?.Cancel();
+        }
+    }
+
+
 }
