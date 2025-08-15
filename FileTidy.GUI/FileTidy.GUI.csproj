@@ -68,6 +68,8 @@
       <AvaloniaResource Include="Assets\Images\onboarding\access-macos.png" />
       <None Remove="Assets\Images\onboarding\welcome.png" />
       <AvaloniaResource Include="Assets\Images\onboarding\welcome.png" />
+      <None Remove="Assets\Images\onboarding\completion.png" />
+      <AvaloniaResource Include="Assets\Images\onboarding\completion.png" />
     </ItemGroup>
 
     <ItemGroup>

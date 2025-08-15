@@ -2,6 +2,7 @@
     using System;
     using System.Threading.Tasks;
     using Avalonia;
+    using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
     using FileTidy.GUI.Contracts;
@@ -45,5 +46,26 @@
             Current!.Name = "FileTidy";
 
             base.OnFrameworkInitializationCompleted();
+        }
+        
+        public static void LaunchMainWindow()
+        {
+            if (Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var mainWindowViewModel = Services.GetRequiredService<MainWindowViewModel>();
+                var newMainWindow = new MainWindow
+                {
+                    DataContext = mainWindowViewModel
+                };
+
+                // Show the new window *first*
+                newMainWindow.Show();
+
+                // Then close the old onboarding window
+                (desktop.MainWindow as Window)?.Close();
+
+                // Reassign the main window
+                desktop.MainWindow = newMainWindow;
+            }
         }
     }

@@ -72,8 +72,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(AtLeastOneGranted))]
     [NotifyPropertyChangedFor(nameof(CanGoNext))]
     private bool _documentsGranted;
-
-    public ObservableCollection<string> SelectedFolders { get; } = new();
+    
     public bool AtLeastOneGranted => DesktopGranted || DownloadsGranted || DocumentsGranted;
 
     // =========================
@@ -160,25 +159,17 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         DesktopGranted   = await _folderService.CanAccessAsync(DesktopPath);
         DownloadsGranted = await _folderService.CanAccessAsync(DownloadsPath);
         DocumentsGranted = await _folderService.CanAccessAsync(DocumentsPath);
-
-        SelectedFolders.Clear();
-        if (DesktopGranted)  SelectedFolders.Add(DesktopPath);
-        if (DownloadsGranted) SelectedFolders.Add(DownloadsPath);
-        if (DocumentsGranted) SelectedFolders.Add(DocumentsPath);
     }
 
     [RelayCommand(CanExecute = nameof(CanGoNext))]
-    private async Task PrimaryActionAsync()
+    private void PrimaryAction()
     {
         if (CurrentStepIndex == StepsCountMinusOne)
         {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = App.Services.GetRequiredService<MainWindowViewModel>()
-                };
-            }
+            _ = CompleteOnboarding();
+            
+            App.LaunchMainWindow();
+            
             return;
         }
 
@@ -192,11 +183,6 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         {
             CurrentStepIndex++;
             OnStepChanged();
-            
-            if (CurrentStepIndex == _steps.Count - 1)
-            {
-                CompleteOnboarding();
-            }
         }
     }
 
@@ -210,28 +196,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenOsSettingsAsync()
     {
-        try
-        {
-            using var process = new System.Diagnostics.Process();
-            process.StartInfo.UseShellExecute = true;
-
-            if (OperatingSystem.IsMacOS())
-                process.StartInfo.FileName = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders";
-            else if (OperatingSystem.IsWindows())
-                process.StartInfo.FileName = "ms-settings:privacy-broadfilesystemaccess";
-            else if (OperatingSystem.IsLinux())
-            {
-                process.StartInfo.FileName = "xdg-open";
-                process.StartInfo.Arguments = "https://wiki.gnome.org/Design/OS/Privacy";
-                process.StartInfo.UseShellExecute = false;
-            }
-
-            process.Start();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        await _folderService.OpenSystemFilesAndFoldersSettingsAsync();
 
         await ProbeAllAsync();
     }

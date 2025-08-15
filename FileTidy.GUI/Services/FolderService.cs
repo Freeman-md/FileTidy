@@ -176,33 +176,25 @@ public class FolderService : IFolderService
         {
             try
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                using var process = new Process();
+                process.StartInfo.UseShellExecute = true;
+
+                if (OperatingSystem.IsMacOS())
+                    process.StartInfo.FileName = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders";
+                else if (OperatingSystem.IsWindows())
+                    process.StartInfo.FileName = "ms-settings:privacy-broadfilesystemaccess";
+                else if (OperatingSystem.IsLinux())
                 {
-                    // Open macOS System Settings at Privacy > Files and Folders
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "open",
-                        Arguments = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders",
-                        UseShellExecute = false
-                    });
+                    process.StartInfo.FileName = "xdg-open";
+                    process.StartInfo.Arguments = "https://wiki.gnome.org/Design/OS/Privacy";
+                    process.StartInfo.UseShellExecute = false;
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    // No exact equivalent; open Settings home or a helpful URL
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "ms-settings:privacy",
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    // Linux: generic settings not standardized; no-op
-                }
+
+                process.Start();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to open system Files & Folders settings: {ex.Message}");
+                Console.WriteLine(ex.Message);
             }
         });
     }
