@@ -5,15 +5,17 @@
              xmlns:vm="clr-namespace:FileTidy.GUI.ViewModels.Pages"
              x:Class="FileTidy.GUI.Views.Pages.HelpView"
              x:DataType="vm:HelpViewModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
-     <Grid RowDefinitions="Auto,*" ColumnDefinitions="240,*">
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700">
+
+  <Grid RowDefinitions="Auto,*" ColumnDefinitions="240,*">
+
     <!-- Header -->
     <Border Grid.Row="0" Grid.ColumnSpan="2" Padding="16" BorderThickness="0,0,0,1"
             BorderBrush="{DynamicResource BorderBrush}">
       <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
         <TextBlock Text="Help &amp; Support" FontSize="24" FontWeight="SemiBold"/>
-        <TextBlock Text="•" Margin="0,-4,0,0"/>
-        <TextBlock Text="Quick guide to using FileTidy" Opacity="0.8"/>
+        <TextBlock Text="•" Margin="0,7,0,0"/>
+        <TextBlock Text="Quick guide to using FileTidy" Opacity="0.8" Margin="0,7,0,0"/>
       </StackPanel>
     </Border>
 
@@ -22,51 +24,67 @@
             BorderBrush="{DynamicResource BorderBrush}" Padding="12">
       <StackPanel Spacing="6">
         <TextBlock Text="Quick Navigation" FontWeight="SemiBold" Margin="0,0,0,6"/>
-        <Button Classes="btn btn-outline" Tag="SectionGettingStarted" Click="OnNavClick">
-          <Label>Getting Started</Label>
-        </Button>
-        <Button Classes="btn btn-outline" Tag="SectionFeatures" Click="OnNavClick">
-          <Label>Main Features</Label>
-        </Button>
-        <Button Classes="btn btn-outline" Tag="SectionUndoLogs" Click="OnNavClick">
-          <Label>Undo &amp; Logs</Label>
-        </Button>
-        <Button Classes="btn btn-outline" Tag="SectionSettings" Click="OnNavClick">
-          <Label>Settings</Label>
-        </Button>
-        <Button Classes="btn btn-outline" Tag="SectionFaqs" Click="OnNavClick">
-          <Label>FAQs</Label>
-        </Button>
+        <Button Classes="btn btn-outline" Tag="SectionGettingStarted" Click="OnNavClick"><Label>Getting Started</Label></Button>
+        <Button Classes="btn btn-outline" Tag="SectionFeatures"        Click="OnNavClick"><Label>Main Features</Label></Button>
+        <Button Classes="btn btn-outline" Tag="SectionUndoLogs"        Click="OnNavClick"><Label>Undo &amp; Logs</Label></Button>
+        <Button Classes="btn btn-outline" Tag="SectionSettings"        Click="OnNavClick"><Label>Settings</Label></Button>
+        <Button Classes="btn btn-outline" Tag="SectionFaqs"            Click="OnNavClick"><Label>FAQs</Label></Button>
 
         <Separator Margin="0,8"/>
         <TextBlock Text="Need more help?" Opacity="0.8"/>
-        <TextBlock Text="Tip: You can always revert the last sort." Opacity="0.7" FontStyle="Italic"/>
+        <TextBlock Text="Tip: You can always revert the last sort." Opacity="0.7" FontStyle="Italic" TextWrapping="Wrap"/>
       </StackPanel>
     </Border>
 
     <!-- Main Content -->
-    <ScrollViewer Grid.Row="1" Grid.Column="1" Padding="16" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer Grid.Row="1" Grid.Column="1" Padding="16 16 16 -40" VerticalScrollBarVisibility="Auto">
       <StackPanel Spacing="20">
 
         <!-- 1. Getting Started -->
         <Border x:Name="SectionGettingStarted" CornerRadius="8" Padding="16"
                 BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="12">
+          <StackPanel Spacing="16">
             <TextBlock Text="1. Getting Started" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Spacing="6">
+
+            <!-- Step 1 -->
+            <StackPanel Spacing="8">
               <TextBlock Text="Step 1: Select a folder from the left panel."/>
-              <TextBlock Text="Step 2: Click “Start Tidying” to organize files."/>
-              <TextBlock Text="Step 3: Done — your files are grouped into categories."/>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <TextBlock Text="Screenshot: Folder tree with a folder selected."
+                         Opacity="0.7" FontSize="12"/>
             </StackPanel>
 
-            <UniformGrid Columns="3" Rows="1" Margin="0,8,0,0" >
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-            </UniformGrid>
+            <!-- Step 2 -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="Step 2: Click “Start Tidying” to organize files."/>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <TextBlock Text="Screenshot: Start button highlighted."
+                         Opacity="0.7" FontSize="12"/>
+            </StackPanel>
+
+            <!-- Step 3 -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="Step 3: Done — your files are grouped into categories."/>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <TextBlock Text="Screenshot: After sorting — categories visible."
+                         Opacity="0.7" FontSize="12"/>
+            </StackPanel>
+
           </StackPanel>
         </Border>
 
@@ -82,13 +100,26 @@
               <TextBlock Text="• Sorting progress &amp; notifications."/>
             </StackPanel>
 
-            <UniformGrid Columns="3" Rows="1" Margin="0,8,0,0">
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
+            <!-- Example visuals per feature (clickable) -->
+            <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
             </UniformGrid>
           </StackPanel>
         </Border>
@@ -103,11 +134,19 @@
               <TextBlock Text="Logs: Shows what files were moved and when."/>
             </StackPanel>
 
-            <UniformGrid Columns="2" Rows="1" Margin="0,8,0,0">
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
+            <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
             </UniformGrid>
           </StackPanel>
         </Border>
@@ -129,11 +168,19 @@
               </Button>
             </StackPanel>
 
-            <UniformGrid Columns="2" Rows="1" Margin="8,8,0,0">
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
-              <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                     Stretch="UniformToFill" Height="140" />
+            <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
+              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                       PointerPressed="OnImagePressed"
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+              </Border>
             </UniformGrid>
           </StackPanel>
         </Border>
@@ -163,5 +210,27 @@
 
       </StackPanel>
     </ScrollViewer>
+
+    <!-- 🔍 Lightbox Overlay -->
+    <Grid Grid.RowSpan="2" Grid.ColumnSpan="2"
+          IsVisible="{Binding IsLightboxOpen}"
+          Background="#80000000" ZIndex="999">
+      <!-- Put the transparent click-catcher first (behind) -->
+      <Rectangle Fill="Transparent" PointerPressed="OnOverlayPressed" ZIndex="0"/>
+
+      <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16"
+              Background="#20000000" CornerRadius="6" ZIndex="1">
+        <Button Classes="btn btn-outline" Command="{Binding CloseLightboxCommand}">
+          <Label>Close</Label>
+        </Button>
+      </Border>
+
+      <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+              Background="{DynamicResource PanelBrush}" Padding="8" CornerRadius="8" ZIndex="1">
+        <Image Source="{Binding LightboxImage}" Stretch="Uniform" MaxWidth="900" MaxHeight="600" />
+      </Border>
+    </Grid>
+
+
   </Grid>
-</UserControl> 
+</UserControl>
