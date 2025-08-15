@@ -32,15 +32,15 @@
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = hasCompletedOnboarding
-                    ? new MainWindow
-                    {
-                        DataContext = Services.GetRequiredService<MainWindowViewModel>(),
-                        Title = "FileTidy"
-                    }
-                    : new OnboardingWindow
-                    {
-                        DataContext = Services.GetRequiredService<OnboardingWindowViewModel>()
-                    };
+                ? new MainWindow
+                {
+                    DataContext = Services.GetRequiredService<MainWindowViewModel>(),
+                    Title = "FileTidy"
+                }
+                : new OnboardingWindow
+                {
+                    DataContext = Services.GetRequiredService<OnboardingWindowViewModel>()
+                };
             }
 
             Current!.Name = "FileTidy";

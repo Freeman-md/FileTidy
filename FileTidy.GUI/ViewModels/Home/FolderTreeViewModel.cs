@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Models;
 
@@ -31,11 +32,21 @@ public partial class FolderTreeViewModel : ViewModelBase
     public ObservableCollection<FolderItem> FolderTree { get; private set; } = new();
     
     public ObservableCollection<FolderItem> TopLevelFolders { get; private set; } = new();
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasNoAccessibleFolders))]
+    private bool _hasAccessibleFolders;
+    public bool HasNoAccessibleFolders => !HasAccessibleFolders;
 
     public async Task InitializeAsync()
     {
-        await InitializeFolderTreeAsync();
+        await RefreshAccessAsync();
+    }
+
+    public async Task RefreshAccessAsync()
+    {
         await InitializeTopLevelFoldersAsync();
+        await InitializeFolderTreeAsync();
     }
     
     private async Task InitializeTopLevelFoldersAsync()
@@ -44,6 +55,16 @@ public partial class FolderTreeViewModel : ViewModelBase
         await RunOnUIThreadAsync(() =>
         {
             TopLevelFolders = new ObservableCollection<FolderItem>(rootFolders);
+            HasAccessibleFolders = TopLevelFolders.Count > 0;
+
+            // Clear selections when nothing is accessible
+            if (!HasAccessibleFolders)
+            {
+                SelectedRootFolder = null;
+                SelectedFolder = null;
+            }
+
+            OnPropertyChanged(nameof(HasNoAccessibleFolders));
             OnPropertyChanged(nameof(TopLevelFolders));
         });
     }
@@ -51,7 +72,7 @@ public partial class FolderTreeViewModel : ViewModelBase
     private async Task InitializeFolderTreeAsync()
     {
         var folderTree = await _folderService.GetFolderTreeAsync().ConfigureAwait(false);
-        
+
         foreach (var top in TopLevelFolders)
         {
             var match = folderTree.FirstOrDefault(f => f.FullPath == top.FullPath);
@@ -62,7 +83,7 @@ public partial class FolderTreeViewModel : ViewModelBase
                 top.SubFolders = match.SubFolders;
             }
         }
-        
+
         await RunOnUIThreadAsync(() =>
         {
             FolderTree = new ObservableCollection<FolderItem>(folderTree);
@@ -97,4 +118,19 @@ public partial class FolderTreeViewModel : ViewModelBase
         _uiInvoker(action);
         return Task.CompletedTask;
     }
+    
+    [RelayCommand]
+    private async Task OpenOsSettingsAsync()
+    {
+        await _folderService.OpenSystemFilesAndFoldersSettingsAsync();
+        // Give the OS pane a moment if needed, then re-probe
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(1500);
+            await RefreshAccessAsync();
+        });
+    }
+
+    [RelayCommand]
+    private async Task RetryProbeAsync() => await RefreshAccessAsync();
 }

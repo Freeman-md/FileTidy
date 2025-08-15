@@ -41,48 +41,40 @@ public class FolderService : IFolderService
     
     public async Task<List<FolderItem>> GetTopLevelFoldersAsync()
     {
-        return await Task.Run(() =>
+        var candidatePaths = new[]
         {
-            var folderPaths = new[]
-            {
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
-            };
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
+        };
 
-            return folderPaths
-                .Where(Directory.Exists)
-                .Select(path => new FolderItem
-                {
-                    Name = Path.GetFileName(path),
-                    FullPath = path,
-                    SubFolders = new List<FolderItem>() // Empty for now
-                })
-                .ToList();
-        });
+        // Check existence + access
+        var checks = candidatePaths
+            .Where(Directory.Exists)
+            .Select(async path => new { path, can = await CanAccessAsync(path) });
+
+        var results = await Task.WhenAll(checks);
+        return results
+            .Where(result => result.can)
+            .Select(result => new FolderItem
+            {
+                Name = Path.GetFileName(result.path),
+                FullPath = result.path,
+                SubFolders = new List<FolderItem>()
+            })
+            .ToList();
     }
 
     public async Task<List<FolderItem>> GetFolderTreeAsync()
     {
-        return await Task.Run(() =>
-        {
-            var folderPaths = new[]
-            {
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
-            };
+        var roots = await GetTopLevelFoldersAsync();
 
-            return folderPaths
-                .Where(Directory.Exists)
-                .Select(path => new FolderItem
-                {
-                    Name = Path.GetFileName(path),
-                    FullPath = path,
-                    SubFolders = GetSubFolders(path)
-                })
-                .ToList();
-        });
+        return roots.Select(root => new FolderItem
+        {
+            Name = root.Name,
+            FullPath = root.FullPath,
+            SubFolders = GetSubFolders(root.FullPath)
+        }).ToList();
     }
 
 

@@ -38,20 +38,9 @@ public class SqliteOperationStore : IFileOperationStore
 
     private static string GetDefaultDbPath()
     {
-        string baseDir;
-        if (OperatingSystem.IsWindows())
-        {
-            baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FileTidy");
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Library",
-                "Application Support", "FileTidy");
-        }
-        else
-        {
-            baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".filetidy");
-        }
+        var baseDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "FileTidy");
 
         Directory.CreateDirectory(baseDir);
         return Path.Combine(baseDir, "filetidy.db");
