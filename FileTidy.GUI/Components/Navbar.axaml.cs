@@ -17,10 +17,10 @@ public partial class Navbar : UserControl
         InitializeComponent();
     }
 
-    private void SettingsButton_Click(object? sender, RoutedEventArgs e)
+    private void HomeButton_Click(object? sender, RoutedEventArgs e)
     {
         if (DataContext is MainWindowViewModel vm)
-            vm.GoToSettingsCommand.Execute(null);
+            vm.GoToHomeCommand.Execute(null);
     }
 
     private void HelpButton_Click(object? sender, RoutedEventArgs e)

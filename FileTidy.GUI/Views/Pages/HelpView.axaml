@@ -158,8 +158,6 @@
             <TextBlock Text="4. Settings" FontSize="18" FontWeight="SemiBold"/>
             <StackPanel Spacing="6">
               <TextBlock Text="• Grant folder permissions (Desktop, Downloads, Documents)."/>
-              <TextBlock Text="• Toggle “Ask before sorting”."/>
-              <TextBlock Text="• Choose which categories to use."/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
