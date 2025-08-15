@@ -253,7 +253,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     
     private async Task CompleteOnboarding()
     {
-        // _ = _appConfig.SetHasCompletedOnboardingAsync(true);
+        _ = _appConfig.SetHasCompletedOnboardingAsync(true);
 
         var deviceId = await _appConfig.GetDeviceIdAsync();
         if (string.IsNullOrWhiteSpace(deviceId))
