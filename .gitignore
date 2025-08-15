@@ -491,3 +491,4 @@ $RECYCLE.BIN/
 FileTidy-*-win.zip
 FileTidy-*.dmg
 FileTidy-*-linux.tar.gz
+/FileTidy.GUI/appsettings.json

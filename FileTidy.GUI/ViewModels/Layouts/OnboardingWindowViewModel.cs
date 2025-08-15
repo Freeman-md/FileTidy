@@ -14,8 +14,10 @@ using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Helpers;
+using FileTidy.GUI.Services;
 using FileTidy.GUI.Views;
 using FileTidy.GUI.Views.Onboarding.Steps;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FileTidy.GUI.ViewModels.Layouts;
@@ -28,6 +30,7 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     private readonly IFileOperationStore _fileOperationStore;
     private readonly IFolderService _folderService;
     private readonly IAppConfigService _appConfig;
+    private readonly IDeviceTelemetryService _deviceTelemetryService;
 
     // =========================
     // Paths
@@ -126,11 +129,13 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     public OnboardingWindowViewModel(
         IFileOperationStore fileOperationStore,
         IFolderService folderService,
-        IAppConfigService appConfig)
+        IAppConfigService appConfig,
+        IDeviceTelemetryService deviceTelemetryService)
     {
         _fileOperationStore = fileOperationStore;
         _folderService = folderService;
         _appConfig = appConfig;
+        _deviceTelemetryService = deviceTelemetryService;
 
         _steps =
         [
@@ -166,8 +171,6 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     {
         if (CurrentStepIndex == StepsCountMinusOne)
         {
-            _ = CompleteOnboarding();
-            
             App.LaunchMainWindow();
             
             return;
@@ -241,11 +244,16 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         {
             _accessStepCts?.Cancel();
         }
+        
+        if (CurrentStepIndex == StepsCountMinusOne)
+        {
+            _ = CompleteOnboarding();
+        }
     }
     
     private async Task CompleteOnboarding()
     {
-        _ = _appConfig.SetHasCompletedOnboardingAsync(true);
+        // _ = _appConfig.SetHasCompletedOnboardingAsync(true);
 
         var deviceId = await _appConfig.GetDeviceIdAsync();
         if (string.IsNullOrWhiteSpace(deviceId))
@@ -253,26 +261,15 @@ public partial class OnboardingWindowViewModel : ViewModelBase
             deviceId = Guid.NewGuid().ToString();
             await _appConfig.SetDeviceIdAsync(deviceId);
         }
+        
+        _ = Task.Run(async () =>
+        {
+            Console.WriteLine("Calling LinkAsync");
+            await _deviceTelemetryService.LinkAsync(deviceId);
+            _ = _deviceTelemetryService.LogEventAsync(deviceId, TelemetryEventTypes.OnboardingComplete,
+                new { version = SystemInfoHelper.GetAppVersion() });
 
-        // Send to server asynchronously
-        // _ = Task.Run(async () =>
-        // {
-        //     try
-        //     {
-        //         using var client = new HttpClient();
-        //         var payload = new { deviceId };
-        //         var content = new StringContent(
-        //             System.Text.Json.JsonSerializer.Serialize(payload),
-        //             System.Text.Encoding.UTF8,
-        //             "application/json");
-        //
-        //         await client.PostAsync("https://your-server.com/api/link-device", content);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Console.WriteLine($"[Onboarding] Failed to send device ID: {ex.Message}");
-        //     }
-        // });
+        });
     }
 
 }
