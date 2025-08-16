@@ -71,7 +71,6 @@ public partial class FileListViewModel : ViewModelBase
             OnPropertyChanged(nameof(CanDeleteSelected));
             
             RevertSelectedCommand.NotifyCanExecuteChanged();
-            DeleteSelectedCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -174,17 +173,6 @@ public partial class FileListViewModel : ViewModelBase
         FolderSize -= fileItem.Size;
     }
     
-    [RelayCommand] private async Task DeleteFile(FileItem fileItem)
-    {
-        if (fileItem.IsFolder || string.IsNullOrWhiteSpace(fileItem.FullPath))
-            return;
-
-        await _fileOrganizerService.DeleteFileAsync(fileItem.FullPath);
-        CurrentFiles.Remove(fileItem);
-
-        FolderSize -= fileItem.Size;
-    }
-    
     [RelayCommand(CanExecute = nameof(CanRevertSelected))]
     private async Task RevertSelected()
     {
@@ -195,21 +183,6 @@ public partial class FileListViewModel : ViewModelBase
         foreach (var file in filesToRevert)
         {
             await _fileOrganizerService.RevertFileAsync(file.FullPath!);
-            CurrentFiles.Remove(file);
-            FolderSize -= file.Size;
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
-    private async Task DeleteSelected()
-    {
-        var filesToDelete = Enumerable
-            .Where<FileItem>(CurrentFiles, f => f.IsSelected && !f.IsFolder)
-            .ToList();
-
-        foreach (var file in filesToDelete)
-        {
-            await _fileOrganizerService.DeleteFileAsync(file.FullPath!);
             CurrentFiles.Remove(file);
             FolderSize -= file.Size;
         }

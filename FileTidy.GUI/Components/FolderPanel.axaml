@@ -40,16 +40,6 @@
                     </StackPanel>
                 </Button>
 
-                <!-- Delete -->
-                <Button Classes="btn btn-outline"
-                        Command="{Binding #RootPanel.((vm:HomeViewModel)DataContext).FileListViewModel.DeleteFileCommand}"
-                        CommandParameter="{Binding}">
-                    <StackPanel Orientation="Horizontal" Spacing="2">
-                        <Label FontFamily="{StaticResource Phosphor}" Content="&#xe4A6;" Classes="btn-icon" />
-                        <Label>Delete</Label>
-                    </StackPanel>
-                </Button>
-
         
             </StackPanel>
         </DataTemplate>
@@ -219,21 +209,6 @@
                                                         <Run Text="Revert Selected" />
                                                         <Run Text=" (" />
                                                         <Run Text="{Binding FileListViewModel.SelectedRevertableCount}" />
-                                                        <Run Text=")" />
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Button>
-
-                                            <Button Classes="btn btn-outline"         Command="{Binding FileListViewModel.DeleteSelectedCommand}"
-                                            >
-                                                <StackPanel Orientation="Horizontal" Spacing="2">
-                                                    <Label FontFamily="{StaticResource Phosphor}"
-                                                           Content="&#xe4A6;"
-                                                           Classes="btn-icon" />
-                                                    <TextBlock>
-                                                        <Run Text="Delete Selected" />
-                                                        <Run Text=" (" />
-                                                        <Run Text="{Binding FileListViewModel.SelectedFileCount}" />
                                                         <Run Text=")" />
                                                     </TextBlock>
                                                 </StackPanel>
