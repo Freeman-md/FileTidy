@@ -7,222 +7,253 @@
              x:DataType="vm:HelpViewModel"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700">
 
-  <Grid RowDefinitions="Auto,*" ColumnDefinitions="240,*">
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="240,*">
 
-    <!-- Header -->
-    <Border Grid.Row="0" Grid.ColumnSpan="2" Padding="16" BorderThickness="0,0,0,1"
-            BorderBrush="{DynamicResource BorderBrush}">
-      <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-        <TextBlock Text="Help &amp; Support" FontSize="24" FontWeight="SemiBold"/>
-        <TextBlock Text="•" Margin="0,7,0,0"/>
-        <TextBlock Text="Quick guide to using FileTidy" Opacity="0.8" Margin="0,7,0,0"/>
-      </StackPanel>
-    </Border>
-
-    <!-- Left Nav -->
-    <Border Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0"
-            BorderBrush="{DynamicResource BorderBrush}" Padding="12">
-      <StackPanel Spacing="6">
-        <TextBlock Text="Quick Navigation" FontWeight="SemiBold" Margin="0,0,0,6"/>
-        <Button Classes="btn btn-outline" Tag="SectionGettingStarted" Click="OnNavClick"><Label>Getting Started</Label></Button>
-        <Button Classes="btn btn-outline" Tag="SectionFeatures"        Click="OnNavClick"><Label>Main Features</Label></Button>
-        <Button Classes="btn btn-outline" Tag="SectionUndoLogs"        Click="OnNavClick"><Label>Undo &amp; Logs</Label></Button>
-        <Button Classes="btn btn-outline" Tag="SectionSettings"        Click="OnNavClick"><Label>Settings</Label></Button>
-        <Button Classes="btn btn-outline" Tag="SectionFaqs"            Click="OnNavClick"><Label>FAQs</Label></Button>
-
-        <Separator Margin="0,8"/>
-        <TextBlock Text="Need more help?" Opacity="0.8"/>
-        <TextBlock Text="Tip: You can always revert the last sort." Opacity="0.7" FontStyle="Italic" TextWrapping="Wrap"/>
-      </StackPanel>
-    </Border>
-
-    <!-- Main Content -->
-    <ScrollViewer Grid.Row="1" Grid.Column="1" Padding="16 16 16 -40" VerticalScrollBarVisibility="Auto">
-      <StackPanel Spacing="20">
-
-        <!-- 1. Getting Started -->
-        <Border x:Name="SectionGettingStarted" CornerRadius="8" Padding="16"
-                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="16">
-            <TextBlock Text="1. Getting Started" FontSize="18" FontWeight="SemiBold"/>
-
-            <!-- Step 1 -->
-            <StackPanel Spacing="8">
-              <TextBlock Text="Step 1: Select a folder from the left panel."/>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png"
-                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png"/>
-              </Border>
-              <TextBlock Text="Screenshot: Folder tree with options of folders to select."
-                         Opacity="0.7" FontSize="12"/>
+        <!-- Header -->
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Padding="16" BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource BorderBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock Text="Help &amp; Support" FontSize="24" FontWeight="SemiBold" />
+                <TextBlock Text="•" Margin="0,7,0,0" />
+                <TextBlock Text="Quick guide to using FileTidy" Opacity="0.8" Margin="0,7,0,0" />
             </StackPanel>
-
-            <!-- Step 2 -->
-            <StackPanel Spacing="8">
-              <TextBlock Text="Step 2: Click “Start Tidying” to organize files."/>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png"
-                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png"/>
-              </Border>
-              <TextBlock Text="Screenshot: Start button highlighted."
-                         Opacity="0.7" FontSize="12"/>
-            </StackPanel>
-
-            <!-- Step 3 -->
-            <StackPanel Spacing="8">
-              <TextBlock Text="Step 3: Done — your files are grouped into categories."/>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png"
-                       Stretch="Uniform" MaxHeight="220" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png"/>
-              </Border>
-              <TextBlock Text="Screenshot: After sorting — categories visible."
-                         Opacity="0.7" FontSize="12"/>
-            </StackPanel>
-
-          </StackPanel>
         </Border>
 
-        <!-- 2. Main Features -->
-        <Border x:Name="SectionFeatures" CornerRadius="8" Padding="16"
-                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="12">
-            <TextBlock Text="2. Main Features" FontSize="18" FontWeight="SemiBold"/>
+        <!-- Left Nav -->
+        <Border Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0"
+                BorderBrush="{DynamicResource BorderBrush}" Padding="12">
             <StackPanel Spacing="6">
-              <TextBlock Text="• One-click sorting into categories (Documents, Images, Videos, etc.)."/>
-              <TextBlock Text="• Real-time folder size display."/>
-              <TextBlock Text="• Undo last sort."/>
-              <TextBlock Text="• Sorting progress &amp; notifications."/>
-            </StackPanel>
+                <TextBlock Text="Quick Navigation" FontWeight="SemiBold" Margin="0,0,0,6" />
+                <Button Classes="btn btn-outline" Tag="SectionGettingStarted" Click="OnNavClick">
+                    <Label>Getting Started</Label>
+                </Button>
+                <Button Classes="btn btn-outline" Tag="SectionFeatures" Click="OnNavClick">
+                    <Label>Main Features</Label>
+                </Button>
+                <Button Classes="btn btn-outline" Tag="SectionUndoLogs" Click="OnNavClick">
+                    <Label>Undo &amp; Logs</Label>
+                </Button>
+                <Button Classes="btn btn-outline" Tag="SectionSettings" Click="OnNavClick">
+                    <Label>Settings</Label>
+                </Button>
+                <Button Classes="btn btn-outline" Tag="SectionFaqs" Click="OnNavClick">
+                    <Label>FAQs</Label>
+                </Button>
 
-            <!-- Example visuals per feature (clickable) -->
-            <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png"/>
-              </Border>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"/>
-              </Border>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png"/>
-              </Border>
-            </UniformGrid>
-          </StackPanel>
+                <Separator Margin="0,8" />
+
+                <TextBlock Text="Click on any image to view in a lightbox" Opacity="0.7" FontStyle="Italic"
+                           TextWrapping="Wrap" />
+
+                <Separator Margin="0,8" />
+                <TextBlock Text="Need more help?" Opacity="0.8" />
+                <TextBlock Text="Tip: You can always revert the last sort." Opacity="0.7" FontStyle="Italic"
+                           TextWrapping="Wrap" />
+            </StackPanel>
         </Border>
 
-        <!-- 3. Undo & Logs -->
-        <Border x:Name="SectionUndoLogs" CornerRadius="8" Padding="16"
-                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="12">
-            <TextBlock Text="3. Undo &amp; Logs" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Spacing="6">
-              <TextBlock Text="Undo: Reverts the last sort exactly as it was."/>
-              <TextBlock Text="Logs: Shows what files were moved and when."/>
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" Grid.Column="1" Padding="16 16 16 -40" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="20">
+
+                <!-- 1. Getting Started -->
+                <Border x:Name="SectionGettingStarted" CornerRadius="8" Padding="16"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="1. Getting Started" FontSize="18" FontWeight="SemiBold" />
+
+                        <!-- Step 1 -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Step 1: Select a folder from the left panel." />
+                            <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                                <Border CornerRadius="6" BorderThickness="1"
+                                        BorderBrush="{DynamicResource BorderBrush}">
+                                    <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png"
+                                           Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                                           PointerPressed="OnImagePressed"
+                                           Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png" />
+                                </Border>
+                            </UniformGrid>
+                            <TextBlock Text="Screenshot: Folder tree with options of folders to select."
+                                       Opacity="0.7" FontSize="12" />
+                        </StackPanel>
+
+                        <!-- Step 2 -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Step 2: Click “Start Tidying” to organize files." />
+                            <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                                <Border CornerRadius="6" BorderThickness="1"
+                                        BorderBrush="{DynamicResource BorderBrush}">
+                                    <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png"
+                                           Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                                           PointerPressed="OnImagePressed"
+                                           Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png" />
+                                </Border>
+                            </UniformGrid>
+                            <TextBlock Text="Screenshot: Start button highlighted."
+                                       Opacity="0.7" FontSize="12" />
+                        </StackPanel>
+
+                        <!-- Step 3 -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Step 3: Done — your files are grouped into categories." />
+                            <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                                <Border CornerRadius="6" BorderThickness="1"
+                                        BorderBrush="{DynamicResource BorderBrush}">
+                                    <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png"
+                                           Stretch="Uniform" MaxHeight="220" Cursor="Hand"
+                                           PointerPressed="OnImagePressed"
+                                           Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png" />
+                                </Border>
+                            </UniformGrid>
+                            <TextBlock Text="Screenshot: After sorting — categories visible."
+                                       Opacity="0.7" FontSize="12" />
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Main Features -->
+                <Border x:Name="SectionFeatures" CornerRadius="8" Padding="16"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="2. Main Features" FontSize="18" FontWeight="SemiBold" />
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="• One-click sorting into categories (Documents, Images, Videos, etc.)." />
+                            <TextBlock Text="• Real-time folder size display." />
+                            <TextBlock Text="• Undo last sort." />
+                            <TextBlock Text="• Sorting progress &amp; notifications." />
+                        </StackPanel>
+
+                        <!-- Example visuals per feature (clickable) -->
+                        <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}"
+                                    Margin="0,0,8,0">
+                                <Image Source="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png"
+                                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                       PointerPressed="OnImagePressed"
+                                       Tag="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png" />
+                            </Border>
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}"
+                                    Margin="0,0,8,0">
+                                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
+                                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                       PointerPressed="OnImagePressed"
+                                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png" />
+                            </Border>
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                                <Image
+                                    Source="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png"
+                                    Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                    PointerPressed="OnImagePressed"
+                                    Tag="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png" />
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Undo & Logs -->
+                <Border x:Name="SectionUndoLogs" CornerRadius="8" Padding="16"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="3. Undo &amp; Logs" FontSize="18" FontWeight="SemiBold" />
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Undo: Reverts the last sort exactly as it was." />
+                            <TextBlock Text="Logs: Shows what files were moved and when." />
+                        </StackPanel>
+
+                        <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}"
+                                    Margin="0,0,8,0">
+                                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
+                                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                       PointerPressed="OnImagePressed"
+                                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png" />
+                            </Border>
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                                <Image Source="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png"
+                                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                       PointerPressed="OnImagePressed"
+                                       Tag="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png" />
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. Settings -->
+                <Border x:Name="SectionSettings" CornerRadius="8" Padding="16"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="4. Settings" FontSize="18" FontWeight="SemiBold" />
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="• Grant folder permissions (Desktop, Downloads, Documents)." />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                            <Button Classes="btn btn-primary" Command="{Binding OpenOsSettingsCommand}">
+                                <Label>Open System Files &amp; Folders Settings</Label>
+                            </Button>
+                        </StackPanel>
+
+                        <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
+                            <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}"
+                                    Margin="0,0,8,0">
+                                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png"
+                                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
+                                       PointerPressed="OnImagePressed"
+                                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png" />
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. FAQs -->
+                <Border x:Name="SectionFaqs" CornerRadius="8" Padding="16"
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="5. FAQs" FontSize="18" FontWeight="SemiBold" />
+
+                        <StackPanel Spacing="6">
+                            <TextBlock FontWeight="SemiBold" Text="Why can’t I see my Desktop folder?" />
+                            <TextBlock
+                                Text="Grant access in Settings → System Files &amp; Folders. Then retry in FileTidy." />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6" Margin="0,8,0,0">
+                            <TextBlock FontWeight="SemiBold" Text="Can I recover deleted files?" />
+                            <TextBlock Text="FileTidy moves files — it doesn’t permanently delete them during sorting." />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6" Margin="0,8,0,0">
+                            <TextBlock FontWeight="SemiBold" Text="How do I update FileTidy?" />
+                            <TextBlock Text="Download the latest version from our website and install it." />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
             </StackPanel>
+        </ScrollViewer>
 
-            <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"/>
-              </Border>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png"/>
-              </Border>
-            </UniformGrid>
-          </StackPanel>
-        </Border>
+        <!-- 🔍 Lightbox Overlay -->
+        <Grid Grid.RowSpan="2" Grid.ColumnSpan="2"
+              IsVisible="{Binding IsLightboxOpen}"
+              Background="#80000000" ZIndex="999">
+            <!-- Put the transparent click-catcher first (behind) -->
+            <Rectangle Fill="Transparent" PointerPressed="OnOverlayPressed" ZIndex="0" />
 
-        <!-- 4. Settings -->
-        <Border x:Name="SectionSettings" CornerRadius="8" Padding="16"
-                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="12">
-            <TextBlock Text="4. Settings" FontSize="18" FontWeight="SemiBold"/>
-            <StackPanel Spacing="6">
-              <TextBlock Text="• Grant folder permissions (Desktop, Downloads, Documents)."/>
-            </StackPanel>
+            <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16"
+                    Background="#20000000" CornerRadius="6" ZIndex="1">
+                <Button Classes="btn btn-outline" Command="{Binding CloseLightboxCommand}">
+                    <Label>Close</Label>
+                </Button>
+            </Border>
 
-            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
-              <Button Classes="btn btn-primary" Command="{Binding OpenOsSettingsCommand}">
-                <Label>Open System Files &amp; Folders Settings</Label>
-              </Button>
-            </StackPanel>
+            <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource PanelBrush}" Padding="8" CornerRadius="8" ZIndex="1">
+                <Image Source="{Binding LightboxImage}" Stretch="Uniform" MaxWidth="900" MaxHeight="600" />
+            </Border>
+        </Grid>
 
-            <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png"/>
-              </Border>
-            </UniformGrid>
-          </StackPanel>
-        </Border>
 
-        <!-- 5. FAQs -->
-        <Border x:Name="SectionFaqs" CornerRadius="8" Padding="16"
-                BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-          <StackPanel Spacing="12">
-            <TextBlock Text="5. FAQs" FontSize="18" FontWeight="SemiBold"/>
-
-            <StackPanel Spacing="6">
-              <TextBlock FontWeight="SemiBold" Text="Why can’t I see my Desktop folder?"/>
-              <TextBlock Text="Grant access in Settings → System Files &amp; Folders. Then retry in FileTidy."/>
-            </StackPanel>
-
-            <StackPanel Spacing="6" Margin="0,8,0,0">
-              <TextBlock FontWeight="SemiBold" Text="Can I recover deleted files?"/>
-              <TextBlock Text="FileTidy moves files — it doesn’t permanently delete them during sorting."/>
-            </StackPanel>
-
-            <StackPanel Spacing="6" Margin="0,8,0,0">
-              <TextBlock FontWeight="SemiBold" Text="How do I update FileTidy?"/>
-              <TextBlock Text="Download the latest version from our website and install it."/>
-            </StackPanel>
-          </StackPanel>
-        </Border>
-
-      </StackPanel>
-    </ScrollViewer>
-
-    <!-- 🔍 Lightbox Overlay -->
-    <Grid Grid.RowSpan="2" Grid.ColumnSpan="2"
-          IsVisible="{Binding IsLightboxOpen}"
-          Background="#80000000" ZIndex="999">
-      <!-- Put the transparent click-catcher first (behind) -->
-      <Rectangle Fill="Transparent" PointerPressed="OnOverlayPressed" ZIndex="0"/>
-
-      <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16"
-              Background="#20000000" CornerRadius="6" ZIndex="1">
-        <Button Classes="btn btn-outline" Command="{Binding CloseLightboxCommand}">
-          <Label>Close</Label>
-        </Button>
-      </Border>
-
-      <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-              Background="{DynamicResource PanelBrush}" Padding="8" CornerRadius="8" ZIndex="1">
-        <Image Source="{Binding LightboxImage}" Stretch="Uniform" MaxWidth="900" MaxHeight="600" />
-      </Border>
     </Grid>
-
-
-  </Grid>
 </UserControl>
