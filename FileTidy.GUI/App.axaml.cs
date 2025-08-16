@@ -33,7 +33,6 @@
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Console.WriteLine(hasCompletedOnboarding);
                 desktop.MainWindow = hasCompletedOnboarding
                 ? new MainWindow
                 {
