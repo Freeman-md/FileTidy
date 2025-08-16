@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using FileTidy.Core.Interfaces;
-using FileTidy.GUI.Contracts;
 using FileTidy.GUI.ViewModels.Home;
 
 namespace FileTidy.GUI.ViewModels.Pages;

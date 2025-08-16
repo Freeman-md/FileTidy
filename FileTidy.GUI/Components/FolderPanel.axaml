@@ -200,7 +200,7 @@
                                                   Foreground="{DynamicResource TextBrush}" />
 
                                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
-                                            <Button Classes="btn btn-outline"         Command="{Binding FileListViewModel.RevertSelectedCommand}"
+                                            <Button Classes="btn btn-md btn-outline" Command="{Binding FileListViewModel.RevertSelectedCommand}"
                                             >
                                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                                     <Label FontFamily="{StaticResource PhosphorFill}"

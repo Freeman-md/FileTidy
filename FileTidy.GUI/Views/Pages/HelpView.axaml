@@ -50,12 +50,12 @@
             <StackPanel Spacing="8">
               <TextBlock Text="Step 1: Select a folder from the left panel."/>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png"
                        Stretch="Uniform" MaxHeight="220" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/01.png"/>
               </Border>
-              <TextBlock Text="Screenshot: Folder tree with a folder selected."
+              <TextBlock Text="Screenshot: Folder tree with options of folders to select."
                          Opacity="0.7" FontSize="12"/>
             </StackPanel>
 
@@ -63,10 +63,10 @@
             <StackPanel Spacing="8">
               <TextBlock Text="Step 2: Click “Start Tidying” to organize files."/>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png"
                        Stretch="Uniform" MaxHeight="220" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/02.png"/>
               </Border>
               <TextBlock Text="Screenshot: Start button highlighted."
                          Opacity="0.7" FontSize="12"/>
@@ -76,10 +76,10 @@
             <StackPanel Spacing="8">
               <TextBlock Text="Step 3: Done — your files are grouped into categories."/>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png"
                        Stretch="Uniform" MaxHeight="220" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/getting-started/03.png"/>
               </Border>
               <TextBlock Text="Screenshot: After sorting — categories visible."
                          Opacity="0.7" FontSize="12"/>
@@ -103,22 +103,22 @@
             <!-- Example visuals per feature (clickable) -->
             <UniformGrid Columns="3" Rows="1" Margin="6,8,0,0">
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/realtime-folder-size.png"/>
               </Border>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"/>
               </Border>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/sorting-progress-and-notifications.png"/>
               </Border>
             </UniformGrid>
           </StackPanel>
@@ -136,16 +136,16 @@
 
             <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/revert-last-sort.png"/>
               </Border>
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/help/session-reverted.png"/>
               </Border>
             </UniformGrid>
           </StackPanel>
@@ -168,16 +168,10 @@
 
             <UniformGrid Columns="2" Rows="1" Margin="6,8,0,0">
               <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,8,0">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
+                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png"
                        Stretch="Uniform" MaxHeight="160" Cursor="Hand"
                        PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
-              </Border>
-              <Border CornerRadius="6" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
-                <Image Source="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"
-                       Stretch="Uniform" MaxHeight="160" Cursor="Hand"
-                       PointerPressed="OnImagePressed"
-                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/welcome.png"/>
+                       Tag="avares://FileTidy.GUI/Assets/Images/onboarding/access-macos.png"/>
               </Border>
             </UniformGrid>
           </StackPanel>

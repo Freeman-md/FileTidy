@@ -87,7 +87,7 @@ public class GuiFileSortReporter : ISortReporter
         NotificationRequested?.Invoke("Sorting Complete", message);
     }
 
-    public void OnError(string filePath, Exception ex)
+    public void OnError(string? filePath, Exception ex)
     {
         NotificationRequested?.Invoke("Error Occurred", $"Issue with {System.IO.Path.GetFileName(filePath)}: {ex.Message}");
     }

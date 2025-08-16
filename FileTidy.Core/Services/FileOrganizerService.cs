@@ -32,7 +32,7 @@ public class FileOrganizerService : IFileOrganizerService
     public async Task<TidyingResult> SortDirectoryAsync(string directoryPath, Guid sortSessionId,
         CancellationToken cancellationToken = default)
     {
-        var filesToProcess = await GetFilesToProcess(directoryPath);
+        var filesToProcess = GetFilesToProcess(directoryPath);
         if (!filesToProcess.Any())
         {
             return new TidyingResult
@@ -232,7 +232,7 @@ public class FileOrganizerService : IFileOrganizerService
         _reporter?.OnBulkDeleteSummary(total, deleted, failed);
     }
     
-    private async Task<List<string>> GetFilesToProcess(string directoryPath)
+    private List<string> GetFilesToProcess(string directoryPath)
     {
         var allFiles = Directory.EnumerateFiles(directoryPath, "*", SearchOption.AllDirectories).ToList();
         

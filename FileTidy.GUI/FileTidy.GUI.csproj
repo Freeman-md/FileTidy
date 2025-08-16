@@ -75,6 +75,22 @@
       <AvaloniaResource Include="Assets\Images\onboarding\welcome.png" />
       <None Remove="Assets\Images\onboarding\completion.png" />
       <AvaloniaResource Include="Assets\Images\onboarding\completion.png" />
+      <None Remove="Assets\Images\help\realtime-folder-size.png" />
+      <AvaloniaResource Include="Assets\Images\help\realtime-folder-size.png" />
+      <None Remove="Assets\Images\help\getting-started\01.png" />
+      <AvaloniaResource Include="Assets\Images\help\getting-started\01.png" />
+      <None Remove="Assets\Images\help\getting-started\02.png" />
+      <AvaloniaResource Include="Assets\Images\help\getting-started\02.png" />
+      <None Remove="Assets\Images\help\revert-last-sort.png" />
+      <AvaloniaResource Include="Assets\Images\help\revert-last-sort.png" />
+      <Compile Remove="ViewModels\Home\FileListViewModel.cs" />
+      <AvaloniaResource Include="ViewModels\Home\FileListViewModel.cs" />
+      <None Remove="Assets\Images\help\getting-started\03.png" />
+      <AvaloniaResource Include="Assets\Images\help\getting-started\03.png" />
+      <None Remove="Assets\Images\help\session-reverted.png" />
+      <AvaloniaResource Include="Assets\Images\help\session-reverted.png" />
+      <None Remove="Assets\Images\help\sorting-progress-and-notifications.png" />
+      <AvaloniaResource Include="Assets\Images\help\sorting-progress-and-notifications.png" />
     </ItemGroup>
 
     <ItemGroup>
