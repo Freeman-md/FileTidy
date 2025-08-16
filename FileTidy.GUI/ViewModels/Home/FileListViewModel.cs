@@ -108,7 +108,7 @@ public partial class FileListViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading files: {ex.Message}");
+            
             CurrentFiles = new();
         }
         finally

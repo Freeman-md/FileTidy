@@ -93,8 +93,6 @@ public partial class SortOperationViewModel : ViewModelBase
             
             var result = await _fileOrganizerService.SortDirectoryAsync(_folderTreeViewModel.SelectedFolder.FullPath, LastSortSessionId, token);
 
-            Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
-
             _ = _fileListViewModel.LoadFilesForSelectedFolder();
             
             _ = Telemetry.LogAsync(TelemetryEventTypes.SortComplete,
@@ -108,10 +106,7 @@ public partial class SortOperationViewModel : ViewModelBase
                 });
         }
         catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            Console.WriteLine($"Tidying failed: {ex.Message}");
-            
+        {   
             _ = Telemetry.LogAsync(TelemetryEventTypes.SortError,
                 new { error = ex.Message });
         }
@@ -123,8 +118,6 @@ public partial class SortOperationViewModel : ViewModelBase
             _sortingCancellationTokenSource = null;
         }
     }
-
-    [RelayCommand] private void PauseSorting() => Console.WriteLine("Pause sorting triggered");
     
     [RelayCommand(CanExecute = nameof(IsSorting))] 
     private void StopSorting() {

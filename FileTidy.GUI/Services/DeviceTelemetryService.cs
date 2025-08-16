@@ -46,26 +46,18 @@ public sealed class DeviceTelemetryService : IDeviceTelemetryService
 
         var payload = new
         {
-            p_device_id   = deviceId,
-            p_os          = SystemInfoHelper.GetOsName(),
+            p_device_id = deviceId,
+            p_os = SystemInfoHelper.GetOsName(),
             p_app_version = SystemInfoHelper.GetAppVersion()
         };
         req.Content = new StringContent(JsonSerializer.Serialize(payload, _json), Encoding.UTF8, "application/json");
 
-        try
-        {
-            using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            if (resp.IsSuccessStatusCode) return true;
+        using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        if (resp.IsSuccessStatusCode) return true;
 
-            var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-            Console.WriteLine($"[Telemetry] LinkAsync RPC failed: {(int)resp.StatusCode} {resp.ReasonPhrase} - {body}");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Telemetry] LinkAsync RPC exception: {ex.Message}");
-            return false;
-        }
+        var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        return false;
     }
 
     public async Task<bool> LogEventAsync(string deviceId, string eventType, object? meta = null, CancellationToken cancellationToken = default)
@@ -84,26 +76,18 @@ public sealed class DeviceTelemetryService : IDeviceTelemetryService
 
         var payload = new
         {
-            p_device_id  = deviceId,
+            p_device_id = deviceId,
             p_event_type = eventType,
-            p_meta       = meta
+            p_meta = meta
         };
         req.Content = new StringContent(JsonSerializer.Serialize(payload, _json), Encoding.UTF8, "application/json");
 
-        try
-        {
-            using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            if (resp.IsSuccessStatusCode) return true;
+        using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        if (resp.IsSuccessStatusCode) return true;
 
-            var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-            Console.WriteLine($"[Telemetry] LogEventAsync RPC failed: {(int)resp.StatusCode} {resp.ReasonPhrase} - {body}");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Telemetry] LogEventAsync RPC exception: {ex.Message}");
-            return false;
-        }
+        var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        return false;
     }
 
     // ---- helpers ----
@@ -114,7 +98,6 @@ public sealed class DeviceTelemetryService : IDeviceTelemetryService
         key = _config["Cloud:SupabaseAnonKey"] ?? "";
         if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(key))
         {
-            Console.WriteLine("[Telemetry] Supabase config missing; skipping.");
             return false;
         }
         return true;

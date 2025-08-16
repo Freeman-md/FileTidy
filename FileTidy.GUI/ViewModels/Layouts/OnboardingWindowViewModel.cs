@@ -267,7 +267,6 @@ public partial class OnboardingWindowViewModel : ViewModelBase
         
         _ = Task.Run(async () =>
         {
-            Console.WriteLine("Calling LinkAsync");
             await _deviceTelemetryService.LinkAsync(deviceId);
             _ = _deviceTelemetryService.LogEventAsync(deviceId, TelemetryEventTypes.OnboardingComplete,
                 new { version = SystemInfoHelper.GetAppVersion() });

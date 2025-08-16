@@ -26,7 +26,6 @@ public static class ImageHelper
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"An error occurred while downloading image '{url}' : {ex.Message}");
             return null;
         }
     }

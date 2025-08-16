@@ -33,12 +33,11 @@ public class FolderService : IFolderService
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error checking access to {path}: {ex.Message}");
                 return false;
             }
         });
     }
-    
+
     public async Task<List<FolderItem>> GetTopLevelFoldersAsync()
     {
         var candidatePaths = new[]
@@ -113,7 +112,7 @@ public class FolderService : IFolderService
                         FullPath = fileInfo.FullName
                     };
                 });
-            
+
             return folderItems.Concat(fileItems).ToList();
         });
     }
@@ -124,9 +123,7 @@ public class FolderService : IFolderService
 
         await Task.Run(() =>
         {
-            try
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
                     Process.Start(new ProcessStartInfo
                     {
@@ -154,11 +151,6 @@ public class FolderService : IFolderService
                         UseShellExecute = false
                     });
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to open folder {path}: {ex.Message}");
-            }
         });
     }
 
@@ -166,28 +158,21 @@ public class FolderService : IFolderService
     {
         await Task.Run(() =>
         {
-            try
-            {
-                using var process = new Process();
-                process.StartInfo.UseShellExecute = true;
+            using var process = new Process();
+            process.StartInfo.UseShellExecute = true;
 
-                if (OperatingSystem.IsMacOS())
-                    process.StartInfo.FileName = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders";
-                else if (OperatingSystem.IsWindows())
-                    process.StartInfo.FileName = "ms-settings:privacy-broadfilesystemaccess";
-                else if (OperatingSystem.IsLinux())
-                {
-                    process.StartInfo.FileName = "xdg-open";
-                    process.StartInfo.Arguments = "https://wiki.gnome.org/Design/OS/Privacy";
-                    process.StartInfo.UseShellExecute = false;
-                }
-
-                process.Start();
-            }
-            catch (Exception ex)
+            if (OperatingSystem.IsMacOS())
+                process.StartInfo.FileName = "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders";
+            else if (OperatingSystem.IsWindows())
+                process.StartInfo.FileName = "ms-settings:privacy-broadfilesystemaccess";
+            else if (OperatingSystem.IsLinux())
             {
-                Console.WriteLine(ex.Message);
+                process.StartInfo.FileName = "xdg-open";
+                process.StartInfo.Arguments = "https://wiki.gnome.org/Design/OS/Privacy";
+                process.StartInfo.UseShellExecute = false;
             }
+
+            process.Start();
         });
     }
 
@@ -195,21 +180,14 @@ public class FolderService : IFolderService
     {
         var list = new List<FolderItem>();
 
-        try
+        foreach (var directory in Directory.GetDirectories(rootFolderPath))
         {
-            foreach (var directory in Directory.GetDirectories(rootFolderPath))
+            list.Add(new FolderItem
             {
-                list.Add(new FolderItem
-                {
-                    Name = Path.GetFileName(directory),
-                    FullPath = directory,
-                    SubFolders = GetSubFolders(directory)
-                });
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Access denied or error accessing: {rootFolderPath} — {ex.Message}");
+                Name = Path.GetFileName(directory),
+                FullPath = directory,
+                SubFolders = GetSubFolders(directory)
+            });
         }
 
         return list;
