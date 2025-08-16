@@ -172,6 +172,8 @@ public partial class OnboardingWindowViewModel : ViewModelBase
     {
         if (CurrentStepIndex == StepsCountMinusOne)
         {
+            _ = Telemetry.LogAsync(TelemetryEventTypes.PermissionsGranted);
+
             App.LaunchMainWindow();
             
             return;

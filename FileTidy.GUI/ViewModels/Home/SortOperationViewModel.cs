@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
+using FileTidy.GUI.Constants;
+using FileTidy.GUI.Helpers;
 
 namespace FileTidy.GUI.ViewModels.Home;
 
@@ -73,6 +75,9 @@ public partial class SortOperationViewModel : ViewModelBase
 
         try
         {
+            _ = Telemetry.LogAsync(TelemetryEventTypes.SortStart,
+                new { at = DateTimeOffset.UtcNow });
+
             IsSorting = true;
             OperationProgress = 0;
             FilesProcessed = 0;
@@ -91,13 +96,24 @@ public partial class SortOperationViewModel : ViewModelBase
             Console.WriteLine($"Tidying complete. Moved: {result.TotalMoved}, Errors: {result.TotalErrors}");
 
             _ = _fileListViewModel.LoadFilesForSelectedFolder();
-            // Instead of doing this, let's just update the current folder with the new structure directly
-            // _ = InitializeFolderTreeAsync();
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.SortComplete,
+                new
+                {
+                    totalFiles      = result.TotalFiles,
+                    moved           = result.TotalMoved,
+                    errors          = result.TotalErrors,
+                    categoryCounts  = result.PerCategoryCounts,
+                    elapsedMs       = result.Elapsed.TotalMilliseconds
+                });
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             Console.WriteLine($"Tidying failed: {ex.Message}");
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.SortError,
+                new { error = ex.Message });
         }
         finally
         {
@@ -118,6 +134,9 @@ public partial class SortOperationViewModel : ViewModelBase
             _sortingCancellationTokenSource = null;
             IsSorting = false;
             WasCancelled = true;
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.SortCancel);
+
         }
     }
 
@@ -138,6 +157,9 @@ public partial class SortOperationViewModel : ViewModelBase
         await _fileOperationStore.DeleteConfigValueAsync(nameof(LastSortSessionId));
 
         _ = _fileListViewModel.LoadFilesForSelectedFolder();
+        
+        _ = Telemetry.LogAsync(TelemetryEventTypes.RevertLastSortSession,
+            new { at = DateTimeOffset.UtcNow });
 
         IsReverting = false;
     }

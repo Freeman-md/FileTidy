@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.GUI.Constants;
 using FileTidy.GUI.Contracts;
+using FileTidy.GUI.Helpers;
 using FileTidy.GUI.Models;
 
 namespace FileTidy.GUI.ViewModels.Home;
@@ -123,12 +125,14 @@ public partial class FolderTreeViewModel : ViewModelBase
     private async Task OpenOsSettingsAsync()
     {
         await _folderService.OpenSystemFilesAndFoldersSettingsAsync();
-        // Give the OS pane a moment if needed, then re-probe
+        
         _ = Task.Run(async () =>
         {
             await Task.Delay(1500);
             await RefreshAccessAsync();
         });
+        
+        _ = Telemetry.LogAsync(TelemetryEventTypes.PermissionsOpenSettings);
     }
 
     [RelayCommand]

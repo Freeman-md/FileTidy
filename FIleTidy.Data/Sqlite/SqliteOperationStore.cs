@@ -19,7 +19,7 @@ public class SqliteOperationStore : IFileOperationStore
 
         CreateTablesIfNotExists();
 
-        // Console.WriteLine($"DB Path: {new SqliteConnectionStringBuilder(_connectionString).DataSource}");
+        Console.WriteLine($"DB Path: {new SqliteConnectionStringBuilder(_connectionString).DataSource}");
     }
 
     public SqliteOperationStore(string? customPath = null)

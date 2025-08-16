@@ -9,8 +9,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
 using FileTidy.Core.Models;
+using FileTidy.GUI.Constants;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Extensions;
+using FileTidy.GUI.Helpers;
 using FileTidy.GUI.Models;
 
 namespace FileTidy.GUI.ViewModels.Home;
@@ -171,6 +173,9 @@ public partial class FileListViewModel : ViewModelBase
 
         CurrentFiles.Remove(fileItem);
         FolderSize -= fileItem.Size;
+        
+        _ = Telemetry.LogAsync(TelemetryEventTypes.RevertFile,
+            new { at = DateTimeOffset.UtcNow });
     }
     
     [RelayCommand(CanExecute = nameof(CanRevertSelected))]
@@ -186,5 +191,8 @@ public partial class FileListViewModel : ViewModelBase
             CurrentFiles.Remove(file);
             FolderSize -= file.Size;
         }
+        
+        _ = Telemetry.LogAsync(TelemetryEventTypes.RevertFiles,
+            new { at = DateTimeOffset.UtcNow, total = filesToRevert.Count });
     }
 }

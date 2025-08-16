@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.GUI.Constants;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Helpers;
 
@@ -25,6 +26,8 @@ namespace FileTidy.GUI.ViewModels.Pages
         private async Task OpenOsSettingsAsync()
         {
             await _folderService.OpenSystemFilesAndFoldersSettingsAsync();
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.PermissionsOpenSettings);
         }
 
         // Called from code-behind with the string path in Image.Tag

@@ -2,6 +2,8 @@ using System;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FileTidy.GUI.Constants;
+using FileTidy.GUI.Helpers;
 using FileTidy.GUI.ViewModels.Pages;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,16 +42,12 @@ public enum PageType
         }
         
         [RelayCommand]
-        private void GoToSettings()
-        {
-            CurrentViewModel = _services.GetRequiredService<SettingsViewModel>();
-            CurrentPage = PageType.Settings;
-        }
-        
-        [RelayCommand]
         private void GoToHelp()
         {
             CurrentViewModel = _services.GetRequiredService<HelpViewModel>();
             CurrentPage = PageType.Help;
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.HelpOpen);
+
         }
     }

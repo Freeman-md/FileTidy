@@ -5,7 +5,9 @@
     using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.Markup.Xaml;
+    using FileTidy.GUI.Constants;
     using FileTidy.GUI.Contracts;
+    using FileTidy.GUI.Helpers;
     using FileTidy.GUI.Services;
     using FileTidy.GUI.ViewModels.Layouts;
     using FileTidy.GUI.Views;
@@ -31,6 +33,7 @@
             
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                Console.WriteLine(hasCompletedOnboarding);
                 desktop.MainWindow = hasCompletedOnboarding
                 ? new MainWindow
                 {
@@ -44,7 +47,9 @@
             }
 
             Current!.Name = "FileTidy";
-
+            
+            _ = Telemetry.LogAsync(TelemetryEventTypes.AppOpen, new { version = SystemInfoHelper.GetAppVersion() });
+            
             base.OnFrameworkInitializationCompleted();
         }
         
