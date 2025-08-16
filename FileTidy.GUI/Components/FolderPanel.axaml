@@ -91,21 +91,21 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                     
-                    <Button Classes="btn btn-primary" Command="{Binding SortOperationViewModel.StartTidyingCommand}">
+                    <Button Classes="btn btn-md btn-primary" Command="{Binding SortOperationViewModel.StartTidyingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe6F0;" Classes="btn-icon" />
-                            <Label>Start Tidying</Label>
+                            <Label Classes="btn-text">Start Tidying</Label>
                         </StackPanel>
                     </Button>
                     
-                    <Button Classes="btn btn-primary" Command="{Binding SortOperationViewModel.StopSortingCommand}">
+                    <Button Classes="btn btn-md btn-primary" Command="{Binding SortOperationViewModel.StopSortingCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe46C;" Classes="btn-icon" />
                             <Label>Stop Tidying</Label>
                         </StackPanel>
                     </Button>
                     
-                    <Button Classes="btn btn-primary" Command="{Binding SortOperationViewModel.RevertLastSortCommand}">
+                    <Button Classes="btn btn-md btn-primary" Command="{Binding SortOperationViewModel.RevertLastSortCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="2">
                             <Label FontFamily="{StaticResource PhosphorFill}" Content="&#xe038;" Classes="btn-icon" />
                             <Label>Revert Last Sort</Label>
