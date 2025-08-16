@@ -12,6 +12,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileTidy.Core.Interfaces;
+using FileTidy.GUI.Constants;
 using FileTidy.GUI.Contracts;
 using FileTidy.GUI.Helpers;
 using FileTidy.GUI.Services;
