@@ -17,4 +17,7 @@ public static class TelemetryEventTypes
     public const string RevertLastSortSession = "revert_last_sort_session";
     public const string RevertFile = "revert_file";
     public const string RevertFiles = "revert_files";
+    
+    public const string GlobalError = "global_error";
+    public const string AppCrash    = "app_crash"; 
 }
