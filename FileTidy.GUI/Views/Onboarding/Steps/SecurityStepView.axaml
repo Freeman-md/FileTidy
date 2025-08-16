@@ -7,9 +7,22 @@
     <Grid>
         <StackPanel Spacing="16" HorizontalAlignment="Left">
             <TextBlock Text="Data security and encryption" FontSize="35" FontWeight="SemiBold"/>
-            <TextBlock Text="Your files stay on your machine. Sorting runs locally. Any optional logs are stored locally too."
-                       FontSize="18"
-                       Opacity="0.88"
+            
+            <TextBlock Text="• Your files never leave your machine. Sorting is 100% local." 
+                       FontSize="18" 
+                       Opacity="0.88" 
+                       TextWrapping="Wrap"
+                       MaxWidth="520"/>
+
+            <TextBlock Text="• Activity logs are stored locally. No file names or personal data are collected." 
+                       FontSize="18" 
+                       Opacity="0.88" 
+                       TextWrapping="Wrap"
+                       MaxWidth="520"/>
+
+            <TextBlock Text="• Anonymized activity logs are also shared to help improve app reliability. Never your files or paths." 
+                       FontSize="18" 
+                       Opacity="0.88" 
                        TextWrapping="Wrap"
                        MaxWidth="520"/>
         </StackPanel>
