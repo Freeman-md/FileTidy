@@ -83,8 +83,7 @@
       <AvaloniaResource Include="Assets\Images\help\getting-started\02.png" />
       <None Remove="Assets\Images\help\revert-last-sort.png" />
       <AvaloniaResource Include="Assets\Images\help\revert-last-sort.png" />
-      <Compile Remove="ViewModels\Home\FileListViewModel.cs" />
-      <AvaloniaResource Include="ViewModels\Home\FileListViewModel.cs" />
+
       <None Remove="Assets\Images\help\getting-started\03.png" />
       <AvaloniaResource Include="Assets\Images\help\getting-started\03.png" />
       <None Remove="Assets\Images\help\session-reverted.png" />
